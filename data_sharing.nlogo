@@ -1,16 +1,92 @@
-to setup
+; issues: need to track the number of publications over a given time-frame. how many publications
+; maybe this could help? https://stackoverflow.com/a/59862247/3149349
 
+; if resources = chance to publish and a single value, this is complicated. We want to be able to represent
+; scientists that publish rarely and those that publish > 50 papers a year.
+
+
+; ticks = months
+; default publishing rate: once every 6 months
+; this does not work correctly right now: we use the poisson distribution, but we get slightly less than 2 papers
+; per year on average. why?
+
+; we might need a base rate of funding. otherwise, if you get stuck with no third party funding,
+; there is no chance you get out and publish again.
+
+breed [researchers researcher]
+
+researchers-own [
+  resources
+  n-publications
+  publication-propensity
+  published-previously
+  publish?
+]
+
+to setup
+  clear-all
+
+  create-researchers n-researchers
+  ask researchers [
+    ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
+    set resources 1
+    set publication-propensity 0.1666666667
+    set publish? False
+    set n-publications 0
+  ]
+
+
+  reset-ticks
+end
+
+
+to go
+  if ticks = 120 [stop] ; stop after 10 years
+  publish
+
+  tick
+end
+
+to publish
+  ask turtles [
+    let current-publication-propensity resources * publication-propensity
+    set publish? random-poisson current-publication-propensity = 1 ; use poisson distribution to draw publications
+
+    if publish? [ set n-publications n-publications + 1 ]
+  ]
+end
+
+
+to-report mean-resources
+  report mean [resources] of researchers
+end
+
+to-report var-resources
+  report variance [resources] of researchers
+end
+
+to-report mean-publications
+  report precision mean [n-publications] of researchers 2
+end
+
+
+
+to-report gini-coefficient
+  ; report the level of inequality in resources
+  ; see https://ccl.northwestern.edu/netlogo/models/WealthDistribution
+
+  ; also: see the bianchi et al model
 
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-647
-448
+402
+203
 -1
 -1
-13.0
+5.6
 1
 10
 1
@@ -29,6 +105,141 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+BUTTON
+101
+31
+164
+64
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+33
+31
+96
+64
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+455
+10
+557
+55
+NIL
+mean-resources
+17
+1
+11
+
+MONITOR
+578
+12
+711
+57
+variance of resources
+var-resources
+17
+1
+11
+
+MONITOR
+465
+99
+577
+144
+NIL
+mean-publications
+17
+1
+11
+
+PLOT
+475
+252
+773
+485
+mean-publications
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot mean-publications"
+
+PLOT
+783
+251
+1111
+486
+n-publications distribution
+NIL
+NIL
+0.0
+30.0
+0.0
+30.0
+true
+false
+"" ""
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [n-publications] of researchers"
+
+BUTTON
+41
+85
+104
+118
+step
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+33
+168
+205
+201
+n-researchers
+n-researchers
+0
+1000
+134.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
