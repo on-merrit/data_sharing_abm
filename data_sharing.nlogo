@@ -5,13 +5,14 @@
 ; scientists that publish rarely and those that publish > 50 papers a year.
 
 
-; ticks = months
+; ticks = 6 months
 ; default publishing rate: once every 6 months
-; this does not work correctly right now: we use the poisson distribution, but we get slightly less than 2 papers
-; per year on average. why?
 
 ; we might need a base rate of funding. otherwise, if you get stuck with no third party funding,
 ; there is no chance you get out and publish again.
+
+; next: distribute rewards based on prior publication history
+; directly code the list solution from above
 
 breed [researchers researcher]
 
@@ -20,7 +21,6 @@ researchers-own [
   n-publications
   publication-propensity
   published-previously
-  publish?
 ]
 
 to setup
@@ -30,8 +30,7 @@ to setup
   ask researchers [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
-    set publication-propensity 0.1666666667
-    set publish? False
+    set publication-propensity 1 ; 0.1666666667
     set n-publications 0
   ]
 
@@ -41,7 +40,7 @@ end
 
 
 to go
-  if ticks = 120 [stop] ; stop after 10 years
+  if ticks = 20 [stop] ; stop after 10 years
   publish
 
   tick
@@ -50,9 +49,9 @@ end
 to publish
   ask turtles [
     let current-publication-propensity resources * publication-propensity
-    set publish? random-poisson current-publication-propensity = 1 ; use poisson distribution to draw publications
+    let n-pubs-this-round random-poisson current-publication-propensity
+    set n-publications n-publications + n-pubs-this-round
 
-    if publish? [ set n-publications n-publications + 1 ]
   ]
 end
 
@@ -76,6 +75,8 @@ to-report gini-coefficient
   ; see https://ccl.northwestern.edu/netlogo/models/WealthDistribution
 
   ; also: see the bianchi et al model
+
+  ; maybe show gini of publication distribution, as well as of resource distribution
 
 end
 @#$#@#$#@
