@@ -19,7 +19,6 @@ breed [researchers researcher]
 researchers-own [
   resources
   n-publications
-  publication-propensity
   published-previously
 ]
 
@@ -30,7 +29,6 @@ to setup
   ask researchers [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
-    set publication-propensity 1 ; 0.1666666667
     set n-publications 0
   ]
 
@@ -48,8 +46,7 @@ end
 
 to publish
   ask turtles [
-    let current-publication-propensity resources * publication-propensity
-    let n-pubs-this-round random-poisson current-publication-propensity
+    let n-pubs-this-round random-poisson resources
     set n-publications n-publications + n-pubs-this-round
 
   ]
