@@ -65,11 +65,11 @@ end
 
 
 to-report mean-resources
-  report mean [resources] of researchers
+  report precision mean [resources] of researchers 2
 end
 
 to-report var-resources
-  report variance [resources] of researchers
+  report precision variance [resources] of researchers 2
 end
 
 to-report mean-publications
