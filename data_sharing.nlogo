@@ -41,6 +41,8 @@ to go
   if ticks = 20 [stop] ; stop after 10 years
   publish
 
+  if resource-updating? [ update-resources ]
+
   tick
 end
 
@@ -50,7 +52,14 @@ to publish
     set n-publications n-publications + n-pubs-this-round
 
     set publication-history fput n-pubs-this-round but-last publication-history
+  ]
+end
 
+to update-resources
+  ask turtles [
+    let current-resources resources
+    let publication-success median publication-history
+    set resources current-resources + publication-success
   ]
 end
 
@@ -200,14 +209,14 @@ n-publications distribution
 NIL
 NIL
 0.0
-30.0
+2000.0
 0.0
-30.0
+100.0
 true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [n-publications] of researchers"
+"default" 100.0 1 -16777216 true "" "histogram [n-publications] of researchers"
 
 BUTTON
 41
@@ -240,6 +249,17 @@ n-researchers
 1
 NIL
 HORIZONTAL
+
+SWITCH
+30
+239
+193
+272
+resource-updating?
+resource-updating?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
