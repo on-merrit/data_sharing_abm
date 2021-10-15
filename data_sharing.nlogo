@@ -1,6 +1,3 @@
-; issues: need to track the number of publications over a given time-frame. how many publications
-; maybe this could help? https://stackoverflow.com/a/59862247/3149349
-
 ; if resources = chance to publish and a single value, this is complicated. We want to be able to represent
 ; scientists that publish rarely and those that publish > 50 papers a year.
 
@@ -20,16 +17,19 @@ researchers-own [
   resources
   n-publications
   published-previously
+  publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
 ]
 
 to setup
   clear-all
 
   create-researchers n-researchers
+  let pub-history-length 6 ; equals 3 years
   ask researchers [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set n-publications 0
+    set publication-history n-values pub-history-length [0]
   ]
 
 
@@ -48,6 +48,8 @@ to publish
   ask turtles [
     let n-pubs-this-round random-poisson resources
     set n-publications n-publications + n-pubs-this-round
+
+    set publication-history fput n-pubs-this-round but-last publication-history
 
   ]
 end
@@ -233,7 +235,7 @@ n-researchers
 n-researchers
 0
 1000
-134.0
+45.0
 1
 1
 NIL
