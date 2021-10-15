@@ -8,8 +8,10 @@
 ; we might need a base rate of funding. otherwise, if you get stuck with no third party funding,
 ; there is no chance you get out and publish again.
 
-; next: distribute rewards based on prior publication history
-; directly code the list solution from above
+; current issue: resource values run away from us: not realistic to have yearly publications
+; go through the roof -> time to publish is not unlimited.
+; the approach to take the square root does not help, it curbs the upper dynamic too much,
+; the distribution is skewed in the wrong direction.
 
 breed [researchers researcher]
 
@@ -59,7 +61,7 @@ to update-resources
   ask turtles [
     let current-resources resources
     let publication-success median publication-history
-    set resources current-resources + publication-success
+    set resources current-resources + sqrt publication-success ; take the square root to control the dynamic somewhat
   ]
 end
 
@@ -209,14 +211,14 @@ n-publications distribution
 NIL
 NIL
 0.0
-2000.0
+1000.0
 0.0
 100.0
 true
 false
 "" ""
 PENS
-"default" 100.0 1 -16777216 true "" "histogram [n-publications] of researchers"
+"default" 10.0 1 -16777216 true "" "histogram [n-publications] of researchers"
 
 BUTTON
 41
@@ -244,7 +246,7 @@ n-researchers
 n-researchers
 0
 1000
-45.0
+446.0
 1
 1
 NIL
