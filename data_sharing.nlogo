@@ -67,9 +67,8 @@ end
 
 to update-resources
   ask turtles [
-    let current-resources resources
     let publication-success median publication-history
-    set resources current-resources + sqrt publication-success ; take the square root to control the dynamic somewhat
+    set resources resources + sqrt publication-success ; take the square root to control the dynamic somewhat
   ]
 end
 
