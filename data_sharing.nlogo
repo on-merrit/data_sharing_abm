@@ -1,6 +1,8 @@
 ; if resources = chance to publish and a single value, this is complicated. We want to be able to represent
 ; scientists that publish rarely and those that publish > 50 papers a year.
 
+; interesting resource that shows how to make things happen probabilistically: https://stackoverflow.com/a/69572371/3149349
+; would be needed if we assume a max publication of 1 per tick.
 
 ; ticks = 6 months
 ; default publishing rate: once every 6 months
@@ -12,6 +14,12 @@
 ; go through the roof -> time to publish is not unlimited.
 ; the approach to take the square root does not help, it curbs the upper dynamic too much,
 ; the distribution is skewed in the wrong direction.
+
+; further issue? resources only ever get more. not sure whether this is an issue.
+; if we used probabililties: at some point everyone would publish every tick
+; maybe the added resources based on publication history should not be completely cumulative?
+; having a drag on resources could mimick what we see in real life: some people keep funding up
+; and continue to publish, while others stop publishing at some point (out of resources/funding).
 
 breed [researchers researcher]
 
