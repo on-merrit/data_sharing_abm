@@ -21,9 +21,9 @@
 ; having a drag on resources could mimick what we see in real life: some people keep funding up
 ; and continue to publish, while others stop publishing at some point (out of resources/funding).
 
-breed [researchers researcher]
+breed [institutions institution]
 
-researchers-own [
+institutions-own [
   resources
   n-publications
   published-previously
@@ -33,9 +33,9 @@ researchers-own [
 to setup
   clear-all
 
-  create-researchers n-researchers
+  create-institutions n-institutions
   let pub-history-length 6 ; equals 3 years
-  ask researchers [
+  ask turtles [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set n-publications 0
@@ -93,15 +93,15 @@ end
 
 
 to-report mean-resources
-  report precision mean [resources] of researchers 2
+  report precision mean [resources] of institutions 2
 end
 
 to-report var-resources
-  report precision variance [resources] of researchers 2
+  report precision variance [resources] of institutions 2
 end
 
 to-report mean-publications
-  report precision mean [n-publications] of researchers 2
+  report precision mean [n-publications] of institutions 2
 end
 
 
@@ -244,7 +244,7 @@ false
 false
 "" ""
 PENS
-"default" 5.0 1 -16777216 true "" "histogram [n-publications] of researchers"
+"default" 5.0 1 -16777216 true "" "histogram [n-publications] of institutions"
 
 BUTTON
 41
@@ -268,8 +268,8 @@ SLIDER
 168
 205
 201
-n-researchers
-n-researchers
+n-institutions
+n-institutions
 0
 1000
 76.0
