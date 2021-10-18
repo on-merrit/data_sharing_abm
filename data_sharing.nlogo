@@ -51,7 +51,7 @@ to go
   if ticks = 20 [stop] ; stop after 10 years
   publish
 
-  if resource-updating? [ update-resources ]
+  run mechanism
 
   tick
 end
@@ -65,14 +65,30 @@ to publish
   ]
 end
 
-to update-resources
+to update-cumulative
+  ask turtles [
+    let publication-success median publication-history
+    set resources resources + publication-success
+  ]
+end
+
+to update-sqrt
   ask turtles [
     let publication-success median publication-history
     set resources resources + sqrt publication-success
+  ]
+end
+
+to update-with-drag
+  ask turtles [
+    let publication-success mean publication-history
+    set resources resources + sqrt publication-success
     set resources resources - 1
     if resources < 1 [ set resources 1 ]
-    ;set resources sqrt resources ; take the square root to control the dynamic somewhat
   ]
+end
+
+to not-update
 end
 
 
@@ -256,22 +272,21 @@ n-researchers
 n-researchers
 0
 1000
-446.0
+76.0
 1
 1
 NIL
 HORIZONTAL
 
-SWITCH
-30
-239
-193
-272
-resource-updating?
-resource-updating?
+CHOOSER
+33
+228
+184
+273
+mechanism
+mechanism
+"update-with-drag" "update-sqrt" "update-cumulative" "not-update"
 0
-1
--1000
 
 @#$#@#$#@
 ## WHAT IS IT?
