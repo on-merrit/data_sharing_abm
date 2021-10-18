@@ -34,7 +34,7 @@ to setup
   clear-all
 
   create-institutions n-institutions
-  let pub-history-length 6 ; equals 3 years
+  let pub-history-length history-length * 2 ; so a history of "3" years becomes 6 ticks = 3 years
   ask turtles [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
@@ -144,10 +144,10 @@ ticks
 30.0
 
 BUTTON
-101
-31
-164
-64
+103
+135
+166
+168
 NIL
 go
 T
@@ -161,10 +161,10 @@ NIL
 1
 
 BUTTON
-33
-31
-96
-64
+72
+69
+135
+102
 NIL
 setup
 NIL
@@ -247,10 +247,10 @@ PENS
 "default" 5.0 1 -16777216 true "" "histogram [n-publications] of institutions"
 
 BUTTON
-41
-85
-104
-118
+38
+135
+101
+168
 step
 go
 NIL
@@ -264,29 +264,44 @@ NIL
 1
 
 SLIDER
-33
-168
-205
-201
+24
+27
+196
+60
 n-institutions
 n-institutions
 0
 1000
-76.0
+331.0
 1
 1
 NIL
 HORIZONTAL
 
 CHOOSER
-33
-228
-184
-273
+32
+264
+183
+309
 mechanism
 mechanism
 "update-with-drag" "update-sqrt" "update-cumulative" "not-update"
 0
+
+SLIDER
+27
+213
+199
+246
+history-length
+history-length
+1
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
