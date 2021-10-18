@@ -68,7 +68,10 @@ end
 to update-resources
   ask turtles [
     let publication-success median publication-history
-    set resources resources + sqrt publication-success ; take the square root to control the dynamic somewhat
+    set resources resources + sqrt publication-success
+    set resources resources - 1
+    if resources < 1 [ set resources 1 ]
+    ;set resources sqrt resources ; take the square root to control the dynamic somewhat
   ]
 end
 
@@ -218,14 +221,14 @@ n-publications distribution
 NIL
 NIL
 0.0
-1000.0
+250.0
 0.0
-100.0
-true
+200.0
+false
 false
 "" ""
 PENS
-"default" 10.0 1 -16777216 true "" "histogram [n-publications] of researchers"
+"default" 5.0 1 -16777216 true "" "histogram [n-publications] of researchers"
 
 BUTTON
 41
