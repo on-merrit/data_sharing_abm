@@ -21,12 +21,17 @@
 ; having a drag on resources could mimick what we see in real life: some people keep funding up
 ; and continue to publish, while others stop publishing at some point (out of resources/funding).
 
+; the cost towards the resources should be proportional to the number of publications within
+; the round. This way this would be a cap on the number of publications one can have.
+; this function should be akin to stuff in business, with an exponential increase in cost
+; after some level
+
 breed [institutions institution]
 
 institutions-own [
   resources
   n-publications
-  published-previously
+  n-pubs-this-round
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
 ]
 
@@ -39,6 +44,7 @@ to setup
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set n-publications 0
+    set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
   ]
 
@@ -48,7 +54,7 @@ end
 
 
 to go
-  if ticks = 20 [stop] ; stop after 10 years
+  if ticks = 2000 [stop] ; stop after 10 years (20)
   publish
 
   run mechanism
@@ -58,7 +64,7 @@ end
 
 to publish
   ask turtles [
-    let n-pubs-this-round random-poisson resources
+    set n-pubs-this-round random-poisson resources
     set n-publications n-publications + n-pubs-this-round
 
     set publication-history fput n-pubs-this-round but-last publication-history
@@ -76,6 +82,16 @@ to update-sqrt
   ask turtles [
     let publication-success median publication-history
     set resources resources + sqrt publication-success
+  ]
+end
+
+to update-log
+  ask turtles [
+    let publication-success median publication-history
+    if publication-success >= 1 [
+      set resources resources + log publication-success 10
+    ]
+
   ]
 end
 
@@ -191,7 +207,7 @@ mean-resources
 MONITOR
 578
 12
-711
+696
 57
 variance of resources
 var-resources
@@ -200,10 +216,10 @@ var-resources
 11
 
 MONITOR
-465
-99
-577
-144
+454
+64
+554
+109
 NIL
 mean-publications
 17
@@ -211,11 +227,11 @@ mean-publications
 11
 
 PLOT
-475
-252
-773
-485
-mean-publications
+533
+314
+831
+547
+log mean-publications
 NIL
 NIL
 0.0
@@ -226,25 +242,25 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean-publications"
+"default" 1.0 0 -16777216 true "" "plot log mean-publications 10"
 
 PLOT
-783
-251
-1111
-486
+832
+314
+1160
+549
 n-publications distribution
 NIL
 NIL
 0.0
-250.0
+10000.0
 0.0
-200.0
-false
+10.0
+true
 false
 "" ""
 PENS
-"default" 5.0 1 -16777216 true "" "histogram [n-publications] of institutions"
+"default" 500.0 1 -16777216 true "" "histogram [n-publications] of institutions"
 
 BUTTON
 38
@@ -272,7 +288,7 @@ n-institutions
 n-institutions
 0
 1000
-331.0
+624.0
 1
 1
 NIL
@@ -285,7 +301,7 @@ CHOOSER
 309
 mechanism
 mechanism
-"update-with-drag" "update-sqrt" "update-cumulative" "not-update"
+"update-with-drag" "update-sqrt" "update-log" "update-cumulative" "not-update"
 0
 
 SLIDER
@@ -297,11 +313,47 @@ history-length
 history-length
 1
 10
-3.0
+5.0
 1
 1
 NIL
 HORIZONTAL
+
+PLOT
+533
+125
+831
+312
+yearly publications
+NIL
+NIL
+0.0
+100.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [n-pubs-this-round] of institutions"
+
+PLOT
+833
+127
+1159
+313
+resource distribution
+NIL
+NIL
+0.0
+100.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [resources] of institutions"
 
 @#$#@#$#@
 ## WHAT IS IT?
