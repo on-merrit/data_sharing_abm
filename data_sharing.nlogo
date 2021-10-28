@@ -127,6 +127,7 @@ to update-proportional
     ; issue here: it seems that not those that had previous success are having further success
     ; but that this is mainly random: success in some period, then not
     ; reason: drag is too large, therefore everyone gets always reset to resources = 1
+    ; idea: loss of resources also as a function of current resources: if very low resources, loss is not high.
   ]
 
 end
