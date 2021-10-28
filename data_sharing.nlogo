@@ -34,9 +34,9 @@
 ; https://stackoverflow.com/questions/21792380/random-pareto-distribution-in-r-with-30-of-values-being-specified-amount
 ; https://stats.stackexchange.com/questions/173242/random-sample-from-power-law-distribution
 
-breed [institutions institution]
+breed [groups group]
 
-institutions-own [
+groups-own [
   resources
   n-publications
   n-pubs-this-round
@@ -46,7 +46,7 @@ institutions-own [
 to setup
   clear-all
 
-  create-institutions n-institutions
+  create-groups n-groups
   let pub-history-length history-length * 2 ; so a history of "3" years becomes 6 ticks = 3 years
   ask turtles [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
@@ -138,15 +138,15 @@ end
 
 
 to-report mean-resources
-  report precision mean [resources] of institutions 2
+  report precision mean [resources] of groups 2
 end
 
 to-report var-resources
-  report precision variance [resources] of institutions 2
+  report precision variance [resources] of groups 2
 end
 
 to-report mean-publications
-  report precision mean [n-publications] of institutions 2
+  report precision mean [n-publications] of groups 2
 end
 
 
@@ -289,7 +289,7 @@ true
 false
 "" ""
 PENS
-"default" 80.0 1 -16777216 true "" "histogram [n-publications] of institutions"
+"default" 80.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
 38
@@ -313,8 +313,8 @@ SLIDER
 27
 196
 60
-n-institutions
-n-institutions
+n-groups
+n-groups
 0
 1000
 624.0
@@ -364,7 +364,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [n-pubs-this-round] of institutions"
+"default" 1.0 1 -16777216 true "" "histogram [n-pubs-this-round] of groups"
 
 PLOT
 833
@@ -382,7 +382,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [resources] of institutions"
+"default" 1.0 1 -16777216 true "" "histogram [resources] of groups"
 
 @#$#@#$#@
 ## WHAT IS IT?
