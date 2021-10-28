@@ -26,6 +26,14 @@
 ; this function should be akin to stuff in business, with an exponential increase in cost
 ; after some level
 
+; ideal: distribution of total publications should exhibit lotkas law, moving from lower
+; to higher levels of total publications over time
+
+; further links: https://stackoverflow.com/questions/28317479/how-to-create-a-random-pareto-in-netlogo?noredirect=1&lq=1
+; https://stackoverflow.com/questions/28212700/how-to-add-power-law-likelihood-to-netlogo-model
+; https://stackoverflow.com/questions/21792380/random-pareto-distribution-in-r-with-30-of-values-being-specified-amount
+; https://stats.stackexchange.com/questions/173242/random-sample-from-power-law-distribution
+
 breed [institutions institution]
 
 institutions-own [
@@ -100,9 +108,29 @@ to update-with-drag
     let publication-success mean publication-history
     set resources resources + sqrt publication-success
     set resources resources - 1
+    ; set resources resources - publication-success * 0.2
     if resources < 1 [ set resources 1 ]
   ]
 end
+
+
+to update-proportional
+  ask turtles [
+    let publication-success median publication-history
+    set resources resources + publication-success
+
+    let publication-cost publication-success ^ 1.2
+
+    set resources resources - publication-cost
+    if resources < 0 [ set resources .1 ]
+
+    ; issue here: it seems that not those that had previous success are having further success
+    ; but that this is mainly random: success in some period, then not
+    ; reason: drag is too large, therefore everyone gets always reset to resources = 1
+  ]
+
+end
+
 
 to not-update
 end
@@ -253,14 +281,14 @@ n-publications distribution
 NIL
 NIL
 0.0
-10000.0
+2000.0
 0.0
 10.0
 true
 false
 "" ""
 PENS
-"default" 500.0 1 -16777216 true "" "histogram [n-publications] of institutions"
+"default" 80.0 1 -16777216 true "" "histogram [n-publications] of institutions"
 
 BUTTON
 38
@@ -297,12 +325,12 @@ HORIZONTAL
 CHOOSER
 32
 264
-183
+191
 309
 mechanism
 mechanism
-"update-with-drag" "update-sqrt" "update-log" "update-cumulative" "not-update"
-0
+"update-with-drag" "update-sqrt" "update-log" "update-cumulative" "update-proportional" "not-update"
+4
 
 SLIDER
 27
@@ -313,7 +341,7 @@ history-length
 history-length
 1
 10
-5.0
+9.0
 1
 1
 NIL
