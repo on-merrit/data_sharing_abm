@@ -1,38 +1,6 @@
-; if resources = chance to publish and a single value, this is complicated. We want to be able to represent
-; scientists that publish rarely and those that publish > 50 papers a year.
-
-; interesting resource that shows how to make things happen probabilistically: https://stackoverflow.com/a/69572371/3149349
-; would be needed if we assume a max publication of 1 per tick.
-
 ; ticks = 6 months
 ; default publishing rate: once every 6 months
 
-; we might need a base rate of funding. otherwise, if you get stuck with no third party funding,
-; there is no chance you get out and publish again.
-
-; current issue: resource values run away from us: not realistic to have yearly publications
-; go through the roof -> time to publish is not unlimited.
-; the approach to take the square root does not help, it curbs the upper dynamic too much,
-; the distribution is skewed in the wrong direction.
-
-; further issue? resources only ever get more. not sure whether this is an issue.
-; if we used probabililties: at some point everyone would publish every tick
-; maybe the added resources based on publication history should not be completely cumulative?
-; having a drag on resources could mimick what we see in real life: some people keep funding up
-; and continue to publish, while others stop publishing at some point (out of resources/funding).
-
-; the cost towards the resources should be proportional to the number of publications within
-; the round. This way this would be a cap on the number of publications one can have.
-; this function should be akin to stuff in business, with an exponential increase in cost
-; after some level
-
-; ideal: distribution of total publications should exhibit lotkas law, moving from lower
-; to higher levels of total publications over time
-
-; further links: https://stackoverflow.com/questions/28317479/how-to-create-a-random-pareto-in-netlogo?noredirect=1&lq=1
-; https://stackoverflow.com/questions/28212700/how-to-add-power-law-likelihood-to-netlogo-model
-; https://stackoverflow.com/questions/21792380/random-pareto-distribution-in-r-with-30-of-values-being-specified-amount
-; https://stats.stackexchange.com/questions/173242/random-sample-from-power-law-distribution
 
 breed [groups group]
 
@@ -128,6 +96,8 @@ to update-proportional
     ; but that this is mainly random: success in some period, then not
     ; reason: drag is too large, therefore everyone gets always reset to resources = 1
     ; idea: loss of resources also as a function of current resources: if very low resources, loss is not high.
+    ; problem: if we start at resources 1, but base rate is .1, then we transition to this, should start at the
+    ; sustainable/equilibrium part
   ]
 
 end
