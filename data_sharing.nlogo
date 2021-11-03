@@ -50,39 +50,10 @@ to publish
   ]
 end
 
-to update-cumulative
-  ask turtles [
-    let publication-success median publication-history
-    set resources resources + publication-success
-  ]
+
+to not-update
 end
 
-to update-sqrt
-  ask turtles [
-    let publication-success median publication-history
-    set resources resources + sqrt publication-success
-  ]
-end
-
-to update-log
-  ask turtles [
-    let publication-success median publication-history
-    if publication-success >= 1 [
-      set resources resources + log publication-success 10
-    ]
-
-  ]
-end
-
-to update-with-drag
-  ask turtles [
-    let publication-success mean publication-history
-    set resources resources + sqrt publication-success
-    set resources resources - 1
-    ; set resources resources - publication-success * 0.2
-    if resources < 1 [ set resources 1 ]
-  ]
-end
 
 
 to update-proportional
@@ -132,8 +103,6 @@ end
 
 
 
-to not-update
-end
 
 
 to-report mean-grants
@@ -329,8 +298,8 @@ CHOOSER
 309
 mechanism
 mechanism
-"update-with-drag" "update-sqrt" "update-log" "update-cumulative" "update-proportional" "not-update"
-5
+"update-proportional" "not-update"
+1
 
 SLIDER
 27
