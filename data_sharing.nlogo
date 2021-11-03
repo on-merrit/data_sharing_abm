@@ -85,10 +85,6 @@ to grant-history
       set total-grants total-grants + 1
     ]
 
-    ; ideas to improve the funding mechanism: take publiation success, but also
-    ; grant history and chance into account
-
-
     ; decay grant
     set grant-decay-rate n-grants / 6
     set n-grants n-grants - grant-decay-rate
