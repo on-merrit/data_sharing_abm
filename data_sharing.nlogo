@@ -34,7 +34,7 @@ end
 
 
 to go
-  if ticks = 2000 [stop] ; stop after 10 years (20)
+  if ticks = 200 [stop] ; stop after 10 years (20)
   publish
 
   run mechanism
@@ -73,27 +73,15 @@ end
 
 to update-grants
   ask turtles [
-    ;let new-grant? false
 
     ; fund projects 20% of the time
     if (random-float 1 > .8) [
       set n-grants n-grants + 1
-      ;set new-grant? true
     ]
-
-    ;if (new-grant?) [
-    ; set grant-decay-rate grant-decay-rate + 1 / 6 ; grants last 3 years. but the length could also be random
-    ;]
-
 
     ; decay grant
     set grant-decay-rate n-grants / 6
     set n-grants n-grants - grant-decay-rate
-
-
-    ; reset grant state
-    ;set new-grant? false
-
 
   ]
 end
@@ -281,7 +269,7 @@ n-groups
 n-groups
 0
 1000
-401.0
+516.0
 1
 1
 NIL
@@ -295,7 +283,7 @@ CHOOSER
 mechanism
 mechanism
 "not-update" "update-proportional" "update-grants"
-0
+2
 
 SLIDER
 27
@@ -335,18 +323,36 @@ PLOT
 127
 1159
 313
-resource distribution
+grant distribution
 NIL
 NIL
 0.0
-100.0
+10.0
 0.0
 10.0
 true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [resources] of groups"
+"default" 0.1 1 -16777216 true "" "histogram [n-grants] of groups"
+
+PLOT
+251
+314
+534
+545
+mean number of grants
+NIL
+NIL
+0.0
+5.0
+0.0
+5.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot mean-grants"
 
 @#$#@#$#@
 ## WHAT IS IT?
