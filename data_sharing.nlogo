@@ -7,6 +7,7 @@ breed [groups group]
 groups-own [
   resources
   n-grants
+  grant-decay-rate
   n-publications
   n-pubs-this-round
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
@@ -21,6 +22,7 @@ to setup
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set n-grants 0
+    set grant-decay-rate 0
     set n-publications 0
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
@@ -64,43 +66,37 @@ to update-proportional
     let publication-cost publication-success ^ 1.1
 
     set resources resources - publication-cost
-
-
-    if base-funding?  [ set resources resources + 1 ]
-
-    if prevent-zero-funding? [ if resources < 1 [ set resources 1 ] ]
-
-    ; issue with the exponent: as long as publication success = 1, it does not do anything
-
-
-
-    ; issue here: it seems that not those that had previous success are having further success
-    ; but that this is mainly random: success in some period, then not
-    ; reason: drag is too large, therefore everyone gets always reset to resources = 1
-    ; idea: loss of resources also as a function of current resources: if very low resources, loss is not high.
-    ; problem: if we start at resources 1, but base rate is .1, then we transition to this, should start at the
-    ; sustainable/equilibrium part
   ]
 
 end
 
 
-to update-complex
+to update-grants
   ask turtles [
+    ;let new-grant? false
 
-    if prevent-zero-funding? [ if resources < 1 [ set resources 1 ] ]
+    ; fund projects 20% of the time
+    if (random-float 1 > .8) [
+      set n-grants n-grants + 1
+      ;set new-grant? true
+    ]
+
+    ;if (new-grant?) [
+    ; set grant-decay-rate grant-decay-rate + 1 / 6 ; grants last 3 years. but the length could also be random
+    ;]
+
+
+    ; decay grant
+    set grant-decay-rate n-grants / 6
+    set n-grants n-grants - grant-decay-rate
+
+
+    ; reset grant state
+    ;set new-grant? false
+
 
   ]
 end
-
-to fund-projects
-  ask turtles [
-
-
-   ;if add-project?
-  ]
-end
-
 
 
 
@@ -298,8 +294,8 @@ CHOOSER
 309
 mechanism
 mechanism
-"update-proportional" "not-update"
-1
+"not-update" "update-proportional" "update-grants"
+0
 
 SLIDER
 27
@@ -351,28 +347,6 @@ false
 "" ""
 PENS
 "default" 1.0 1 -16777216 true "" "histogram [resources] of groups"
-
-SWITCH
-40
-384
-174
-417
-base-funding?
-base-funding?
-1
-1
--1000
-
-SWITCH
-39
-336
-219
-369
-prevent-zero-funding?
-prevent-zero-funding?
-0
-1
--1000
 
 @#$#@#$#@
 ## WHAT IS IT?
