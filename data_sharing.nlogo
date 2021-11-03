@@ -7,6 +7,7 @@ breed [groups group]
 groups-own [
   resources
   n-grants
+  total-grants
   grant-decay-rate
   n-publications
   n-pubs-this-round
@@ -22,6 +23,7 @@ to setup
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set n-grants 0
+    set total-grants 0
     set grant-decay-rate 0
     set n-publications 0
     set n-pubs-this-round 0
@@ -34,7 +36,7 @@ end
 
 
 to go
-  if ticks = 200 [stop] ; stop after 10 years (20)
+  if ticks = 2000 [stop] ; stop after 10 years (20)
   publish
 
   run mechanism
@@ -77,6 +79,7 @@ to grant-random
     ; fund projects 20% of the time
     if (random-float 1 > .8) [
       set n-grants n-grants + 1
+      set total-grants total-grants + 1
     ]
 
     ; decay grant
@@ -86,6 +89,25 @@ to grant-random
   ]
 end
 
+to grant-history
+  ask turtles [
+    let publication-success median publication-history
+
+    ; add grant if publishing above expected value based on grants
+    if (publication-success > (n-grants + resources)) [
+      set n-grants n-grants + 1
+      set total-grants total-grants + 1
+    ]
+
+    ; ideas to improve the funding mechanism: take publiation success, but also
+    ; grant history and chance into account
+
+
+    ; decay grant
+    set grant-decay-rate n-grants / 6
+    set n-grants n-grants - grant-decay-rate
+  ]
+end
 
 
 
@@ -282,7 +304,7 @@ CHOOSER
 309
 mechanism
 mechanism
-"not-update" "update-proportional" "grant-random"
+"not-update" "update-proportional" "grant-random" "grant-history"
 2
 
 SLIDER
@@ -294,7 +316,7 @@ history-length
 history-length
 1
 10
-7.0
+10.0
 1
 1
 NIL
@@ -334,13 +356,13 @@ true
 false
 "" ""
 PENS
-"default" 0.1 1 -16777216 true "" "histogram [n-grants] of groups"
+"default" 0.5 1 -16777216 true "" "histogram [n-grants] of groups"
 
 PLOT
-251
+1161
 314
-534
-545
+1458
+544
 mean number of grants
 NIL
 NIL
@@ -353,6 +375,24 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot mean-grants"
+
+PLOT
+1160
+128
+1458
+313
+total number of grants
+NIL
+NIL
+0.0
+100.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 10.0 1 -16777216 true "" "histogram [total-grants] of groups"
 
 @#$#@#$#@
 ## WHAT IS IT?
