@@ -59,20 +59,6 @@ to not-update
 end
 
 
-
-to update-proportional
-  ask turtles [
-    let publication-success median publication-history
-    set resources resources + publication-success
-
-    let publication-cost publication-success ^ 1.1
-
-    set resources resources - publication-cost
-  ]
-
-end
-
-
 to grant-random
   ask turtles [
 
