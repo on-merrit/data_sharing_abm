@@ -6,6 +6,7 @@ breed [groups group]
 
 groups-own [
   resources
+  n-grants
   n-publications
   n-pubs-this-round
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
@@ -19,6 +20,7 @@ to setup
   ask turtles [
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
+    set n-grants 0
     set n-publications 0
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
@@ -40,7 +42,8 @@ end
 
 to publish
   ask turtles [
-    set n-pubs-this-round random-poisson resources
+    let total-resources resources + n-grants
+    set n-pubs-this-round random-poisson total-resources
     set n-publications n-publications + n-pubs-this-round
 
     set publication-history fput n-pubs-this-round but-last publication-history
@@ -87,10 +90,18 @@ to update-proportional
     let publication-success median publication-history
     set resources resources + publication-success
 
-    let publication-cost publication-success ^ 1.2
+    let publication-cost publication-success ^ 1.1
 
     set resources resources - publication-cost
-    if resources < 0 [ set resources .1 ]
+
+
+    if base-funding?  [ set resources resources + 1 ]
+
+    if prevent-zero-funding? [ if resources < 1 [ set resources 1 ] ]
+
+    ; issue with the exponent: as long as publication success = 1, it does not do anything
+
+
 
     ; issue here: it seems that not those that had previous success are having further success
     ; but that this is mainly random: success in some period, then not
@@ -103,16 +114,34 @@ to update-proportional
 end
 
 
+to update-complex
+  ask turtles [
+
+    if prevent-zero-funding? [ if resources < 1 [ set resources 1 ] ]
+
+  ]
+end
+
+to fund-projects
+  ask turtles [
+
+
+   ;if add-project?
+  ]
+end
+
+
+
 to not-update
 end
 
 
-to-report mean-resources
-  report precision mean [resources] of groups 2
+to-report mean-grants
+  report precision mean [n-grants] of groups 2
 end
 
-to-report var-resources
-  report precision variance [resources] of groups 2
+to-report var-grants
+  report precision variance [n-grants] of groups 2
 end
 
 to-report mean-publications
@@ -198,7 +227,7 @@ MONITOR
 557
 55
 NIL
-mean-resources
+mean-grants
 17
 1
 11
@@ -209,7 +238,7 @@ MONITOR
 696
 57
 variance of resources
-var-resources
+var-grants
 17
 1
 11
@@ -259,7 +288,7 @@ true
 false
 "" ""
 PENS
-"default" 80.0 1 -16777216 true "" "histogram [n-publications] of groups"
+"default" 30.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
 38
@@ -287,7 +316,7 @@ n-groups
 n-groups
 0
 1000
-624.0
+401.0
 1
 1
 NIL
@@ -301,7 +330,7 @@ CHOOSER
 mechanism
 mechanism
 "update-with-drag" "update-sqrt" "update-log" "update-cumulative" "update-proportional" "not-update"
-4
+5
 
 SLIDER
 27
@@ -312,7 +341,7 @@ history-length
 history-length
 1
 10
-9.0
+7.0
 1
 1
 NIL
@@ -353,6 +382,28 @@ false
 "" ""
 PENS
 "default" 1.0 1 -16777216 true "" "histogram [resources] of groups"
+
+SWITCH
+40
+384
+174
+417
+base-funding?
+base-funding?
+1
+1
+-1000
+
+SWITCH
+39
+336
+219
+369
+prevent-zero-funding?
+prevent-zero-funding?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -700,6 +751,22 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="experiment" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count turtles</metric>
+    <enumeratedValueSet variable="history-length">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mechanism">
+      <value value="&quot;update-proportional&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="200"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
