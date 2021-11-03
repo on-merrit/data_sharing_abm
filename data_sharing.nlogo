@@ -71,7 +71,7 @@ to update-proportional
 end
 
 
-to update-grants
+to grant-random
   ask turtles [
 
     ; fund projects 20% of the time
@@ -282,7 +282,7 @@ CHOOSER
 309
 mechanism
 mechanism
-"not-update" "update-proportional" "update-grants"
+"not-update" "update-proportional" "grant-random"
 2
 
 SLIDER
