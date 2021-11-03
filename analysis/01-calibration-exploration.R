@@ -46,3 +46,23 @@ leiden_select %>%
   geom_point(aes(y = 1/uni_rank), colour = "red") +
   scale_y_log10() +
   scale_x_log10()
+
+
+# group sizes -----
+df_groups <- read_delim("group_sizes.txt", delim = " ", skip = 2, 
+                        col_names = c("id", "n_researchers", 
+                                      "n_publications"),
+                        col_types = "cii-")
+
+df_groups %>% 
+  ggplot(aes(n_publications)) +
+  geom_histogram(bins = 20)
+
+df_groups %>% 
+  ggplot(aes(n_publications)) +
+  geom_density()
+
+df_groups %>% 
+  ggplot(aes(n_researchers, n_publications)) +
+  geom_point() +
+  geom_smooth(method = "lm")
