@@ -249,7 +249,7 @@ true
 false
 "" ""
 PENS
-"default" 30.0 1 -16777216 true "" "histogram [n-publications] of groups"
+"default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
 38
@@ -277,7 +277,7 @@ n-groups
 n-groups
 0
 1000
-516.0
+146.0
 1
 1
 NIL
@@ -290,7 +290,7 @@ CHOOSER
 309
 mechanism
 mechanism
-"not-update" "update-proportional" "grant-random" "grant-history"
+"not-update" "grant-random" "grant-history"
 2
 
 SLIDER
@@ -301,8 +301,8 @@ SLIDER
 history-length
 history-length
 1
-10
-10.0
+20
+15.0
 1
 1
 NIL
