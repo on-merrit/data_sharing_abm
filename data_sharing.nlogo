@@ -3,6 +3,7 @@
 
 
 breed [groups group]
+breed [grants grant]
 
 groups-own [
   resources
@@ -12,6 +13,10 @@ groups-own [
   n-publications
   n-pubs-this-round
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
+]
+
+grants-own [
+  grant-month
 ]
 
 to setup
@@ -41,6 +46,7 @@ to go
 
   run mechanism
 
+  update-grants
   tick
 end
 
@@ -89,6 +95,39 @@ to grant-history
     set grant-decay-rate n-grants / 6
     set n-grants n-grants - grant-decay-rate
   ]
+end
+
+
+
+to grant-history-hatch
+  ask turtles [
+    let publication-success median publication-history
+
+    ; add grant if publishing above expected value based on grants
+    if (publication-success > (n-grants + resources)) [
+      add-grant
+    ]
+
+  ]
+end
+
+to add-grant
+      ; ask group 1 [hatch-grants 1 [create-link-with myself]]
+      ; would be good to show links etc. in the image, to observe what happens
+end
+
+
+
+to update-grants
+  ask grants [
+   set grant-month grant-month + 1
+   if (grant-month >= 6) [ die ]
+  ]
+end
+
+to-report n-grants-group
+  ;report count [ grants of myself ]
+
 end
 
 
@@ -238,7 +277,7 @@ n-publications distribution
 NIL
 NIL
 0.0
-2000.0
+3000.0
 0.0
 10.0
 true
@@ -273,7 +312,7 @@ n-groups
 n-groups
 0
 1000
-146.0
+6.0
 1
 1
 NIL
@@ -298,7 +337,7 @@ history-length
 history-length
 1
 20
-15.0
+5.0
 1
 1
 NIL
@@ -367,7 +406,7 @@ total number of grants
 NIL
 NIL
 0.0
-100.0
+200.0
 0.0
 10.0
 true
