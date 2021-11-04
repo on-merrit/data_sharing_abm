@@ -57,6 +57,7 @@ df_groups <- read_delim("group_sizes.txt", delim = " ", skip = 2,
 df_groups %>% 
   ggplot(aes(n_publications)) +
   geom_histogram(bins = 20)
+ggsave("plots/group_productivity.png")
 
 df_groups %>% 
   ggplot(aes(n_publications)) +
@@ -65,4 +66,10 @@ df_groups %>%
 df_groups %>% 
   ggplot(aes(n_researchers, n_publications)) +
   geom_point() +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm") +
+  annotate("text", x = 5, y = 450,
+           label = paste0(
+             "cor = ", round(cor(df_groups$n_publications, 
+                                 df_groups$n_researchers), 2)
+           ))
+ggsave("plots/size_vs_productivity.png")
