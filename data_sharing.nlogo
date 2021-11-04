@@ -15,7 +15,7 @@ groups-own [
 ]
 
 grants-own [
-  grant-month
+  grant-year
 ]
 
 to setup
@@ -28,8 +28,6 @@ to setup
   ask turtles [
     setxy random-xcor random-ycor
     set shape "person"
-
-    ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set total-grants 0
     set grant-decay-rate 0
@@ -109,8 +107,8 @@ end
 
 to update-grants
   ask grants [
-   set grant-month grant-month + 1
-   if (grant-month >= 6) [ die ]
+   set grant-year grant-year + .5
+   if (grant-year >= 3) [ die ]
   ]
 end
 
@@ -378,7 +376,7 @@ NIL
 0.0
 5.0
 0.0
-5.0
+2.0
 true
 false
 "" ""
