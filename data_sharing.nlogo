@@ -22,9 +22,14 @@ grants-own [
 to setup
   clear-all
 
+  ask patches [set pcolor white]
+
   create-groups n-groups
   let pub-history-length history-length * 2 ; so a history of "3" years becomes 6 ticks = 3 years
   ask turtles [
+    setxy random-xcor random-ycor
+    set shape "person"
+
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
     set n-grants 0
@@ -159,11 +164,11 @@ end
 GRAPHICS-WINDOW
 210
 10
-402
-203
+452
+253
 -1
 -1
-5.6
+7.1
 1
 10
 1
@@ -312,7 +317,7 @@ n-groups
 n-groups
 0
 1000
-6.0
+45.0
 1
 1
 NIL
