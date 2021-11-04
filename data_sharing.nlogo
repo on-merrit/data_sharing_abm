@@ -7,7 +7,6 @@ breed [grants grant]
 
 groups-own [
   resources
-  n-grants
   total-grants
   grant-decay-rate
   n-publications
@@ -32,7 +31,6 @@ to setup
 
     ; resources can be from 1 to Inf. With resources = 1, there is on average one publication every 6 months.
     set resources 1
-    set n-grants 0
     set total-grants 0
     set grant-decay-rate 0
     set n-publications 0
@@ -56,7 +54,7 @@ to go
 end
 
 to publish
-  ask turtles [
+  ask groups [
     let total-resources resources + n-grants
     set n-pubs-this-round random-poisson total-resources
     set n-publications n-publications + n-pubs-this-round
@@ -71,54 +69,40 @@ end
 
 
 to grant-random
-  ask turtles [
+  ask groups [
 
     ; fund projects 20% of the time
     if (random-float 1 > .8) [
-      set n-grants n-grants + 1
+      add-grant
       set total-grants total-grants + 1
     ]
-
-    ; decay grant
-    set grant-decay-rate n-grants / 6
-    set n-grants n-grants - grant-decay-rate
 
   ]
 end
 
 to grant-history
-  ask turtles [
-    let publication-success median publication-history
-
-    ; add grant if publishing above expected value based on grants
-    if (publication-success > (n-grants + resources)) [
-      set n-grants n-grants + 1
-      set total-grants total-grants + 1
-    ]
-
-    ; decay grant
-    set grant-decay-rate n-grants / 6
-    set n-grants n-grants - grant-decay-rate
-  ]
-end
-
-
-
-to grant-history-hatch
-  ask turtles [
+  ask groups [
     let publication-success median publication-history
 
     ; add grant if publishing above expected value based on grants
     if (publication-success > (n-grants + resources)) [
       add-grant
+      set total-grants total-grants + 1
     ]
-
   ]
 end
 
 to add-grant
       ; ask group 1 [hatch-grants 1 [create-link-with myself]]
       ; would be good to show links etc. in the image, to observe what happens
+  hatch-grants 1 [ create-link-with myself ]
+
+  ask grants-here [
+    set shape "star"
+    move-to one-of neighbors
+  ]
+
+  set total-grants total-grants + 1
 end
 
 
@@ -130,9 +114,8 @@ to update-grants
   ]
 end
 
-to-report n-grants-group
-  ;report count [ grants of myself ]
-
+to-report n-grants
+  report count link-neighbors with [breed = grants]
 end
 
 
@@ -162,13 +145,13 @@ to-report gini-coefficient
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-452
-253
+45
+131
+481
+568
 -1
 -1
-7.1
+12.97
 1
 10
 1
@@ -189,10 +172,10 @@ ticks
 30.0
 
 BUTTON
+331
+70
+394
 103
-135
-166
-168
 NIL
 go
 T
@@ -206,9 +189,9 @@ NIL
 1
 
 BUTTON
-72
+198
 69
-135
+261
 102
 NIL
 setup
@@ -292,10 +275,10 @@ PENS
 "default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
-38
-135
-101
-168
+266
+70
+329
+103
 step
 go
 NIL
@@ -317,32 +300,32 @@ n-groups
 n-groups
 0
 1000
-45.0
+535.0
 1
 1
 NIL
 HORIZONTAL
 
 CHOOSER
-32
-264
-191
-309
+27
+63
+186
+108
 mechanism
 mechanism
 "not-update" "grant-random" "grant-history"
 2
 
 SLIDER
-27
-213
 199
-246
+28
+371
+61
 history-length
 history-length
 1
 20
-5.0
+15.0
 1
 1
 NIL
@@ -382,7 +365,7 @@ true
 false
 "" ""
 PENS
-"default" 0.5 1 -16777216 true "" "histogram [n-grants] of groups"
+"default" 1.0 1 -16777216 true "" "histogram [n-grants] of groups"
 
 PLOT
 1161
