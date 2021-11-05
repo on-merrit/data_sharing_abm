@@ -71,7 +71,6 @@ to grant-random
     ; fund projects 20% of the time
     if (random-float 1 > .8) [
       add-grant
-      set total-grants total-grants + 1
     ]
 
   ]
@@ -84,7 +83,6 @@ to grant-history
     ; add grant if publishing above expected value based on grants
     if (publication-success > (n-grants + resources)) [
       add-grant
-      set total-grants total-grants + 1
     ]
   ]
 end
@@ -309,7 +307,7 @@ CHOOSER
 mechanism
 mechanism
 "not-update" "grant-random" "grant-history"
-2
+1
 
 SLIDER
 199
