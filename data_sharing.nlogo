@@ -30,7 +30,6 @@ to setup
     set shape "person"
     set resources 1
     set total-grants 0
-    set grant-decay-rate 0
     set n-publications 0
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
@@ -43,11 +42,11 @@ end
 
 to go
   if ticks = 2000 [stop] ; stop after 10 years (20)
+
   publish
-
   run mechanism
-
   update-grants
+
   tick
 end
 
@@ -91,8 +90,6 @@ to grant-history
 end
 
 to add-grant
-      ; ask group 1 [hatch-grants 1 [create-link-with myself]]
-      ; would be good to show links etc. in the image, to observe what happens
   hatch-grants 1 [ create-link-with myself ]
 
   ask grants-here [
@@ -112,11 +109,11 @@ to update-grants
   ]
 end
 
+
+
 to-report n-grants
   report count link-neighbors with [breed = grants]
 end
-
-
 
 to-report mean-grants
   report precision mean [n-grants] of groups 2
@@ -298,7 +295,7 @@ n-groups
 n-groups
 0
 1000
-535.0
+325.0
 1
 1
 NIL
@@ -323,7 +320,7 @@ history-length
 history-length
 1
 20
-15.0
+18.0
 1
 1
 NIL
