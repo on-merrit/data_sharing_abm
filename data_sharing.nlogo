@@ -239,11 +239,11 @@ NIL
 1
 
 MONITOR
-608
-10
-733
-55
-mean-publications
+603
+13
+728
+58
+mean-grants
 mean-grants groups
 17
 1
@@ -288,7 +288,7 @@ true
 "" ""
 PENS
 "data sharers" 1.0 0 -5298144 true "" "plot mean-publications groups with [data-sharing-policy?]"
-"others" 1.0 0 -7500403 true "" "plot mean-publications groups with [data-sharing-policy? = false]"
+"others" 1.0 0 -7500403 true "" "plot mean-publications groups with [not data-sharing-policy?]"
 
 PLOT
 832
@@ -334,7 +334,7 @@ n-groups
 n-groups
 0
 1000
-217.0
+100.0
 1
 1
 NIL
@@ -348,7 +348,7 @@ CHOOSER
 mechanism
 mechanism
 "not-update" "grant-random" "grant-history"
-2
+1
 
 SLIDER
 199
@@ -418,7 +418,7 @@ true
 "" ""
 PENS
 "data-sharers" 1.0 0 -5298144 true "" "plot mean-grants groups with [data-sharing-policy?]"
-"others" 1.0 0 -7500403 true "" "plot mean-grants groups with [data-sharing-policy? = false]"
+"others" 1.0 0 -7500403 true "" "plot mean-grants groups with [not data-sharing-policy?]"
 
 PLOT
 1160
@@ -445,7 +445,7 @@ SWITCH
 104
 share-data?
 share-data?
-0
+1
 1
 -1000
 
@@ -796,18 +796,26 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="experiment" repetitions="1" runMetricsEveryStep="true">
+  <experiment name="experiment" repetitions="10" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <metric>count turtles</metric>
+    <metric>mean-grants groups with [data-sharing-policy?]</metric>
+    <metric>mean-grants groups with [not data-sharing-policy?]</metric>
+    <metric>mean-publications groups with [data-sharing-policy?]</metric>
+    <metric>mean-publications groups with [not data-sharing-policy?]</metric>
     <enumeratedValueSet variable="history-length">
-      <value value="4"/>
+      <value value="18"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mechanism">
-      <value value="&quot;update-proportional&quot;"/>
+      <value value="&quot;grant-history&quot;"/>
+      <value value="&quot;grant-random&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="n-groups">
-      <value value="200"/>
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+      <value value="false"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
