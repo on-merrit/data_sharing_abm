@@ -4,11 +4,15 @@
 
 breed [groups group]
 breed [grants grant]
+breed [datasets dataset]
 
 groups-own [
   resources
   total-grants
+  total-resources
   grant-decay-rate
+  data-sharing-policy?
+  total-datasets
   n-publications
   n-pubs-this-round
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
@@ -16,6 +20,10 @@ groups-own [
 
 grants-own [
   grant-year
+]
+
+datasets-own [
+  dataset-year
 ]
 
 to setup
@@ -30,6 +38,9 @@ to setup
     set shape "person"
     set resources 1
     set total-grants 0
+    ; set data-sharing policy for now
+    ifelse random-float 1 > .8 [ set data-sharing-policy? True ] [ set data-sharing-policy? False]
+    set total-datasets 0
     set n-publications 0
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
@@ -44,19 +55,40 @@ to go
   if ticks = 2000 [stop] ; stop after 10 years (20)
 
   publish
+  if share-data? [share-data]
   run mechanism
-  update-grants
+  update-indices
 
   tick
 end
 
 to publish
   ask groups [
-    let total-resources resources + n-grants
+    ifelse share-data? [
+      ifelse data-sharing-policy?
+      [ let rdm-drag .05 + .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
+        set total-resources resources + n-grants - rdm-drag ]
+      [ set total-resources resources + n-grants ]
+    ] [
+      set total-resources resources + n-grants
+    ]
     set n-pubs-this-round random-poisson total-resources
     set n-publications n-publications + n-pubs-this-round
 
     set publication-history fput n-pubs-this-round but-last publication-history
+  ]
+end
+
+to share-data
+  ask groups with [data-sharing-policy?] [
+   hatch-datasets n-pubs-this-round [ create-link-with myself ]
+
+  ask datasets-here [
+    set shape "box"
+    move-to one-of neighbors
+  ]
+
+  set total-datasets total-datasets + 1
   ]
 end
 
@@ -100,11 +132,17 @@ end
 
 
 
-to update-grants
+to update-indices
   ask grants [
    set grant-year grant-year + .5
    if (grant-year >= 3) [ die ]
   ]
+
+  ask datasets [
+   set dataset-year dataset-year + .5
+   if (dataset-year >= 10) [ die ] ; let datasets vanish after 10 years. could be changed later
+  ]
+
 end
 
 
@@ -113,17 +151,19 @@ to-report n-grants
   report count link-neighbors with [breed = grants]
 end
 
-to-report mean-grants
-  report precision mean [n-grants] of groups 2
+to-report mean-grants  [ agentset ]
+  report precision mean [n-grants] of agentset 2
 end
 
 to-report var-grants
   report precision variance [n-grants] of groups 2
 end
 
-to-report mean-publications
-  report precision mean [n-publications] of groups 2
+to-report mean-publications  [ agentset ]
+  report precision mean [n-publications] of agentset 2
 end
+
+
 
 
 
@@ -165,10 +205,10 @@ ticks
 30.0
 
 BUTTON
-331
-70
-394
-103
+516
+62
+579
+95
 NIL
 go
 T
@@ -182,10 +222,10 @@ NIL
 1
 
 BUTTON
-198
-69
-261
-102
+383
+61
+446
+94
 NIL
 setup
 NIL
@@ -199,20 +239,20 @@ NIL
 1
 
 MONITOR
-455
+608
 10
-557
+733
 55
-NIL
-mean-grants
+mean-publications
+mean-grants groups
 17
 1
 11
 
 MONITOR
-578
+731
 12
-696
+849
 57
 variance of resources
 var-grants
@@ -221,12 +261,12 @@ var-grants
 11
 
 MONITOR
-454
+607
 64
-554
+719
 109
-NIL
 mean-publications
+mean-publications groups
 17
 1
 11
@@ -236,7 +276,7 @@ PLOT
 314
 831
 547
-log mean-publications
+mean-publications
 NIL
 NIL
 0.0
@@ -244,10 +284,11 @@ NIL
 0.0
 10.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot log mean-publications 10"
+"data sharers" 1.0 0 -5298144 true "" "plot mean-publications groups with [data-sharing-policy?]"
+"others" 1.0 0 -7500403 true "" "plot mean-publications groups with [data-sharing-policy? = false]"
 
 PLOT
 832
@@ -268,10 +309,10 @@ PENS
 "default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
-266
-70
-329
-103
+451
+62
+514
+95
 step
 go
 NIL
@@ -293,7 +334,7 @@ n-groups
 n-groups
 0
 1000
-325.0
+217.0
 1
 1
 NIL
@@ -307,7 +348,7 @@ CHOOSER
 mechanism
 mechanism
 "not-update" "grant-random" "grant-history"
-1
+2
 
 SLIDER
 199
@@ -363,20 +404,21 @@ PENS
 PLOT
 1161
 314
-1458
-544
+1461
+550
 mean number of grants
 NIL
 NIL
 0.0
 5.0
 0.0
-2.0
+0.2
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean-grants"
+"data-sharers" 1.0 0 -5298144 true "" "plot mean-grants groups with [data-sharing-policy?]"
+"others" 1.0 0 -7500403 true "" "plot mean-grants groups with [data-sharing-policy? = false]"
 
 PLOT
 1160
@@ -395,6 +437,17 @@ false
 "" ""
 PENS
 "default" 10.0 1 -16777216 true "" "histogram [total-grants] of groups"
+
+SWITCH
+191
+71
+314
+104
+share-data?
+share-data?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
