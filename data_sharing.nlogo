@@ -1,7 +1,6 @@
 ; ticks = 6 months
 ; default publishing rate: once every 6 months
 
-
 breed [groups group]
 breed [grants grant]
 breed [datasets dataset]
@@ -170,6 +169,36 @@ to update-indices
 
 end
 
+; maybe these reporters could be improved by passing the "n-grants" or "n-publications" to the same procedure
+to-report grants-gini
+  ; adapted from the peer reviewer game, bianchi et al
+  let list1 [who] of groups
+  let list2 [who] of groups
+  let s 0
+  foreach list1 [ ?1 ->
+    let temp [n-grants] of group ?1
+    foreach list2 [ ??1 ->
+      set s s + abs(temp - [n-grants] of group ??1)
+    ]
+  ]
+  let gini-index s / (2 * (mean [n-grants] of groups) * (count groups) ^ 2)
+  report gini-index
+end
+
+
+to-report publications-gini
+  let list1 [who] of groups
+  let list2 [who] of groups
+  let s 0
+  foreach list1 [ ?1 ->
+    let temp [n-publications] of group ?1
+    foreach list2 [ ??1 ->
+      set s s + abs(temp - [n-publications] of group ??1)
+    ]
+  ]
+  let gini-index s / (2 * (mean [n-publications] of groups) * (count groups) ^ 2)
+  report gini-index
+end
 
 
 to-report n-grants
@@ -186,20 +215,6 @@ end
 
 to-report mean-publications  [ agentset ]
   report precision mean [n-publications] of agentset 2
-end
-
-
-
-
-
-to-report gini-coefficient
-  ; report the level of inequality in resources
-  ; see https://ccl.northwestern.edu/netlogo/models/WealthDistribution
-
-  ; also: see the bianchi et al model
-
-  ; maybe show gini of publication distribution, as well as of resource distribution
-
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -359,7 +374,7 @@ n-groups
 n-groups
 20
 1000
-250.0
+507.0
 1
 1
 NIL
@@ -470,7 +485,7 @@ SWITCH
 100
 share-data?
 share-data?
-0
+1
 1
 -1000
 
@@ -483,7 +498,7 @@ n-available-grants
 n-available-grants
 1
 100
-15.0
+30.0
 1
 1
 NIL
@@ -503,6 +518,25 @@ importance-of-chance
 1
 NIL
 HORIZONTAL
+
+PLOT
+1461
+313
+1777
+548
+Gini coefficients
+NIL
+NIL
+0.0
+10.0
+0.0
+1.0
+true
+true
+"" ""
+PENS
+"grants" 1.0 0 -14070903 true "" "plot grants-gini"
+"publications" 1.0 0 -5298144 true "" "plot publications-gini"
 
 @#$#@#$#@
 ## WHAT IS IT?
