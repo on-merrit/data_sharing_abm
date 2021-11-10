@@ -10,12 +10,14 @@ groups-own [
   resources
   total-grants
   total-resources
+  chance
   proposal-strength
   grant-decay-rate
   data-sharing-policy?
   total-datasets
   n-publications
   n-pubs-this-round
+  publication-success
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
 ]
 
@@ -99,13 +101,14 @@ end
 
 to setup-grants
   create-grants n-available-grants
-  ask grants [
+  ; set up our new grants
+  ask grants with [count link-neighbors = 0] [
     set shape "star"
     setxy random-xcor random-ycor
   ]
 end
 
-to allocate-grants
+to award-grant
   create-link-with one-of grants with [count link-neighbors = 0]
   let group-neighbor one-of neighbors
   ask link-neighbors with [breed = grants] [move-to group-neighbor]
@@ -114,44 +117,45 @@ to allocate-grants
   set total-grants total-grants + 1
 end
 
+to allocate-grants
+  ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
+  let rank-list sort-on [(- proposal-strength)] groups ; need to invert proposal-strength, so that higher values are on top of the list
+  let top-groups sublist rank-list 0 n-available-grants
+
+  foreach top-groups [ x -> ask x [ award-grant ] ]
+end
+
 to not-update
 end
 
 
 to grant-random
   ask groups [
-    set proposal-strength random-float 1
+    set chance random-float 1
+    set proposal-strength chance
   ]
+  allocate-grants
 
-  ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
-  let rank-list sort-on [proposal-strength] groups
-  let top-groups sublist rank-list 0 20 ; take the first 20
-
-  foreach top-groups [ x -> ask x [ allocate-grants ] ]
 end
 
 to grant-history
   ask groups [
-    let publication-success median publication-history
-
-    ; add grant if publishing above expected value based on grants
-    if (publication-success > (n-grants + resources)) [
-      add-grant
-    ]
-  ]
-end
-
-to add-grant
-  hatch-grants 1 [ create-link-with myself ]
-
-  ask grants-here [
-    set shape "star"
-    move-to one-of neighbors
+    set chance random-float 1
+    set publication-success median publication-history
   ]
 
-  set total-grants total-grants + 1
-end
+  let max-pub-success max [publication-success] of groups
+  ; ensure we do not divide by zero
+  if max-pub-success = 0 [ set max-pub-success 1 ]
 
+  ask groups [
+    set publication-success publication-success / max-pub-success ; standardise publication success
+    set proposal-strength chance * importance-of-chance + (1 - importance-of-chance) * publication-success
+  ]
+
+  allocate-grants
+
+end
 
 
 to update-indices
@@ -227,10 +231,10 @@ ticks
 30.0
 
 BUTTON
-516
-62
-579
-95
+707
+28
+770
+61
 NIL
 go
 T
@@ -244,10 +248,10 @@ NIL
 1
 
 BUTTON
-383
-61
-446
-94
+574
+27
+637
+60
 NIL
 setup
 NIL
@@ -261,10 +265,10 @@ NIL
 1
 
 MONITOR
-603
-13
-728
-58
+825
+12
+950
+57
 mean-grants
 mean-grants groups
 17
@@ -272,10 +276,10 @@ mean-grants groups
 11
 
 MONITOR
-731
-12
-849
-57
+953
+11
+1071
+56
 variance of resources
 var-grants
 17
@@ -283,10 +287,10 @@ var-grants
 11
 
 MONITOR
-607
-64
-719
-109
+829
+63
+941
+108
 mean-publications
 mean-publications groups
 17
@@ -331,10 +335,10 @@ PENS
 "default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
-451
-62
-514
-95
+642
+28
+705
+61
 step
 go
 NIL
@@ -356,7 +360,7 @@ n-groups
 n-groups
 20
 1000
-89.0
+157.0
 1
 1
 NIL
@@ -370,7 +374,7 @@ CHOOSER
 mechanism
 mechanism
 "not-update" "grant-random" "grant-history"
-1
+2
 
 SLIDER
 372
@@ -381,7 +385,7 @@ history-length
 history-length
 1
 20
-18.0
+8.0
 1
 1
 NIL
@@ -461,10 +465,10 @@ PENS
 "default" 10.0 1 -16777216 true "" "histogram [total-grants] of groups"
 
 SWITCH
-191
-71
-314
-104
+400
+67
+523
+100
 share-data?
 share-data?
 1
@@ -480,8 +484,23 @@ n-available-grants
 n-available-grants
 1
 100
-20.0
+9.0
 1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+204
+75
+376
+108
+importance-of-chance
+importance-of-chance
+0
+1
+0.4
+.1
 1
 NIL
 HORIZONTAL
