@@ -55,7 +55,7 @@ end
 
 
 to go
-  if ticks = 2000 [stop] ; stop after 10 years (20)
+  if ticks = 500 [stop] ; stop after 250 years (500)
 
   publish
   if share-data? [share-data]
@@ -487,7 +487,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.4
+0.0
 .1
 1
 NIL
@@ -893,9 +893,6 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="n-available-grants">
       <value value="6"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="mechanism">
-      <value value="&quot;grant-history&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="n-groups">
       <value value="100"/>
