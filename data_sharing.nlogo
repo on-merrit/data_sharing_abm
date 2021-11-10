@@ -360,7 +360,7 @@ n-groups
 n-groups
 20
 1000
-157.0
+500.0
 1
 1
 NIL
@@ -385,7 +385,7 @@ history-length
 history-length
 1
 20
-8.0
+3.0
 1
 1
 NIL
@@ -484,7 +484,7 @@ n-available-grants
 n-available-grants
 1
 100
-9.0
+30.0
 1
 1
 NIL
