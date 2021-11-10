@@ -171,7 +171,7 @@ end
 
 ; maybe these reporters could be improved by passing the "n-grants" or "n-publications" to the same procedure
 to-report grants-gini
-  ; adapted from the peer reviewer game, bianchi et al
+  ; adapted from the peer reviewer game, bianchi et al. DOI: 10.1007/s11192-018-2825-4 (https://www.comses.net/codebases/6b77a08b-7e60-4f47-9ebb-6a8a2e87f486/releases/1.0.0/)
   let list1 [who] of groups
   let list2 [who] of groups
   let s 0
@@ -374,7 +374,7 @@ n-groups
 n-groups
 20
 1000
-507.0
+100.0
 1
 1
 NIL
@@ -498,7 +498,7 @@ n-available-grants
 n-available-grants
 1
 100
-30.0
+6.0
 1
 1
 NIL
@@ -907,22 +907,24 @@ NetLogo 6.2.0
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="baseline" repetitions="10" runMetricsEveryStep="true">
+  <experiment name="baseline" repetitions="5" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
     <metric>mean-publications groups</metric>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
     <enumeratedValueSet variable="history-length">
       <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="n-available-grants">
-      <value value="30"/>
+      <value value="6"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mechanism">
       <value value="&quot;grant-history&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="n-groups">
-      <value value="500"/>
+      <value value="100"/>
     </enumeratedValueSet>
     <steppedValueSet variable="importance-of-chance" first="0" step="0.2" last="1"/>
     <enumeratedValueSet variable="share-data?">
