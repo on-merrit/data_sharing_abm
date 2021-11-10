@@ -66,6 +66,8 @@ to publish
   ask groups [
     ifelse share-data? [
       ifelse data-sharing-policy?
+      ; the below implementation is inconsistent: .05 get reduced no matter what (in the first round too), but further
+      ; deductions are only made based on previous rounds of publications
       [ let rdm-drag .05 + .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
         set total-resources resources + n-grants - rdm-drag ]
       [ set total-resources resources + n-grants ]
