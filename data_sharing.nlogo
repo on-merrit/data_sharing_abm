@@ -71,9 +71,7 @@ to publish
   ask groups [
     ifelse share-data? [
       ifelse data-sharing-policy?
-      ; the below implementation is inconsistent: .05 get reduced no matter what (in the first round too), but further
-      ; deductions are only made based on previous rounds of publications
-      [ let rdm-drag .05 + .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
+      [ let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
         set total-resources resources + n-grants - rdm-drag ]
       [ set total-resources resources + n-grants ]
     ] [
@@ -499,7 +497,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.4
+0.0
 .1
 1
 NIL
@@ -871,6 +869,28 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
       <value value="true"/>
+      <value value="false"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="baseline" repetitions="10" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>mean-grants groups</metric>
+    <metric>mean-publications groups</metric>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-available-grants">
+      <value value="30"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mechanism">
+      <value value="&quot;grant-history&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="500"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="importance-of-chance" first="0" step="0.2" last="1"/>
+    <enumeratedValueSet variable="share-data?">
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
