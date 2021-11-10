@@ -60,7 +60,7 @@ to go
   publish
   if share-data? [share-data]
   setup-grants
-  run mechanism
+  allocate-grants
   update-indices
 
   tick
@@ -115,28 +115,8 @@ to award-grant
   set total-grants total-grants + 1
 end
 
+
 to allocate-grants
-  ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
-  let rank-list sort-on [(- proposal-strength)] groups ; need to invert proposal-strength, so that higher values are on top of the list
-  let top-groups sublist rank-list 0 n-available-grants
-
-  foreach top-groups [ x -> ask x [ award-grant ] ]
-end
-
-to not-update
-end
-
-
-to grant-random
-  ask groups [
-    set chance random-float 1
-    set proposal-strength chance
-  ]
-  allocate-grants
-
-end
-
-to grant-history
   ask groups [
     set chance random-float 1
     set publication-success median publication-history
@@ -151,7 +131,11 @@ to grant-history
     set proposal-strength chance * importance-of-chance + (1 - importance-of-chance) * publication-success
   ]
 
-  allocate-grants
+  ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
+  let rank-list sort-on [(- proposal-strength)] groups ; need to invert proposal-strength, so that higher values are on top of the list
+  let top-groups sublist rank-list 0 n-available-grants
+
+  foreach top-groups [ x -> ask x [ award-grant ] ]
 
 end
 
@@ -245,10 +229,10 @@ ticks
 30.0
 
 BUTTON
-707
-28
-770
-61
+640
+47
+703
+80
 NIL
 go
 T
@@ -262,10 +246,10 @@ NIL
 1
 
 BUTTON
-574
-27
-637
-60
+507
+46
+570
+79
 NIL
 setup
 NIL
@@ -349,10 +333,10 @@ PENS
 "default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
-642
-28
-705
-61
+575
+47
+638
+80
 step
 go
 NIL
@@ -380,21 +364,11 @@ n-groups
 NIL
 HORIZONTAL
 
-CHOOSER
-27
-63
-186
-108
-mechanism
-mechanism
-"not-update" "grant-random" "grant-history"
-2
-
 SLIDER
-372
-24
-544
-57
+196
+26
+368
+59
 history-length
 history-length
 1
@@ -479,10 +453,10 @@ PENS
 "default" 10.0 1 -16777216 true "" "histogram [total-grants] of groups"
 
 SWITCH
-400
-67
-523
-100
+369
+25
+492
+58
 share-data?
 share-data?
 1
@@ -490,10 +464,10 @@ share-data?
 -1000
 
 SLIDER
-197
-27
-369
-60
+23
+61
+195
+94
 n-available-grants
 n-available-grants
 1
@@ -505,10 +479,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-204
-75
-376
-108
+197
+62
+369
+95
 importance-of-chance
 importance-of-chance
 0
