@@ -110,6 +110,8 @@ to allocate-grants
   let group-neighbor one-of neighbors
   ask link-neighbors with [breed = grants] [move-to group-neighbor]
   ; the above is not ideal, since every grant is moved to the same patch. but not too important now
+
+  set total-grants total-grants + 1
 end
 
 to not-update
