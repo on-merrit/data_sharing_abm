@@ -101,6 +101,7 @@ to setup-grants
   create-grants n-available-grants
   ; set up our new grants
   ask grants with [count link-neighbors = 0] [
+    set grant-year -0.5 ; need to set grant year to negative, so the grant stays alive and has an effect for 6 rounds
     set shape "star"
     setxy random-xcor random-ycor
   ]
@@ -358,7 +359,7 @@ n-groups
 n-groups
 20
 1000
-500.0
+250.0
 1
 1
 NIL
@@ -469,7 +470,7 @@ SWITCH
 100
 share-data?
 share-data?
-1
+0
 1
 -1000
 
@@ -482,7 +483,7 @@ n-available-grants
 n-available-grants
 1
 100
-30.0
+15.0
 1
 1
 NIL
@@ -497,7 +498,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.0
+0.4
 .1
 1
 NIL
