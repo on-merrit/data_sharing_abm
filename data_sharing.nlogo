@@ -10,6 +10,7 @@ groups-own [
   resources
   total-grants
   total-resources
+  proposal-strength
   grant-decay-rate
   data-sharing-policy?
   total-datasets
@@ -37,6 +38,7 @@ to setup
     setxy random-xcor random-ycor
     set shape "person"
     set resources 1
+    set proposal-strength 0
     set total-grants 0
     ; set data-sharing policy for now
     ifelse random-float 1 > .8 [ set data-sharing-policy? True ] [ set data-sharing-policy? False]
@@ -56,6 +58,7 @@ to go
 
   publish
   if share-data? [share-data]
+  setup-grants
   run mechanism
   update-indices
 
@@ -94,6 +97,20 @@ to share-data
   ]
 end
 
+to setup-grants
+  create-grants n-available-grants
+  ask grants [
+    set shape "star"
+    setxy random-xcor random-ycor
+  ]
+end
+
+to allocate-grants
+  create-link-with one-of grants with [count link-neighbors = 0]
+  let group-neighbor one-of neighbors
+  ask link-neighbors with [breed = grants] [move-to group-neighbor]
+  ; the above is not ideal, since every grant is moved to the same patch. but not too important now
+end
 
 to not-update
 end
@@ -101,13 +118,14 @@ end
 
 to grant-random
   ask groups [
-
-    ; fund projects 20% of the time
-    if (random-float 1 > .8) [
-      add-grant
-    ]
-
+    set proposal-strength random-float 1
   ]
+
+  ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
+  let rank-list sort-on [proposal-strength] groups
+  let top-groups sublist rank-list 0 20 ; take the first 20
+
+  foreach top-groups [ x -> ask x [ allocate-grants ] ]
 end
 
 to grant-history
@@ -334,9 +352,9 @@ SLIDER
 60
 n-groups
 n-groups
-0
+20
 1000
-100.0
+89.0
 1
 1
 NIL
@@ -353,10 +371,10 @@ mechanism
 1
 
 SLIDER
-199
-28
-371
-61
+372
+24
+544
+57
 history-length
 history-length
 1
@@ -450,6 +468,21 @@ share-data?
 1
 1
 -1000
+
+SLIDER
+197
+27
+369
+60
+n-available-grants
+n-available-grants
+1
+100
+20.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
