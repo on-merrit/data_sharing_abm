@@ -56,7 +56,7 @@ end
 
 to go
   if ticks = 500 [stop] ; stop after 250 years (500)
-
+  if not share-data? and reuse-data? [error "Data sharing has to be enabled to model data-reuse. Please set `share-data?` to `On`"]
   publish
   if share-data? [share-data]
   setup-grants
@@ -67,21 +67,52 @@ to go
 end
 
 to publish
-  ask groups [
-    ifelse share-data? [
-      ifelse data-sharing-policy?
-      [ let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
-        set total-resources resources + n-grants - rdm-drag ]
-      [ set total-resources resources + n-grants ]
-    ] [
-      set total-resources resources + n-grants
-    ]
-    set n-pubs-this-round random-poisson total-resources
-    set n-publications n-publications + n-pubs-this-round
+  ifelse not reuse-data? [
+    ask groups [
+      ifelse share-data? [
+        ifelse data-sharing-policy?
+        [ let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
+          set total-resources resources + n-grants - rdm-drag ]
+        [ set total-resources resources + n-grants ]
+      ] [
+        set total-resources resources + n-grants
+      ]
+      set n-pubs-this-round random-poisson total-resources
+      set n-publications n-publications + n-pubs-this-round
 
-    set publication-history fput n-pubs-this-round but-last publication-history
+      set publication-history fput n-pubs-this-round but-last publication-history
+    ]
+
+  ] [
+    ask groups [
+      ifelse data-sharing-policy?
+        [ let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
+          set total-resources resources + n-grants - rdm-drag ]
+        [ set total-resources resources + n-grants ]
+
+
+      ; choose some groups to re-use data
+      let reusers n-of (.2 * n-groups) groups
+
+      ask reusers [
+        ; reduce resources by some factor (1, or more)
+        ; use the remaining resources to produce normal publications
+        ; use the additional resources to consume a dataset, to produce a publication
+        ; recalculate total publications based on the sum of both
+      ]
+
+      set n-pubs-this-round random-poisson total-resources
+      set n-publications n-publications + n-pubs-this-round
+
+      set publication-history fput n-pubs-this-round but-last publication-history
+    ]
+
   ]
+
 end
+
+
+
 
 to share-data
   ask groups with [data-sharing-policy?] [
@@ -138,7 +169,6 @@ to allocate-grants
   foreach top-groups [ x -> ask x [ award-grant ] ]
 
 end
-
 
 to update-indices
   ask grants [
@@ -459,7 +489,7 @@ SWITCH
 58
 share-data?
 share-data?
-1
+0
 1
 -1000
 
@@ -511,6 +541,17 @@ true
 PENS
 "grants" 1.0 0 -14070903 true "" "plot grants-gini"
 "publications" 1.0 0 -5298144 true "" "plot publications-gini"
+
+SWITCH
+371
+62
+494
+95
+reuse-data?
+reuse-data?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
