@@ -15,8 +15,8 @@ groups-own [
   data-sharing-policy?
   total-datasets
   n-publications
-  default-publications
-  total-default-publications
+  primary-publications
+  total-primary-publications
   data-publications
   total-data-publications
   n-pubs-this-round
@@ -107,17 +107,17 @@ to publish
           set total-resources total-resources - 1
         ]
         ; use the remaining resources to produce normal publications
-        set default-publications random-poisson total-resources
+        set primary-publications random-poisson total-resources
         ; use the additional resources to consume a dataset, to produce a publication
         set data-publications random-poisson resources-for-data-paper
         ask n-of 1 datasets [ die ] ; let one random dataset die
 
         ; recalculate total publications based on the sum of both
-        set n-pubs-this-round default-publications + data-publications
+        set n-pubs-this-round primary-publications + data-publications
 
         ; update indices
         set n-publications n-publications + n-pubs-this-round
-        set total-default-publications total-default-publications + default-publications
+        set total-primary-publications total-primary-publications + primary-publications
         set total-data-publications total-data-publications + data-publications
         set publication-history fput n-pubs-this-round but-last publication-history
       ]
@@ -142,7 +142,7 @@ end
 
 to default-publishing
   set n-pubs-this-round random-poisson total-resources
-  set default-publications n-pubs-this-round
+  set primary-publications n-pubs-this-round
   set n-publications n-publications + n-pubs-this-round
 
   set publication-history fput n-pubs-this-round but-last publication-history
@@ -267,8 +267,8 @@ to-report mean-publications  [ agentset ]
   report precision mean [n-publications] of agentset 2
 end
 
-to-report mean-default-publications [ agentset ]
-  report precision mean [total-default-publications] of agentset 2
+to-report mean-primary-publications [ agentset ]
+  report precision mean [total-primary-publications] of agentset 2
 end
 
 to-report mean-data-publications [ agentset ]
@@ -546,7 +546,7 @@ n-available-grants
 n-available-grants
 1
 100
-6.0
+8.0
 1
 1
 NIL
@@ -602,7 +602,7 @@ PLOT
 547
 830
 751
-data vs default publications
+data vs primary publications
 NIL
 NIL
 0.0
@@ -613,7 +613,7 @@ true
 true
 "" ""
 PENS
-"default" 1.0 0 -9276814 true "" "plot mean-default-publications groups "
+"primary" 1.0 0 -9276814 true "" "plot mean-primary-publications groups "
 "data" 1.0 0 -5298144 true "" "plot mean-data-publications groups "
 
 PLOT
@@ -1022,6 +1022,33 @@ NetLogo 6.2.0
     <steppedValueSet variable="importance-of-chance" first="0" step="0.2" last="1"/>
     <enumeratedValueSet variable="share-data?">
       <value value="false"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="data-reuse" repetitions="5" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>mean-grants groups</metric>
+    <metric>mean-publications groups</metric>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
+    <metric>count datasets</metric>
+    <metric>mean-default-publications groups</metric>
+    <metric>mean-data-publications groups</metric>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="n-available-grants" first="1" step="10" last="51"/>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
