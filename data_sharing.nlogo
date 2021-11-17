@@ -16,7 +16,9 @@ groups-own [
   total-datasets
   n-publications
   default-publications
+  total-default-publications
   data-publications
+  total-data-publications
   n-pubs-this-round
   publication-success
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
@@ -115,6 +117,8 @@ to publish
 
         ; update indices
         set n-publications n-publications + n-pubs-this-round
+        set total-default-publications total-default-publications + default-publications
+        set total-data-publications total-data-publications + data-publications
         set publication-history fput n-pubs-this-round but-last publication-history
       ]
     ]
@@ -264,11 +268,11 @@ to-report mean-publications  [ agentset ]
 end
 
 to-report mean-default-publications [ agentset ]
-  report precision mean [default-publications] of agentset 2
+  report precision mean [total-default-publications] of agentset 2
 end
 
 to-report mean-data-publications [ agentset ]
-  report precision mean [data-publications] of agentset 2
+  report precision mean [total-data-publications] of agentset 2
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -611,6 +615,24 @@ true
 PENS
 "default" 1.0 0 -9276814 true "" "plot mean-default-publications groups "
 "data" 1.0 0 -5298144 true "" "plot mean-data-publications groups "
+
+PLOT
+833
+548
+1160
+753
+number of datasets
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count datasets"
 
 @#$#@#$#@
 ## WHAT IS IT?
