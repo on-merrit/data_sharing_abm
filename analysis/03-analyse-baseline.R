@@ -16,7 +16,8 @@ df <- read_csv("../outputs/data_sharing baseline-table.csv", skip = 6,
                )) %>% 
   tibble(.name_repair = "universal")
 
-theme_set(theme_bw())
+extrafont::loadfonts(device = "win")
+theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
 
 
 # baseline stuff ----
@@ -48,9 +49,14 @@ df %>%
   select(run_number = .run.number., chance_imp = importance.of.chance, 
          step = .step., contains("gini")) %>% 
   pivot_longer(contains("gini")) %>% 
+  mutate(chance_imp = factor(chance_imp, labels = chance_imp %>% unique() %>%
+                               as.numeric() %>% scales::percent())) %>% 
   ggplot(aes(step, value, colour = factor(chance_imp))) +
   geom_smooth() +
   facet_wrap(vars(name)) +
-  labs(colour = "importance of chance") +
-  theme(legend.position = "top")
+  labs(x = "Years", y = "gini", 
+       colour = "importance of chance",
+       caption = "n = 100 agents") +
+  theme(legend.position = "top") +
+  guides(colour = guide_legend(nrow = 1))
 ggsave("plots/ginis.png")
