@@ -9,12 +9,14 @@ groups-own [
   resources
   total-grants
   total-resources
+  resources-for-data-paper
   chance
   proposal-strength
-  grant-decay-rate
   data-sharing-policy?
   total-datasets
   n-publications
+  default-publications
+  data-publications
   n-pubs-this-round
   publication-success
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
@@ -69,48 +71,78 @@ end
 to publish
   ifelse not reuse-data? [
     ask groups [
-      ifelse share-data? [
-        ifelse data-sharing-policy?
-        [ let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
-          set total-resources resources + n-grants - rdm-drag ]
-        [ set total-resources resources + n-grants ]
-      ] [
-        set total-resources resources + n-grants
-      ]
-      set n-pubs-this-round random-poisson total-resources
-      set n-publications n-publications + n-pubs-this-round
-
-      set publication-history fput n-pubs-this-round but-last publication-history
+      adjust-resources-when-data-sharing
+      default-publishing
     ]
-
   ] [
     ask groups [
-      ifelse data-sharing-policy?
-        [ let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
-          set total-resources resources + n-grants - rdm-drag ]
-        [ set total-resources resources + n-grants ]
-
-
-      ; choose some groups to re-use data
-      let reusers n-of (.2 * n-groups) groups
-
-      ask reusers [
-        ; reduce resources by some factor (1, or more)
-        ; use the remaining resources to produce normal publications
-        ; use the additional resources to consume a dataset, to produce a publication
-        ; recalculate total publications based on the sum of both
-      ]
-
-      set n-pubs-this-round random-poisson total-resources
-      set n-publications n-publications + n-pubs-this-round
-
-      set publication-history fput n-pubs-this-round but-last publication-history
+      adjust-resources-when-data-sharing
     ]
 
+    ; choose some groups to re-use data
+    let reusers n-of (.2 * n-groups) groups
+
+    ; from https://stackoverflow.com/a/30966520/3149349
+    let non-reusers groups with [not member? self reusers]
+
+    ask non-reusers [
+      default-publishing
+    ]
+
+    ask reusers [
+      ifelse count datasets < 1 [
+        ; if there are no datasets, publish as usual
+        default-publishing
+      ] [
+        ; otherwise, create publications from data
+
+        ; reduce resources by some factor (1 for now, so going for one data publication per tick on average)
+        ifelse total-resources < 1 [
+          set resources-for-data-paper total-resources * 1.2 ; it is easier to produce publications from data
+          set total-resources 0
+        ] [
+          set resources-for-data-paper 1.2 ; it is easier to produce publications from data
+          set total-resources total-resources - 1
+        ]
+        ; use the remaining resources to produce normal publications
+        set default-publications random-poisson total-resources
+        ; use the additional resources to consume a dataset, to produce a publication
+        set data-publications random-poisson resources-for-data-paper
+        ask n-of 1 datasets [ die ] ; let one random dataset die
+
+        ; recalculate total publications based on the sum of both
+        set n-pubs-this-round default-publications + data-publications
+
+        ; update indices
+        set n-publications n-publications + n-pubs-this-round
+        set publication-history fput n-pubs-this-round but-last publication-history
+      ]
+    ]
   ]
 
 end
 
+to adjust-resources-when-data-sharing
+  ifelse share-data? [
+    ifelse data-sharing-policy? [
+      let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
+      set total-resources resources + n-grants - rdm-drag
+      ] [
+        set total-resources resources + n-grants
+      ]
+    ] [
+        set total-resources resources + n-grants
+    ]
+end
+
+
+to default-publishing
+  set n-pubs-this-round random-poisson total-resources
+  set default-publications n-pubs-this-round
+  set n-publications n-publications + n-pubs-this-round
+
+  set publication-history fput n-pubs-this-round but-last publication-history
+end
 
 
 
@@ -229,6 +261,14 @@ end
 
 to-report mean-publications  [ agentset ]
   report precision mean [n-publications] of agentset 2
+end
+
+to-report mean-default-publications [ agentset ]
+  report precision mean [default-publications] of agentset 2
+end
+
+to-report mean-data-publications [ agentset ]
+  report precision mean [data-publications] of agentset 2
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -517,7 +557,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.0
+0.4
 .1
 1
 NIL
@@ -552,6 +592,25 @@ reuse-data?
 0
 1
 -1000
+
+PLOT
+534
+547
+830
+751
+data vs default publications
+NIL
+NIL
+0.0
+4.0
+0.0
+4.0
+true
+true
+"" ""
+PENS
+"default" 1.0 0 -9276814 true "" "plot mean-default-publications groups "
+"data" 1.0 0 -5298144 true "" "plot mean-data-publications groups "
 
 @#$#@#$#@
 ## WHAT IS IT?
