@@ -46,7 +46,7 @@ to setup
     set proposal-strength 0
     set total-grants 0
     ; set data-sharing policy for now
-    ifelse random-float 1 > .8 [ set data-sharing-policy? True ] [ set data-sharing-policy? False]
+    ifelse random-float 1 <= share-of-data-sharers [ set data-sharing-policy? True ] [ set data-sharing-policy? False]
     set total-datasets 0
     set n-publications 0
     set n-pubs-this-round 0
@@ -82,16 +82,18 @@ to publish
     ]
 
     ; choose some groups to re-use data
-    let reusers n-of (.2 * n-groups) groups
+    let reusers n-of (reuser-share * n-groups) groups
 
     ; from https://stackoverflow.com/a/30966520/3149349
     let non-reusers groups with [not member? self reusers]
 
     ask non-reusers [
+      set shape "person"
       default-publishing
     ]
 
     ask reusers [
+      set shape "truck"
       ifelse count datasets < 1 [
         ; if there are no datasets, publish as usual
         default-publishing
@@ -144,6 +146,7 @@ to default-publishing
   set n-pubs-this-round random-poisson total-resources
   set primary-publications n-pubs-this-round
   set n-publications n-publications + n-pubs-this-round
+  set total-primary-publications total-primary-publications + n-pubs-this-round
 
   set publication-history fput n-pubs-this-round but-last publication-history
 end
@@ -303,10 +306,10 @@ ticks
 30.0
 
 BUTTON
-640
-47
-703
-80
+710
+42
+773
+75
 NIL
 go
 T
@@ -320,10 +323,10 @@ NIL
 1
 
 BUTTON
-507
-46
-570
-79
+577
+41
+640
+74
 NIL
 setup
 NIL
@@ -407,10 +410,10 @@ PENS
 "default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
-575
-47
-638
-80
+645
+42
+708
+75
 step
 go
 NIL
@@ -425,9 +428,9 @@ NIL
 
 SLIDER
 24
-27
-196
-60
+25
+154
+58
 n-groups
 n-groups
 20
@@ -439,9 +442,9 @@ NIL
 HORIZONTAL
 
 SLIDER
-196
+163
 26
-368
+300
 59
 history-length
 history-length
@@ -527,10 +530,10 @@ PENS
 "default" 10.0 1 -16777216 true "" "histogram [total-grants] of groups"
 
 SWITCH
-369
-25
-492
-58
+446
+30
+569
+63
 share-data?
 share-data?
 0
@@ -539,24 +542,24 @@ share-data?
 
 SLIDER
 23
-61
-195
-94
+64
+154
+97
 n-available-grants
 n-available-grants
 1
 100
-8.0
+1.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-197
-62
-369
-95
+160
+64
+300
+97
 importance-of-chance
 importance-of-chance
 0
@@ -587,10 +590,10 @@ PENS
 "publications" 1.0 0 -5298144 true "" "plot publications-gini"
 
 SWITCH
-371
-62
-494
-95
+447
+65
+570
+98
 reuse-data?
 reuse-data?
 0
@@ -633,6 +636,55 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot count datasets"
+
+SLIDER
+304
+64
+439
+97
+reuser-share
+reuser-share
+0
+1
+0.2
+.1
+1
+NIL
+HORIZONTAL
+
+PLOT
+1162
+553
+1443
+754
+total publications
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"primary" 1.0 0 -9276814 true "" "plot sum [total-primary-publications] of groups"
+"data" 1.0 0 -5298144 true "" "plot sum [total-data-publications] of groups"
+
+SLIDER
+302
+24
+438
+57
+share-of-data-sharers
+share-of-data-sharers
+0
+1
+1.0
+.1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
