@@ -112,7 +112,8 @@ to publish
         set primary-publications random-poisson total-resources
         ; use the additional resources to consume a dataset, to produce a publication
         set data-publications random-poisson resources-for-data-paper
-        ask n-of 1 datasets [ die ] ; let one random dataset die
+
+        if data-publications >= 1 [ ask n-of 1 datasets [ die ] ] ; let one random dataset die
 
         ; recalculate total publications based on the sum of both
         set n-pubs-this-round primary-publications + data-publications
@@ -549,7 +550,7 @@ n-available-grants
 n-available-grants
 1
 100
-1.0
+12.0
 1
 1
 NIL
@@ -680,7 +681,7 @@ share-of-data-sharers
 share-of-data-sharers
 0
 1
-1.0
+0.1
 .1
 1
 NIL
