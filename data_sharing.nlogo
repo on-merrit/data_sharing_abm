@@ -4,6 +4,7 @@
 breed [groups group]
 breed [grants grant]
 breed [datasets dataset]
+breed [funders funder]
 
 groups-own [
   resources
@@ -12,7 +13,6 @@ groups-own [
   resources-for-data-paper
   chance
   proposal-strength
-  data-sharing-policy?
   total-datasets
   n-publications
   primary-publications
@@ -32,6 +32,10 @@ datasets-own [
   dataset-year
 ]
 
+funders-own [
+  data-sharing-policy?
+]
+
 to setup
   clear-all
 
@@ -39,19 +43,29 @@ to setup
 
   create-groups n-groups
   let pub-history-length history-length * 2 ; so a history of "3" years becomes 6 ticks = 3 years
-  ask turtles [
+  ask groups [
     setxy random-xcor random-ycor
     set shape "person"
     set resources 1
     set proposal-strength 0
     set total-grants 0
-    ; set data-sharing policy for now
-    ifelse random-float 1 <= share-of-data-sharers [ set data-sharing-policy? True ] [ set data-sharing-policy? False]
     set total-datasets 0
     set n-publications 0
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
   ]
+
+  create-funders 2
+  ask funders [
+    set data-sharing-policy? false
+  ]
+
+  if share-data? [
+    ask one-of funders [
+      set data-sharing-policy? true
+    ]
+  ]
+
 
 
   reset-ticks
@@ -62,7 +76,7 @@ to go
   if ticks = 500 [stop] ; stop after 250 years (500)
   if not share-data? and reuse-data? [error "Data sharing has to be enabled to model data-reuse. Please set `share-data?` to `On`"]
   publish
-  if share-data? [share-data]
+  share-data
   setup-grants
   allocate-grants
   update-indices
@@ -144,10 +158,14 @@ end
 
 
 to default-publishing
+  ; need to separate here: count how many data grants there are. for those do separate publishing, for the rest normal as usual
+  ; the OD publishing then leads to the sharing of data. So "share-data" is always executed, but depending on
+  ; n-data-pubs-this-round either happens or does not happen
+
   set n-pubs-this-round random-poisson total-resources
   set primary-publications n-pubs-this-round
-  set n-publications n-publications + n-pubs-this-round
   set total-primary-publications total-primary-publications + n-pubs-this-round
+  set n-publications n-publications + n-pubs-this-round
 
   set publication-history fput n-pubs-this-round but-last publication-history
 end
@@ -167,8 +185,19 @@ to share-data
   ]
 end
 
+; grant mechanism needs to be revised.
+; does it make sense to rewrite from funder perspective?
+; probably need two separate lists to rate projects for both funders.
+; so each funder does this sorting and allocating.
+; leads to twice the grants for the same people
+; will need higher settings for chance, potentially. Calibrate based on gini of publication distributions I find (use DescTools and Gini)
+; only after data policy there might be a difference
+
+
 to setup-grants
-  create-grants n-available-grants
+  ask funders [
+    hatch-grants n-available-grants / 2
+  ]
   ; set up our new grants
   ask grants with [count link-neighbors = 0] [
     set grant-year -0.5 ; need to set grant year to negative, so the grant stays alive and has an effect for 6 rounds
@@ -548,10 +577,10 @@ SLIDER
 97
 n-available-grants
 n-available-grants
-1
+2
 100
-12.0
-1
+8.0
+2
 1
 NIL
 HORIZONTAL
@@ -597,7 +626,7 @@ SWITCH
 98
 reuse-data?
 reuse-data?
-0
+1
 1
 -1000
 
@@ -647,7 +676,7 @@ reuser-share
 reuser-share
 0
 1
-0.2
+0.0
 .1
 1
 NIL
@@ -681,7 +710,7 @@ share-of-data-sharers
 share-of-data-sharers
 0
 1
-0.1
+0.0
 .1
 1
 NIL
