@@ -39,6 +39,7 @@ grants_pubs %>%
   # geom_line(aes(group = run_number), alpha = .2) +
   geom_smooth() +
   labs(y = "mean number of publications")
+ggsave("plots/publications_by_grant_chance.png")
 # number of publications is the same, no matter the granting mechanism
 # presumably, because the total number of grants (=additional resources) is
 # always the same. 
