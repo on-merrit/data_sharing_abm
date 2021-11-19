@@ -12,7 +12,8 @@ groups-own [
   total-resources
   resources-for-data-paper
   chance
-  proposal-strength
+  proposal-strength-default
+  proposal-strength-data
   total-datasets
   n-publications
   primary-publications
@@ -23,6 +24,8 @@ groups-own [
   n-pubs-this-round
   publication-success
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
+  data-sharing-success
+  data-sharing-history
 ]
 
 grants-own [
@@ -49,12 +52,12 @@ to setup
     setxy random-xcor random-ycor
     set shape "person"
     set resources 1
-    set proposal-strength 0
     set total-grants 0
     set total-datasets 0
     set n-publications 0
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
+    set data-sharing-history n-values pub-history-length [0]
   ]
 
   create-funders 2
@@ -143,8 +146,8 @@ end
 
 
 to default-publishing
-  let n-data-grants count link-neighbors with [breed = "grant" and data-sharing-policy?]
-  let n-other-grants count link-neighbors with [breed = "grant" and not data-sharing-policy?]
+  let n-data-grants count link-neighbors with [breed = grants and data-sharing-policy?]
+  let n-other-grants count link-neighbors with [breed = grants and not data-sharing-policy?]
 
   let resources-for-data-sharing n-data-grants - n-data-grants * .05 ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
   let other-resources resources + n-other-grants
@@ -154,17 +157,13 @@ to default-publishing
 
   set primary-publications n-publications-with-data-shared + other-publications
   set total-primary-publications total-primary-publications + primary-publications
+  set n-pubs-this-round primary-publications
   set n-publications n-publications + primary-publications
 
   ; share datasets if such publications where generated
   share-data
 
-  set n-pubs-this-round random-poisson total-resources
-  set primary-publications n-pubs-this-round
-  set total-primary-publications total-primary-publications + n-pubs-this-round
-  set n-publications n-publications + n-pubs-this-round
-
-  set publication-history fput n-pubs-this-round but-last publication-history
+  set publication-history fput total-primary-publications but-last publication-history
 end
 
 
@@ -178,6 +177,31 @@ to share-data
   ]
 
   set total-datasets total-datasets + n-publications-with-data-shared
+  set data-sharing-history fput n-publications-with-data-shared but-last data-sharing-history
+end
+
+
+
+to setup-grants
+  ask funders [
+    hatch-grants n-available-grants / 2
+  ]
+  ; set up our new grants
+  ask grants with [count link-neighbors = 0] [
+    set grant-year -0.5 ; need to set grant year to negative, so the grant stays alive and has an effect for 6 rounds
+    set shape "star"
+    move-to one-of neighbors
+  ]
+end
+
+to award-grant
+  let funder-policy? [data-sharing-policy?] of myself ; myself here refers to the funders
+  create-link-with one-of grants with [count link-neighbors = 0 and data-sharing-policy? = funder-policy?]
+  let group-neighbor one-of neighbors
+  ask link-neighbors with [breed = grants] [move-to group-neighbor]
+  ; the above is not ideal, since every grant is moved to the same patch. but not too important now
+
+  set total-grants total-grants + 1
 end
 
 ; grant mechanism needs to be revised.
@@ -189,49 +213,44 @@ end
 ; only after data policy there might be a difference
 
 
-to setup-grants
-  ask funders [
-    hatch-grants n-available-grants / 2
-  ]
-  ; set up our new grants
-  ask grants with [count link-neighbors = 0] [
-    set grant-year -0.5 ; need to set grant year to negative, so the grant stays alive and has an effect for 6 rounds
-    set shape "star"
-    setxy random-xcor random-ycor
-  ]
-end
-
-to award-grant
-  create-link-with one-of grants with [count link-neighbors = 0]
-  let group-neighbor one-of neighbors
-  ask link-neighbors with [breed = grants] [move-to group-neighbor]
-  ; the above is not ideal, since every grant is moved to the same patch. but not too important now
-
-  set total-grants total-grants + 1
-end
-
 
 to allocate-grants
   ask groups [
-    set chance random-float 1
-    set publication-success median publication-history
+    ; chance should not be a group property, but should be separate per funder
+    set chance precision random-float 1 3
+    set publication-success precision median publication-history 3
+    set data-sharing-success precision median data-sharing-history 3
   ]
 
   let max-pub-success max [publication-success] of groups
   ; ensure we do not divide by zero
   if max-pub-success = 0 [ set max-pub-success 1 ]
 
+  let max-data-success max [data-sharing-success] of groups
+  ; ensure we do not divide by zero
+  if max-data-success = 0 [ set max-data-success 1 ]
+
   ask groups [
     set publication-success publication-success / max-pub-success ; standardise publication success
-    set proposal-strength chance * importance-of-chance + (1 - importance-of-chance) * publication-success
+    set data-sharing-success data-sharing-success / max-data-success ; standardise data sharing success
+    set proposal-strength-default chance * importance-of-chance + (1 - importance-of-chance) * publication-success
+    set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance - .1) * publication-success + .1 * data-sharing-success ; issue: value should not be lower than 0
   ]
 
-  ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
-  let rank-list sort-on [(- proposal-strength)] groups ; need to invert proposal-strength, so that higher values are on top of the list
-  let top-groups sublist rank-list 0 n-available-grants
+  ask funders [
+    let grants-per-funder n-available-grants / 2
 
-  foreach top-groups [ x -> ask x [ award-grant ] ]
-
+    ifelse data-sharing-policy? and fund-on-data-history? [
+      ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
+      let rank-list sort-on [(- proposal-strength-data)] groups ; need to invert proposal-strength, so that higher values are on top of the list
+      let top-groups sublist rank-list 0 grants-per-funder
+      foreach top-groups [ x -> ask x [ award-grant ] ]
+    ] [
+      let rank-list sort-on [(- proposal-strength-default)] groups
+      let top-groups sublist rank-list 0 grants-per-funder
+      foreach top-groups [ x -> ask x [ award-grant ] ]
+    ]
+  ]
 end
 
 to update-indices
@@ -331,10 +350,10 @@ ticks
 30.0
 
 BUTTON
-710
-42
-773
-75
+715
+30
+778
+63
 NIL
 go
 T
@@ -348,10 +367,10 @@ NIL
 1
 
 BUTTON
-577
-41
-640
-74
+582
+29
+645
+62
 NIL
 setup
 NIL
@@ -398,25 +417,6 @@ mean-publications groups
 11
 
 PLOT
-533
-314
-831
-547
-mean-publications
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-true
-true
-"" ""
-PENS
-"data sharers" 1.0 0 -5298144 true "" "plot mean-publications groups with [data-sharing-policy?]"
-"others" 1.0 0 -7500403 true "" "plot mean-publications groups with [not data-sharing-policy?]"
-
-PLOT
 832
 314
 1160
@@ -425,20 +425,20 @@ n-publications distribution
 NIL
 NIL
 0.0
-3000.0
+2000.0
 0.0
 10.0
 true
 false
 "" ""
 PENS
-"default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
+"default" 20.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
-645
-42
-708
-75
+650
+30
+713
+63
 step
 go
 NIL
@@ -561,7 +561,7 @@ SWITCH
 63
 share-data?
 share-data?
-0
+1
 1
 -1000
 
@@ -574,7 +574,7 @@ n-available-grants
 n-available-grants
 2
 100
-8.0
+6.0
 2
 1
 NIL
@@ -589,7 +589,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.4
+0.8
 .1
 1
 NIL
@@ -696,20 +696,16 @@ PENS
 "primary" 1.0 0 -9276814 true "" "plot sum [total-primary-publications] of groups"
 "data" 1.0 0 -5298144 true "" "plot sum [total-data-publications] of groups"
 
-SLIDER
-302
-24
-438
-57
-share-of-data-sharers
-share-of-data-sharers
-0
+SWITCH
+604
+85
+782
+118
+fund-on-data-history?
+fund-on-data-history?
 1
-0.0
-.1
 1
-NIL
-HORIZONTAL
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
