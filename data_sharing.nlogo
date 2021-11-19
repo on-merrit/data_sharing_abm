@@ -11,9 +11,6 @@ groups-own [
   total-grants
   total-resources
   resources-for-data-paper
-  chance
-  proposal-strength-default
-  proposal-strength-data
   total-datasets
   n-publications
   primary-publications
@@ -26,6 +23,9 @@ groups-own [
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
   data-sharing-success
   data-sharing-history
+  chance
+  proposal-strength-default
+  proposal-strength-data
 ]
 
 grants-own [
@@ -60,21 +60,21 @@ to setup
     set data-sharing-history n-values pub-history-length [0]
   ]
 
-  create-funders 2
+  create-funders n-funders
   ask funders [
     set data-sharing-policy? false
     setxy random-xcor random-ycor
     set shape "tree"
+    set color 15 ; red
   ]
 
   if share-data? [
-    ask one-of funders [
+    let half-funders n-funders / 2
+    ask n-of half-funders funders [
       set data-sharing-policy? true
+      set color 105 ; blue
     ]
   ]
-
-
-
   reset-ticks
 end
 
@@ -82,6 +82,7 @@ end
 to go
   if ticks = 500 [stop] ; stop after 250 years (500)
   if not share-data? and reuse-data? [error "Data sharing has to be enabled to model data-reuse. Please set `share-data?` to `On`"]
+  if reuse-data? [error "The reuse part currently is defunct."]
   publish
   setup-grants
   allocate-grants
@@ -108,6 +109,7 @@ to publish
     ]
 
     ask reusers [
+      ;; the reuse part currently is defunct!!!!!!!!!!!!!
       set shape "truck"
       ifelse count datasets < 1 [
         ; if there are no datasets, publish as usual
@@ -184,11 +186,11 @@ end
 
 to setup-grants
   ask funders [
-    hatch-grants n-available-grants / 2
+    hatch-grants grants-per-funder
   ]
   ; set up our new grants
   ask grants with [count link-neighbors = 0] [
-    set grant-year -0.5 ; need to set grant year to negative, so the grant stays alive and has an effect for 6 rounds
+    set grant-year -0.5 ; need to set grant year to negative, so the grant stays alive and has an effect for 4/6 rounds
     set shape "star"
     move-to one-of neighbors
   ]
@@ -197,27 +199,18 @@ end
 to award-grant
   let funder-policy? [data-sharing-policy?] of myself ; myself here refers to the funders
   create-link-with one-of grants with [count link-neighbors = 0 and data-sharing-policy? = funder-policy?]
-  let group-neighbor one-of neighbors
-  ask link-neighbors with [breed = grants] [move-to group-neighbor]
-  ; the above is not ideal, since every grant is moved to the same patch. but not too important now
+
+  ask link-neighbors with [breed = grants] [move-to one-of [neighbors] of myself]
 
   set total-grants total-grants + 1
 end
 
-; grant mechanism needs to be revised.
-; does it make sense to rewrite from funder perspective?
-; probably need two separate lists to rate projects for both funders.
-; so each funder does this sorting and allocating.
-; leads to twice the grants for the same people
+
+; new grant mechanism
 ; will need higher settings for chance, potentially. Calibrate based on gini of publication distributions I find (use DescTools and Gini)
-; only after data policy there might be a difference
-
-
 
 to allocate-grants
   ask groups [
-    ; chance should not be a group property, but should be separate per funder
-    set chance precision random-float 1 3
     set publication-success precision median publication-history 3
     set data-sharing-success precision median data-sharing-history 3
   ]
@@ -233,12 +226,14 @@ to allocate-grants
   ask groups [
     set publication-success publication-success / max-pub-success ; standardise publication success
     set data-sharing-success data-sharing-success / max-data-success ; standardise data sharing success
-    set proposal-strength-default chance * importance-of-chance + (1 - importance-of-chance) * publication-success
-    set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance - .1) * publication-success + .1 * data-sharing-success ; issue: value should not be lower than 0
   ]
 
   ask funders [
-    let grants-per-funder n-available-grants / 2
+    ask groups [
+      set chance random-float 1
+      set proposal-strength-default chance * importance-of-chance + (1 - importance-of-chance) * publication-success
+      set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance - .1) * publication-success + .1 * data-sharing-success ; issue: value should not be lower than 0
+    ]
 
     ifelse data-sharing-policy? and fund-on-data-history? [
       ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
@@ -256,7 +251,7 @@ end
 to update-indices
   ask grants [
    set grant-year grant-year + .5
-   if (grant-year >= 3) [ die ]
+   if (grant-year >= 2) [ die ]
   ]
 
   ask datasets [
@@ -425,14 +420,14 @@ n-publications distribution
 NIL
 NIL
 0.0
-2000.0
+3000.0
 0.0
 10.0
 true
 false
 "" ""
 PENS
-"default" 20.0 1 -16777216 true "" "histogram [n-publications] of groups"
+"default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
 650
@@ -459,18 +454,18 @@ SLIDER
 n-groups
 n-groups
 20
-1000
-100.0
+500
+103.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-163
-26
 300
-59
+28
+437
+61
 history-length
 history-length
 1
@@ -570,26 +565,26 @@ SLIDER
 64
 154
 97
-n-available-grants
-n-available-grants
-2
-100
-6.0
-2
+grants-per-funder
+grants-per-funder
+1
+20
+9.0
+1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-160
+164
 64
-300
+304
 97
 importance-of-chance
 importance-of-chance
 0
 1
-0.8
+0.6
 .1
 1
 NIL
@@ -663,15 +658,15 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count datasets"
 
 SLIDER
-304
-64
-439
-97
+309
+62
+444
+95
 reuser-share
 reuser-share
 0
 1
-0.0
+0.1
 .1
 1
 NIL
@@ -706,6 +701,21 @@ fund-on-data-history?
 1
 1
 -1000
+
+SLIDER
+155
+26
+295
+59
+n-funders
+n-funders
+2
+10
+2.0
+2
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
