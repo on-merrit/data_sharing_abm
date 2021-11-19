@@ -51,7 +51,7 @@ to setup
   ask groups [
     setxy random-xcor random-ycor
     set shape "person"
-    set resources 2
+    set resources .3
     set total-grants 0
     set total-datasets 0
     set n-publications 0
