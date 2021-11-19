@@ -51,7 +51,7 @@ to setup
   ask groups [
     setxy random-xcor random-ycor
     set shape "person"
-    set resources 1
+    set resources 2
     set total-grants 0
     set total-datasets 0
     set n-publications 0
@@ -420,14 +420,14 @@ n-publications distribution
 NIL
 NIL
 0.0
-3000.0
+4000.0
 0.0
 10.0
 true
 false
 "" ""
 PENS
-"default" 40.0 1 -16777216 true "" "histogram [n-publications] of groups"
+"default" 100.0 1 -16777216 true "" "histogram [n-publications] of groups"
 
 BUTTON
 650
@@ -550,7 +550,7 @@ grants-per-funder
 grants-per-funder
 1
 20
-9.0
+8.0
 1
 1
 NIL
