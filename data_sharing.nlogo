@@ -412,10 +412,10 @@ mean-publications groups
 11
 
 PLOT
-832
-314
-1160
-549
+532
+312
+848
+547
 n-publications distribution
 NIL
 NIL
@@ -455,7 +455,7 @@ n-groups
 n-groups
 20
 500
-103.0
+100.0
 1
 1
 NIL
@@ -511,25 +511,6 @@ false
 "" ""
 PENS
 "default" 1.0 1 -16777216 true "" "histogram [n-grants] of groups"
-
-PLOT
-1161
-314
-1461
-550
-mean number of grants
-NIL
-NIL
-0.0
-5.0
-0.0
-0.2
-true
-true
-"" ""
-PENS
-"data-sharers" 1.0 0 -5298144 true "" "plot mean-grants groups with [data-sharing-policy?]"
-"others" 1.0 0 -7500403 true "" "plot mean-grants groups with [not data-sharing-policy?]"
 
 PLOT
 1160
@@ -591,10 +572,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1461
-313
-1777
-548
+1184
+312
+1500
+547
 Gini coefficients
 NIL
 NIL
@@ -623,7 +604,7 @@ reuse-data?
 PLOT
 534
 547
-830
+848
 751
 data vs primary publications
 NIL
@@ -640,10 +621,10 @@ PENS
 "data" 1.0 0 -5298144 true "" "plot mean-data-publications groups "
 
 PLOT
-833
+849
+314
+1182
 548
-1160
-753
 number of datasets
 NIL
 NIL
@@ -673,10 +654,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1162
-553
-1443
-754
+851
+545
+1132
+746
 total publications
 NIL
 NIL
