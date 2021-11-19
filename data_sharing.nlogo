@@ -17,6 +17,7 @@ groups-own [
   n-publications
   primary-publications
   total-primary-publications
+  n-publications-with-data-shared
   data-publications
   total-data-publications
   n-pubs-this-round
@@ -26,6 +27,7 @@ groups-own [
 
 grants-own [
   grant-year
+  data-sharing-policy?
 ]
 
 datasets-own [
@@ -58,6 +60,8 @@ to setup
   create-funders 2
   ask funders [
     set data-sharing-policy? false
+    setxy random-xcor random-ycor
+    set shape "tree"
   ]
 
   if share-data? [
@@ -76,7 +80,6 @@ to go
   if ticks = 500 [stop] ; stop after 250 years (500)
   if not share-data? and reuse-data? [error "Data sharing has to be enabled to model data-reuse. Please set `share-data?` to `On`"]
   publish
-  share-data
   setup-grants
   allocate-grants
   update-indices
@@ -87,14 +90,9 @@ end
 to publish
   ifelse not reuse-data? [
     ask groups [
-      adjust-resources-when-data-sharing
       default-publishing
     ]
   ] [
-    ask groups [
-      adjust-resources-when-data-sharing
-    ]
-
     ; choose some groups to re-use data
     let reusers n-of (reuser-share * n-groups) groups
 
@@ -143,24 +141,23 @@ to publish
 
 end
 
-to adjust-resources-when-data-sharing
-  ifelse share-data? [
-    ifelse data-sharing-policy? [
-      let rdm-drag .05 * n-pubs-this-round ; rdm takes 5% of resources, determined from n-pubs last round
-      set total-resources resources + n-grants - rdm-drag
-      ] [
-        set total-resources resources + n-grants
-      ]
-    ] [
-        set total-resources resources + n-grants
-    ]
-end
-
 
 to default-publishing
-  ; need to separate here: count how many data grants there are. for those do separate publishing, for the rest normal as usual
-  ; the OD publishing then leads to the sharing of data. So "share-data" is always executed, but depending on
-  ; n-data-pubs-this-round either happens or does not happen
+  let n-data-grants count link-neighbors with [breed = "grant" and data-sharing-policy?]
+  let n-other-grants count link-neighbors with [breed = "grant" and not data-sharing-policy?]
+
+  let resources-for-data-sharing n-data-grants - n-data-grants * .05 ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
+  let other-resources resources + n-other-grants
+
+  set n-publications-with-data-shared random-poisson resources-for-data-sharing
+  let other-publications random-poisson other-resources
+
+  set primary-publications n-publications-with-data-shared + other-publications
+  set total-primary-publications total-primary-publications + primary-publications
+  set n-publications n-publications + primary-publications
+
+  ; share datasets if such publications where generated
+  share-data
 
   set n-pubs-this-round random-poisson total-resources
   set primary-publications n-pubs-this-round
@@ -173,16 +170,14 @@ end
 
 
 to share-data
-  ask groups with [data-sharing-policy?] [
-   hatch-datasets n-pubs-this-round [ create-link-with myself ]
+  hatch-datasets n-publications-with-data-shared [ create-link-with myself ]
 
   ask datasets-here [
     set shape "box"
     move-to one-of neighbors
   ]
 
-  set total-datasets total-datasets + 1
-  ]
+  set total-datasets total-datasets + n-publications-with-data-shared
 end
 
 ; grant mechanism needs to be revised.
