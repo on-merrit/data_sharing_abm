@@ -242,7 +242,9 @@ to allocate-grants
     ask groups [
       set chance random-float 1
       set proposal-strength-default chance * importance-of-chance + (1 - importance-of-chance) * publication-success
-      set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance - .1) * publication-success + .1 * data-sharing-success ; issue: value should not be lower than 0
+
+      let pub-and-data-success publication-success * pubs-vs-data + data-sharing-success * (1 - pubs-vs-data)
+      set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance) * pub-and-data-success ; issue: value should not be lower than 0
     ]
 
     ifelse data-sharing-policy? and fund-on-data-history? [
@@ -329,10 +331,10 @@ to-report mean-data-publications [ agentset ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-45
-131
-481
-568
+29
+176
+465
+613
 -1
 -1
 12.97
@@ -481,7 +483,7 @@ history-length
 history-length
 1
 20
-2.0
+3.0
 1
 1
 NIL
@@ -561,7 +563,7 @@ grants-per-funder
 grants-per-funder
 1
 20
-8.0
+3.0
 1
 1
 NIL
@@ -576,8 +578,8 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.5
-.1
+0.61
+.01
 1
 NIL
 HORIZONTAL
@@ -726,6 +728,21 @@ false
 "" ""
 PENS
 "default" 0.05 1 -16777216 true "" "histogram [data-grant-share] of groups"
+
+SLIDER
+162
+106
+307
+139
+pubs-vs-data
+pubs-vs-data
+0
+1
+1.0
+.01
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
