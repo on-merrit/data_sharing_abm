@@ -168,7 +168,7 @@ to default-publishing
   ; share datasets if such publications where generated
   share-data
 
-  set publication-history fput total-primary-publications but-last publication-history
+  set publication-history fput primary-publications but-last publication-history
 end
 
 
@@ -481,7 +481,7 @@ history-length
 history-length
 1
 20
-3.0
+2.0
 1
 1
 NIL
@@ -576,7 +576,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.6
+0.5
 .1
 1
 NIL
