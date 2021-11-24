@@ -1,0 +1,91 @@
+---
+title: "Data sharing"
+author: "Thomas Klebel"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, dpi = 300)
+
+theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
+
+df <- targets::tar_read(baseline)
+```
+
+
+```{r}
+pdata_sharing <- df_funder_sharing %>% 
+  filter(!fund.on.data.history.) %>% 
+  select(.run.number., .step., share.data.,
+         mean.grants.groups:sum..total.primary.publications..of.groups) %>% 
+  pivot_longer(-c(.run.number., .step., share.data.)) %>% 
+  drop_na()
+
+pdata_sharing %>% 
+  filter(str_detect(name, "gini")) %>% 
+  ggplot(aes(.step., value, colour = share.data.)) +
+  geom_smooth() +
+  facet_wrap(vars(name))
+# inequality is higher when sharing data
+
+p <- pdata_sharing %>% 
+  filter(str_detect(name, "gini")) %>% 
+  ggplot(aes(.step., value, colour = share.data., group = .run.number.)) +
+  geom_line() +
+  facet_wrap(vars(name), nrow = 2)
+plotly::ggplotly(p)
+
+
+# data sharing with funding reward
+data_funding <- df_funder_sharing %>% 
+  filter(share.data.) %>% 
+  select(.run.number., .step., fund.on.data.history.,
+         mean.grants.groups:sum..total.primary.publications..of.groups) %>% 
+  pivot_longer(-c(.run.number., .step., fund.on.data.history.)) %>% 
+  drop_na()
+data_funding
+
+data_funding %>% 
+  filter(str_detect(name, "gini")) %>% 
+  ggplot(aes(.step., value, colour = fund.on.data.history.)) +
+  geom_smooth() +
+  facet_wrap(vars(name))
+# inequality is higher when sharing data
+
+p <- data_funding %>% 
+  filter(str_detect(name, "gini")) %>% 
+  ggplot(aes(.step., value, colour = fund.on.data.history., group = .run.number.)) +
+  geom_line() +
+  facet_wrap(vars(name), nrow = 2)
+plotly::ggplotly(p)
+
+# compare three
+comparison <- df_funder_sharing %>% 
+  select(.run.number., .step., fund.on.data.history., share.data.,
+         mean.grants.groups:sum..total.datasets..of.groups) %>% 
+  pivot_longer(-c(.run.number., .step., fund.on.data.history., share.data.)) %>% 
+  drop_na()
+
+comparison %>% 
+  mutate(experiment = case_when(
+    !share.data. & !fund.on.data.history. ~ "no sharing",
+    share.data. & !fund.on.data.history. ~ "only sharing",
+    share.data. & fund.on.data.history. ~ "share and reward",
+    TRUE ~ NA_character_
+  )) %>% 
+  select(-share.data., -fund.on.data.history.) %>% 
+  drop_na() -> comparison
+
+comparison %>% 
+  filter(str_detect(name, "gini")) %>% 
+  ggplot(aes(.step., value, colour = experiment)) +
+  geom_smooth() +
+  facet_wrap(vars(name))
+# inequality is lowest in system with data sharing and rewarding based on it?
+# why?
+```
+
