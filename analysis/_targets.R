@@ -25,7 +25,7 @@ list(
   ),
   tar_target(
     data_sharing,
-    read_experiments(baseline_file)
+    read_experiments(data_sharing_file)
   ),
   tar_render(sharing_report, "05-data-sharing.Rmd")
 )
