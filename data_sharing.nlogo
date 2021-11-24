@@ -259,6 +259,7 @@ to update-indices
    if (dataset-year >= 10) [ die ] ; let datasets vanish after 10 years. could be changed later
   ]
 
+
 end
 
 ; maybe these reporters could be improved by passing the "n-grants" or "n-publications" to the same procedure
@@ -537,7 +538,7 @@ SWITCH
 63
 share-data?
 share-data?
-1
+0
 1
 -1000
 
@@ -679,7 +680,7 @@ SWITCH
 118
 fund-on-data-history?
 fund-on-data-history?
-1
+0
 1
 -1000
 
@@ -1112,6 +1113,46 @@ NetLogo 6.2.0
       <value value="0.4"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="sharing-funders" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>mean-grants groups</metric>
+    <metric>mean-publications groups</metric>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
+    <metric>count datasets</metric>
+    <metric>sum [total-primary-publications] of groups</metric>
+    <metric>sum [total-datasets] of groups</metric>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="fund-on-data-history?">
+      <value value="false"/>
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-funders">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuser-share">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.6"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="false"/>
       <value value="true"/>
     </enumeratedValueSet>
   </experiment>

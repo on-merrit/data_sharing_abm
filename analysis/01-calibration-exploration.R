@@ -1,5 +1,6 @@
 library(tidyverse)
 library(readxl)
+library(ineq)
 
 leiden_df <- read_xlsx("../external_data/CWTS Leiden Ranking 2020.xlsx",
                        sheet = "Results")
@@ -15,6 +16,10 @@ leiden_select %>%
   facet_wrap(vars(Period))
 
 ggsave(filename = "plots/pub_dist_leiden.png")
+
+
+leiden_select %>% 
+  summarise(gini = Gini(impact_P))
 
 
 # visualise lotkas or zipfs law
@@ -73,3 +78,8 @@ df_groups %>%
                                  df_groups$n_researchers), 2)
            ))
 ggsave("plots/size_vs_productivity.png")
+
+# gini
+df_groups %>% 
+  summarise(gini = Gini(n_publications))
+  
