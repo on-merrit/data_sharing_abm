@@ -9,6 +9,9 @@ breed [funders funder]
 groups-own [
   resources
   total-grants
+  total-data-grants
+  total-default-grants
+  data-grant-share
   total-resources
   resources-for-data-paper
   total-datasets
@@ -203,6 +206,13 @@ to award-grant
   ask link-neighbors with [breed = grants] [move-to one-of [neighbors] of myself]
 
   set total-grants total-grants + 1
+  ifelse funder-policy? [
+    ; if the funder demands data sharing
+    set total-data-grants total-data-grants + 1
+  ] [
+    set total-default-grants total-default-grants + 1
+  ]
+  set data-grant-share total-data-grants / (total-data-grants + total-default-grants)
 end
 
 
@@ -698,6 +708,24 @@ n-funders
 1
 NIL
 HORIZONTAL
+
+PLOT
+1131
+547
+1492
+747
+Share of data grants of groups
+NIL
+NIL
+0.0
+1.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 0.05 1 -16777216 true "" "histogram [data-grant-share] of groups"
 
 @#$#@#$#@
 ## WHAT IS IT?
