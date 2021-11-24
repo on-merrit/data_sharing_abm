@@ -12,13 +12,14 @@ library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, dpi = 300)
 
 theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
+extrafont::loadfonts(device = "win")
 
-df <- targets::tar_read(baseline)
+df <- targets::tar_read(data_sharing)
 ```
 
 
-```{r}
-pdata_sharing <- df_funder_sharing %>% 
+```{r data-sharing, fig.width=6, fig.height=4}
+pdata_sharing <- df %>% 
   filter(!fund.on.data.history.) %>% 
   select(.run.number., .step., share.data.,
          mean.grants.groups:sum..total.primary.publications..of.groups) %>% 
@@ -29,42 +30,51 @@ pdata_sharing %>%
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = share.data.)) +
   geom_smooth() +
-  facet_wrap(vars(name))
-# inequality is higher when sharing data
+  facet_wrap(vars(name), nrow = 2)
+```
+inequality is lower when sharing data
 
+
+```{r, dpi=120}
 p <- pdata_sharing %>% 
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = share.data., group = .run.number.)) +
   geom_line() +
   facet_wrap(vars(name), nrow = 2)
 plotly::ggplotly(p)
+```
 
 
+```{r sharing-funding-reward, fig.width=6, fig.height=4}
 # data sharing with funding reward
-data_funding <- df_funder_sharing %>% 
+data_funding <- df %>% 
   filter(share.data.) %>% 
   select(.run.number., .step., fund.on.data.history.,
          mean.grants.groups:sum..total.primary.publications..of.groups) %>% 
   pivot_longer(-c(.run.number., .step., fund.on.data.history.)) %>% 
   drop_na()
-data_funding
 
 data_funding %>% 
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = fund.on.data.history.)) +
   geom_smooth() +
-  facet_wrap(vars(name))
+  facet_wrap(vars(name), nrow = 2)
 # inequality is higher when sharing data
+```
 
+```{r, dpi=120}
 p <- data_funding %>% 
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = fund.on.data.history., group = .run.number.)) +
   geom_line() +
   facet_wrap(vars(name), nrow = 2)
 plotly::ggplotly(p)
+```
 
+
+```{r three-modes, fig.width=6, fig.height=4}
 # compare three
-comparison <- df_funder_sharing %>% 
+comparison <- df %>% 
   select(.run.number., .step., fund.on.data.history., share.data.,
          mean.grants.groups:sum..total.datasets..of.groups) %>% 
   pivot_longer(-c(.run.number., .step., fund.on.data.history., share.data.)) %>% 
@@ -84,8 +94,18 @@ comparison %>%
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = experiment)) +
   geom_smooth() +
-  facet_wrap(vars(name))
-# inequality is lowest in system with data sharing and rewarding based on it?
-# why?
+  facet_wrap(vars(name), nrow = 2)
 ```
 
+almost no difference: explanation: publications and datasets are closely linked.
+(runs with more publications also have more datasets).
+those that are successful are also those that share (because one funder demands
+it). also chance/error still large influence. 
+could play with number of funders, share of funders that mandates data
+
+Next thing to look at: play with rate of data vs pub history, and display the 
+fraction of data and normal grants.
+
+# Q on experiments
+does funding based on history lead to higher concentration? i.e., groups that 
+got grants with data sharing tend to get more grants of the same sort?
