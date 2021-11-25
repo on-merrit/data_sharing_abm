@@ -30,7 +30,7 @@ pdata_sharing %>%
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = share.data.)) +
   geom_smooth() +
-  facet_wrap(vars(name), nrow = 2)
+  facet_wrap(vars(name), nrow = 2, scales = "free_y")
 ```
 inequality is lower when sharing data
 
@@ -58,8 +58,7 @@ data_funding %>%
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = fund.on.data.history.)) +
   geom_smooth() +
-  facet_wrap(vars(name), nrow = 2)
-# inequality is higher when sharing data
+  facet_wrap(vars(name), nrow = 2, scales = "free_y")
 ```
 
 ```{r, dpi=120}
@@ -94,7 +93,7 @@ comparison %>%
   filter(str_detect(name, "gini")) %>% 
   ggplot(aes(.step., value, colour = experiment)) +
   geom_smooth() +
-  facet_wrap(vars(name), nrow = 2)
+  facet_wrap(vars(name), nrow = 2, scales = "free_y")
 ```
 
 almost no difference: explanation: publications and datasets are closely linked.
@@ -109,3 +108,37 @@ fraction of data and normal grants.
 # Q on experiments
 does funding based on history lead to higher concentration? i.e., groups that 
 got grants with data sharing tend to get more grants of the same sort?
+
+
+# numbers of datasets
+```{r datasets}
+comparison %>% 
+  filter(str_detect(name, "count"),
+         experiment != "no sharing") %>% 
+  ggplot(aes(.step., value, colour = experiment, group = .run.number.)) +
+  geom_line()
+```
+
+## total datsets
+```{r total-datasets, fig.width=4, fig.height=5}
+comparison %>% 
+  filter(experiment != "no sharing", 
+         str_detect(name, "total\\.datasets"),
+         .step. == 500) %>% 
+  ggplot(aes(experiment, value, fill = experiment)) +
+  geom_boxplot(show.legend = FALSE, notch = TRUE) +
+  labs(y = "Total # of datasets produced", x = NULL)
+```
+
+
+# numbers of publications
+```{r total-publications, fig.width=4, fig.height=5}
+comparison %>% 
+  filter(experiment != "no sharing", 
+         str_detect(name, "total\\.primar"),
+         .step. == 500) %>% 
+  ggplot(aes(experiment, value, fill = experiment)) +
+  geom_boxplot(show.legend = FALSE, notch = TRUE) +
+  labs(y = "Total # of publications produced", x = NULL)
+```
+
