@@ -154,7 +154,7 @@ to default-publishing
   let n-data-grants count link-neighbors with [breed = grants and data-sharing-policy?]
   let n-other-grants count link-neighbors with [breed = grants and not data-sharing-policy?]
 
-  let resources-for-data-sharing n-data-grants - n-data-grants * .05 ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
+  let resources-for-data-sharing n-data-grants - n-data-grants * rdm-cost ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
   let other-resources resources + n-other-grants
 
   set n-publications-with-data-shared random-poisson resources-for-data-sharing
@@ -739,6 +739,21 @@ pubs-vs-data
 0
 1
 0.0
+.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+26
+104
+157
+137
+rdm-cost
+rdm-cost
+0
+.5
+0.5
 .01
 1
 NIL
