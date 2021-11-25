@@ -20,7 +20,7 @@ list(
   tar_render(baseline_report, "03-analyse-baseline.Rmd"),
   tar_target(
     data_sharing_file,
-    "../outputs/data_sharing sharing-funders-table.csv",
+    "../outputs/data_sharing sharing-funders-2-table.csv",
     format = "file"
   ),
   tar_target(
