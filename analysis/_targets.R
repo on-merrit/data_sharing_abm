@@ -27,5 +27,14 @@ list(
     data_sharing,
     read_experiments(data_sharing_file)
   ),
+  tar_target(
+    funding_mechanism_file,
+    "../outputs/data_sharing pubs-vs-data-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    funding_mechanism,
+    read_experiments(funding_mechanism_file)
+  ),
   tar_render(sharing_report, "05-data-sharing.Rmd")
 )
