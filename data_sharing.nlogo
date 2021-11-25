@@ -738,7 +738,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.5
 .01
 1
 NIL
@@ -1301,11 +1301,9 @@ NetLogo 6.2.0
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="pubs-vs-data" repetitions="30" runMetricsEveryStep="true">
+  <experiment name="pubs-vs-data" repetitions="10" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <metric>mean-grants groups</metric>
-    <metric>mean-publications groups</metric>
     <metric>grants-gini</metric>
     <metric>publications-gini</metric>
     <metric>count datasets</metric>
@@ -1329,11 +1327,7 @@ NetLogo 6.2.0
     <enumeratedValueSet variable="history-length">
       <value value="3"/>
     </enumeratedValueSet>
-    <enumeratedValueSet variable="pubs-vs-data">
-      <value value="0"/>
-      <value value="0.05"/>
-      <value value="1"/>
-    </enumeratedValueSet>
+    <steppedValueSet variable="pubs-vs-data" first="0" step="0.1" last="1"/>
     <enumeratedValueSet variable="rdm-cost">
       <value value="0.05"/>
     </enumeratedValueSet>
