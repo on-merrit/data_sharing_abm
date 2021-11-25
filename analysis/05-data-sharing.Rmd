@@ -132,10 +132,9 @@ comparison %>%
 
 
 # numbers of publications
-```{r total-publications, fig.width=4, fig.height=5}
+```{r total-publications, fig.width=5, fig.height=5}
 comparison %>% 
-  filter(experiment != "no sharing", 
-         str_detect(name, "total\\.primar"),
+  filter(str_detect(name, "total\\.primar"),
          .step. == 500) %>% 
   ggplot(aes(experiment, value, fill = experiment)) +
   geom_boxplot(show.legend = FALSE, notch = TRUE) +
