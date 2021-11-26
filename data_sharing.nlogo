@@ -329,6 +329,28 @@ end
 to-report mean-data-publications [ agentset ]
   report precision mean [total-data-publications] of agentset 2
 end
+
+; group of reporters that targets the numbers of publications of three groups:
+; those with low, medium or high shares of data grants
+to-report non-data-sharer-pubs
+  let x groups with [data-grant-share < .3]
+  report precision mean [n-publications] of x 2
+end
+
+to-report some-data-sharer-pubs
+  let x groups with [data-grant-share >= .3 and data-grant-share < .6]
+  report precision mean [n-publications] of x 2
+end
+
+to-report most-data-sharer-pubs
+  let x groups with [data-grant-share >= .6]
+  report precision mean [n-publications] of x 2
+end
+
+to-report no-grants
+  let x groups with [total-grants = 0]
+  report precision mean [n-publications] of x 2
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 29
@@ -758,6 +780,27 @@ rdm-cost
 1
 NIL
 HORIZONTAL
+
+PLOT
+534
+751
+847
+930
+success of groups
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"no grants" 1.0 0 -16777216 true "" "plot no-grants"
+"no data" 1.0 0 -7500403 true "" "plot non-data-sharer-pubs"
+"mid data" 1.0 0 -2674135 true "" "plot some-data-sharer-pubs"
+"most data" 1.0 0 -955883 true "" "plot most-data-sharer-pubs"
 
 @#$#@#$#@
 ## WHAT IS IT?
