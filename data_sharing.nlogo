@@ -738,7 +738,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.5
+0.3
 .01
 1
 NIL
@@ -1301,7 +1301,7 @@ NetLogo 6.2.0
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="pubs-vs-data" repetitions="10" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="pubs-vs-data" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>grants-gini</metric>
