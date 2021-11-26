@@ -354,7 +354,7 @@ end
 
 
 to-report stuff
-  report [(list who data-grant-share n-publications total-grants)] of groups
+  report [(list who data-grant-share n-publications n-publications-with-data-shared total-grants)] of groups
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -765,7 +765,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.8
+0.6
 .01
 1
 NIL
@@ -1389,7 +1389,7 @@ NetLogo 6.2.0
       <value value="true"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment" repetitions="30" runMetricsEveryStep="false">
+  <experiment name="grant-balance-on-publication-end" repetitions="30" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <metric>stuff</metric>
@@ -1414,6 +1414,42 @@ NetLogo 6.2.0
     <enumeratedValueSet variable="pubs-vs-data">
       <value value="0.8"/>
     </enumeratedValueSet>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0.05"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.45"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="benefit-of-awarding-data-sharing" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>stuff</metric>
+    <enumeratedValueSet variable="fund-on-data-history?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-funders">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuser-share">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="pubs-vs-data" first="0" step="0.2" last="1"/>
     <enumeratedValueSet variable="rdm-cost">
       <value value="0.05"/>
     </enumeratedValueSet>
