@@ -333,23 +333,28 @@ end
 ; group of reporters that targets the numbers of publications of three groups:
 ; those with low, medium or high shares of data grants
 to-report non-data-sharer-pubs
-  let x groups with [data-grant-share < .3]
+  let x groups with [data-grant-share < .44]
   report precision mean [n-publications] of x 2
 end
 
 to-report some-data-sharer-pubs
-  let x groups with [data-grant-share >= .3 and data-grant-share < .6]
+  let x groups with [data-grant-share >= .45 and data-grant-share < .55]
   report precision mean [n-publications] of x 2
 end
 
 to-report most-data-sharer-pubs
-  let x groups with [data-grant-share >= .6]
+  let x groups with [data-grant-share >= .55]
   report precision mean [n-publications] of x 2
 end
 
 to-report no-grants
   let x groups with [total-grants = 0]
   report precision mean [n-publications] of x 2
+end
+
+
+to-report stuff
+  report [(list who data-grant-share n-publications total-grants)] of groups
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -760,7 +765,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.3
+0.8
 .01
 1
 NIL
@@ -1371,6 +1376,44 @@ NetLogo 6.2.0
       <value value="3"/>
     </enumeratedValueSet>
     <steppedValueSet variable="pubs-vs-data" first="0" step="0.1" last="1"/>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0.05"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.45"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="experiment" repetitions="30" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>stuff</metric>
+    <enumeratedValueSet variable="fund-on-data-history?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-funders">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuser-share">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0.8"/>
+    </enumeratedValueSet>
     <enumeratedValueSet variable="rdm-cost">
       <value value="0.05"/>
     </enumeratedValueSet>
