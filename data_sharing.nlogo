@@ -1,3 +1,4 @@
+extensions [profiler]
 ; ticks = 6 months
 ; default publishing rate: once every 6 months
 
@@ -16,6 +17,7 @@ groups-own [
   resources-for-data-paper
   total-datasets
   n-publications
+  n-grants
   primary-publications
   total-primary-publications
   n-publications-with-data-shared
@@ -271,7 +273,9 @@ to update-indices
    if (dataset-year >= 10) [ die ] ; let datasets vanish after 10 years. could be changed later
   ]
 
-
+  ask groups [
+    set n-grants count-n-grants
+  ]
 end
 
 ; maybe these reporters could be improved by passing the "n-grants" or "n-publications" to the same procedure
@@ -306,7 +310,7 @@ to-report publications-gini
 end
 
 
-to-report n-grants
+to-report count-n-grants
   report count link-neighbors with [breed = grants]
 end
 
