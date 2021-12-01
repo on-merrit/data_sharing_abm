@@ -139,7 +139,18 @@ dummy_data <- tibble(
 
 df_nested %>% 
   mutate(new_data = list(dummy_data)) %>% 
-  mutate(prediction = map2(model, new_data, ~broom::augment(.x, .y)))
+  mutate(prediction = map2(model, new_data, ~broom::augment(.x, newdata = .y))) %>% 
+  unnest(prediction) %>% 
+  ggplot(aes(total_grants, .fitted, colour = as.factor(data_grant_share))) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(vars(pubs.vs.data)) +
+  labs(y = "Predicted number of publications",
+       colour = "% of grants mandating data sharing",
+       title = "Productivity depending on data sharing incentives") +
+  theme(legend.position = "top")
+# As you incentivise data sharing this way, those groups that actually solely 
+# get funded by funders mandating OD fare worse
 
 df_nested %>% 
   filter(pubs.vs.data == .2) %>% 
@@ -180,11 +191,11 @@ summarise(model = lm(n_publications ~ total_grants + data_grant_share +
                        I(total_grants^2)), data = .)
 
 # also simply look at publication distributions
-df_extracted %>% 
+df_rewards %>% 
   ggplot(aes(n_publications, group = run)) +
   geom_density()
 
-df_extracted %>% 
+df_rewards %>% 
   group_by(run) %>% 
   summarise(ginis = ineq::Gini(n_publications)) %>% 
   ggplot(aes(ginis)) +
