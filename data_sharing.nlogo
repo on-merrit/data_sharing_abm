@@ -246,7 +246,7 @@ to allocate-grants
       set proposal-strength-default chance * importance-of-chance + (1 - importance-of-chance) * publication-success
 
       let pub-and-data-success publication-success * pubs-vs-data + data-sharing-success * (1 - pubs-vs-data)
-      set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance) * pub-and-data-success ; issue: value should not be lower than 0
+      set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance) * pub-and-data-success
     ]
 
     ifelse data-sharing-policy? [
@@ -499,7 +499,7 @@ n-groups
 n-groups
 20
 500
-304.0
+321.0
 1
 1
 NIL
@@ -725,7 +725,7 @@ n-funders
 n-funders
 2
 10
-6.0
+2.0
 2
 1
 NIL
@@ -758,7 +758,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.0
 .01
 1
 NIL
