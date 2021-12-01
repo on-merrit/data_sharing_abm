@@ -37,5 +37,15 @@ list(
     funding_mechanism,
     read_experiments(funding_mechanism_file)
   ),
-  tar_render(funding_mechanism_report, "06-funding-mechanisms.Rmd")
+  tar_render(funding_mechanism_report, "06-funding-mechanisms.Rmd"),
+  tar_target(
+    incentives_file,
+    "../outputs/data_sharing benefit-of-awarding-data-sharing-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    incentives,
+    read_nested_experiment(incentives_file)
+  ),
+  tar_render(incentives_report, "07-incentives.Rmd")
 )

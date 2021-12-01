@@ -1,0 +1,156 @@
+---
+title: "Incentives"
+author: "Thomas Klebel"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, dpi = 300)
+
+theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
+extrafont::loadfonts(device = "win")
+
+df <- targets::tar_read(incentives)
+
+df_clean <- df %>% 
+  select(run, pubs.vs.data, step, who:total_grants) %>% 
+  mutate(data_sharing_perc = n_pubs_with_data_shared / n_publications)
+```
+
+
+```{r}
+df_clean %>% 
+  ggplot(aes(data_grant_share, data_sharing_perc, colour = pubs.vs.data)) +
+  geom_point(size = 1.5) +
+  scale_colour_viridis_c()
+# why does the right side not go up higher? is this the base funding that 
+# stays stronger for those with not many grants?
+
+p <- df_clean %>% 
+  mutate(stats = paste("pubs:", n_publications, "grants:", total_grants)) %>%
+  ggplot(aes(data_grant_share, data_sharing_perc, colour = factor(pubs.vs.data),
+             label = stats)) +
+  geom_point(alpha = .5) +
+  scale_colour_viridis_d() 
+p
+```
+
+
+```{r, dpi=120}
+plotly::ggplotly(p)
+```
+
+
+
+Rewarding based on datasets simply adds more randomness.
+```{r incentives-on-grants, fig.width=8, fig.height=6}
+df_clean %>% 
+  ggplot(aes(data_grant_share, total_grants)) +
+  geom_point()  +
+  facet_wrap(vars(pubs.vs.data)) +
+  labs(title = "Influence of incentive settings")
+```
+
+
+# Modeling
+```{r}
+browser()
+m1 <- lm(n_publications ~ total_grants + data_grant_share,
+         data = df_clean)
+summary(m1)
+m1 <- arm::standardize(m1)
+summary(m1)
+```
+
+
+```{r}
+m2 <- lm(n_publications ~ total_grants + data_grant_share + 
+           I(total_grants^2),
+         data = df_clean)
+summary(m2)
+m2 <- arm::standardize(m2)
+summary(m2)
+```
+
+
+```{r}
+# m2 fits better, but has too high VIF
+car::vif(m2)
+# so we stick with model 1
+
+# however, there might be an interaction between the share of grants and the
+# total number of grants
+m3 <- lm(n_publications ~ total_grants*data_grant_share,
+         data = df_clean)
+m3 <- arm::standardize(m3)
+summary(m3)
+AIC(m3, m1)
+# m3 is clearly better
+```
+
+
+```{r, fig.height=8, fig.width=10}
+df_nested <- df_clean %>% 
+  group_by(pubs.vs.data) %>% 
+  nest()
+
+modeling_fun <- function(df) {
+  m <- lm(n_publications ~ total_grants*data_grant_share,
+     data = df)
+  m
+}
+
+df_nested <- df_nested %>% 
+  mutate(model = map(data, modeling_fun),
+         glance = map(model, broom::glance),
+         tidy = map(model, broom::tidy, conf.int = TRUE))
+df_nested  
+
+df_nested %>% 
+  unnest(glance) 
+
+
+
+# plot it
+dummy_data <- tibble(
+  total_grants = rep(1:50, 5),
+  data_grant_share = rep(c(0, .25, .5, .75, 1), each = 50)
+)
+
+df_nested %>% 
+  mutate(new_data = list(dummy_data)) %>% 
+  mutate(prediction = map2(model, new_data, ~broom::augment(.x, newdata = .y))) %>% 
+  unnest(prediction) %>% 
+  ggplot(aes(total_grants, .fitted, colour = as.factor(data_grant_share))) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(vars(pubs.vs.data)) +
+  labs(y = "Predicted number of publications",
+       colour = "% of grants mandating data sharing",
+       title = "Productivity depending on data sharing incentives") +
+  theme(legend.position = "top")
+```
+
+As you incentivise data sharing this way, those groups that actually solely 
+get funded by funders mandating OD fare worse than others.
+
+explanation for the lower inequality in the system: actors get disadvantaged
+and therefore randomness takes a larger share of the system
+
+
+important to note: early on there seems to be an advantage, but it quickly
+goes away and turns into a disadvantage.
+
+so the interesting thing could be to give agents strategies (always share data
+if last n grants had data sharing, so to have a longer term effect, vs maybe 
+also simply directly adhering), and then to see which share of funders mandating
+data we need to see a change.
+
+also, maybe having those that always share data, and seeing how they are 
+affected 
+
+
