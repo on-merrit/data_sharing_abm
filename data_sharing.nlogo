@@ -267,7 +267,7 @@ end
 to update-indices
   ask grants [
    set grant-year grant-year + .5
-   if (grant-year >= 2) [ die ]
+   if (grant-year >= 3) [ die ]
   ]
 
   ask datasets [
@@ -760,7 +760,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.2
+1.0
 .01
 1
 NIL
