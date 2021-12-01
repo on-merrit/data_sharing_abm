@@ -249,7 +249,7 @@ to allocate-grants
       set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance) * pub-and-data-success ; issue: value should not be lower than 0
     ]
 
-    ifelse data-sharing-policy? and fund-on-data-history? [
+    ifelse data-sharing-policy? [
       ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
       let rank-list sort-on [(- proposal-strength-data)] groups ; need to invert proposal-strength, so that higher values are on top of the list
       let top-groups sublist rank-list 0 grants-per-funder
@@ -499,7 +499,7 @@ n-groups
 n-groups
 20
 500
-100.0
+304.0
 1
 1
 NIL
@@ -716,17 +716,6 @@ PENS
 "primary" 1.0 0 -9276814 true "" "plot sum [total-primary-publications] of groups"
 "data" 1.0 0 -5298144 true "" "plot sum [total-data-publications] of groups"
 
-SWITCH
-604
-85
-782
-118
-fund-on-data-history?
-fund-on-data-history?
-0
-1
--1000
-
 SLIDER
 155
 26
@@ -736,7 +725,7 @@ n-funders
 n-funders
 2
 10
-2.0
+6.0
 2
 1
 NIL
@@ -769,7 +758,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.6
+1.0
 .01
 1
 NIL
