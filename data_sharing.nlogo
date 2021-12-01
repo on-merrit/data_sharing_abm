@@ -16,11 +16,12 @@ groups-own [
   total-resources
   resources-for-data-paper
   total-datasets
-  n-publications
+  n-publications ; all publications
   n-grants
   primary-publications
+  publications-with-data-shared ; current publications with shared data
   total-primary-publications
-  n-publications-with-data-shared
+  n-publications-with-data-shared ; total publications with shared data
   data-publications
   total-data-publications
   n-pubs-this-round
@@ -159,13 +160,14 @@ to default-publishing
   let resources-for-data-sharing n-data-grants - n-data-grants * rdm-cost ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
   let other-resources resources + n-other-grants
 
-  set n-publications-with-data-shared random-poisson resources-for-data-sharing
+  set publications-with-data-shared random-poisson resources-for-data-sharing
   let other-publications random-poisson other-resources
 
-  set primary-publications n-publications-with-data-shared + other-publications
+  set primary-publications publications-with-data-shared + other-publications
   set total-primary-publications total-primary-publications + primary-publications
   set n-pubs-this-round primary-publications
   set n-publications n-publications + primary-publications
+  set n-publications-with-data-shared n-publications-with-data-shared + publications-with-data-shared
 
   ; share datasets if such publications where generated
   share-data
@@ -176,15 +178,15 @@ end
 
 
 to share-data
-  hatch-datasets n-publications-with-data-shared [ create-link-with myself ]
+  hatch-datasets publications-with-data-shared [ create-link-with myself ]
 
   ask datasets-here [
     set shape "box"
     move-to one-of neighbors
   ]
 
-  set total-datasets total-datasets + n-publications-with-data-shared
-  set data-sharing-history fput n-publications-with-data-shared but-last data-sharing-history
+  set total-datasets total-datasets + publications-with-data-shared
+  set data-sharing-history fput publications-with-data-shared but-last data-sharing-history
 end
 
 
@@ -499,7 +501,7 @@ n-groups
 n-groups
 20
 500
-321.0
+100.0
 1
 1
 NIL
@@ -758,7 +760,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.0
+0.2
 .01
 1
 NIL
@@ -1424,9 +1426,6 @@ NetLogo 6.2.0
     <setup>setup</setup>
     <go>go</go>
     <metric>stuff</metric>
-    <enumeratedValueSet variable="fund-on-data-history?">
-      <value value="true"/>
-    </enumeratedValueSet>
     <enumeratedValueSet variable="reuse-data?">
       <value value="false"/>
     </enumeratedValueSet>
