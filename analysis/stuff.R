@@ -149,6 +149,16 @@ df_nested %>%
   ggplot(aes(total_grants, .fitted, colour = as.factor(data_grant_share))) +
   geom_point()
 # do the same as above for all values of pubs vs data, and explain it
+# important to mention: early on there seems to be an advantage, but it quickly
+# goes away and turns into a disadvantage
+# so the interesting thing could be to give agents strategies (always share data
+# if last n grants had data sharing, so to have a longer term effect, vs maybe 
+# also simply directly adhering), and then to see which share of funders mandating
+# data we need to see a change.
+# also, maybe having those that always share data, and seeing how they are 
+# affected 
+# # explanation for the lower inequality in the system: actors get disadvantaged
+# and therefore randomness takes a larger share of the system
 
 
 df_nested %>% 
