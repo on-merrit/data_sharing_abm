@@ -133,8 +133,8 @@ df_nested %>%
 
 # plot it
 dummy_data <- tibble(
-  total_grants = rep(1:200, 5),
-  data_grant_share = rep(c(0, .25, .5, .75, 1), each = 200)
+  total_grants = rep(1:50, 5),
+  data_grant_share = rep(c(0, .25, .5, .75, 1), each = 50)
 )
 
 df_nested %>% 
@@ -147,6 +147,7 @@ df_nested %>%
   .[[1]] %>% 
   broom::augment(newdata = dummy_data) %>% 
   ggplot(aes(total_grants, .fitted, colour = as.factor(data_grant_share))) +
+  geom_line() +
   geom_point()
 # do the same as above for all values of pubs vs data, and explain it
 # important to mention: early on there seems to be an advantage, but it quickly
