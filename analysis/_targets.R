@@ -33,7 +33,7 @@ list(
   ),
   tar_target(
     baseline_end,
-    read_experiments(baseline_end_file)
+    read_nested_experiment(baseline_end_file)
   ),
   tar_render(baseline_report, "03-analyse-baseline.Rmd"),
   tar_target(
