@@ -1472,6 +1472,32 @@ NetLogo 6.2.0
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
+  <experiment name="baseline-end" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>stuff</metric>
+    <metric>publications-gini</metric>
+    <metric>sum [total-primary-publications] of groups</metric>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-funders">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="importance-of-chance" first="0.4" step="0.1" last="0.5"/>
+    <enumeratedValueSet variable="share-data?">
+      <value value="false"/>
+    </enumeratedValueSet>
+  </experiment>
 </experiments>
 @#$#@#$#@
 @#$#@#$#@
