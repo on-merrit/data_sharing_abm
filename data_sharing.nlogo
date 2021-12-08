@@ -611,7 +611,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.5
+0.4
 .01
 1
 NIL
@@ -1467,7 +1467,7 @@ NetLogo 6.2.0
     <enumeratedValueSet variable="n-groups">
       <value value="100"/>
     </enumeratedValueSet>
-    <steppedValueSet variable="importance-of-chance" first="0.4" step="0.1" last="0.5"/>
+    <steppedValueSet variable="importance-of-chance" first="0.4" step="0.02" last="0.5"/>
     <enumeratedValueSet variable="share-data?">
       <value value="false"/>
     </enumeratedValueSet>
@@ -1493,7 +1493,7 @@ NetLogo 6.2.0
     <enumeratedValueSet variable="n-groups">
       <value value="100"/>
     </enumeratedValueSet>
-    <steppedValueSet variable="importance-of-chance" first="0.4" step="0.1" last="0.5"/>
+    <steppedValueSet variable="importance-of-chance" first="0.4" step="0.02" last="0.5"/>
     <enumeratedValueSet variable="share-data?">
       <value value="false"/>
     </enumeratedValueSet>
