@@ -9,12 +9,15 @@ output:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(ggridges)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, dpi = 300)
 
 theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
 extrafont::loadfonts(device = "win")
 
 df <- targets::tar_read(baseline)
+df_detail <- targets::tar_read(baseline_detail)
+df_end <- targets::tar_read(baseline_end)
 ```
 
 
@@ -36,4 +39,95 @@ p
 ```{r, dpi=120}
 plotly::ggplotly(p)
 ```
+
+
+# Plot of detail
+```{r baseline-detail-ginis, fig.width=8, fig.height=5}
+p <- df_detail %>% 
+  select(run_number = .run.number., chance_imp = importance.of.chance, 
+         step = .step., contains("gini")) %>% 
+  pivot_longer(contains("gini")) %>% 
+  # mutate(chance_imp = factor(chance_imp, labels = chance_imp %>% unique() %>%
+  #                              as.numeric() %>% scales::percent())) %>%
+  ggplot(aes(step, value, colour = factor(chance_imp))) +
+  geom_smooth() +
+  facet_wrap(vars(name)) +
+  labs(y = "gini", 
+       colour = "importance of chance",
+       caption = "n = 100 agents") 
+p
+```
+
+# Distribution of publications
+```{r}
+df_end_selected <- df_end %>% 
+  select(run, importance.of.chance, publications.gini, n_publications,
+         total_grants)
+```
+
+
+```{r publication-density, fig.width=7, fig.height=5}
+df_end_selected %>% 
+  ggplot(aes(n_publications, fill = factor(importance.of.chance), group = importance.of.chance)) +
+  geom_density(alpha = .5, adjust = .5) +
+  scale_fill_viridis_d(option = "C") +
+  geom_curve(
+    aes(x = 5000, y = .015, xend = 5975, yend = .002), curvature = -.5,
+    arrow = arrow(length = unit(0.03, "npc"))
+  ) +
+  annotate("text", x = 4000, y = .015, 
+           label = expression(paste("Bimodal distribution\nfor low values of", 
+                                    italic("c")))) +
+  labs(x = "# of publications per research group",
+       fill = expression(paste("Randomness parameter ", italic("c"))),
+       y = "Density") +
+  theme(legend.position = "top") +
+  guides(fill = guide_legend(byrow = TRUE)) 
+```
+
+```{r publication-density-trunc, fig.width=7, fig.height=5}
+df_end_selected %>% 
+  filter(n_publications < 1500) %>% 
+  ggplot(aes(n_publications, fill = factor(importance.of.chance), group = importance.of.chance)) +
+  geom_density(alpha = .5, adjust = 1) +
+  scale_fill_viridis_d(option = "C") +
+  labs(x = "# of publications per research group",
+       fill = expression(paste("Randomness parameter ", italic("c"))),
+       y = "Density") +
+  theme(legend.position = "top") +
+  guides(fill = guide_legend(byrow = TRUE)) 
+```
+
+```{r publication-histogram}
+df_end_selected %>% 
+  ggplot(aes(n_publications, fill = factor(importance.of.chance),
+             group = importance.of.chance)) +
+  geom_histogram()
+```
+
+```{r publication-ridges-base}
+df_end_selected %>% 
+  ggplot(aes(x = n_publications, y = factor(importance.of.chance), group = importance.of.chance)) +
+  geom_density_ridges(scale = 2)
+```
+
+
+```{r publication-ridges, fig.width=7, fig.height=5}
+df_end_selected %>% 
+  filter(n_publications < 1500) %>% 
+  ggplot(aes(x = n_publications, y = factor(importance.of.chance), 
+             group = importance.of.chance, fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 1.7, show.legend = FALSE) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_fill_viridis_c(option = "C", direction = -1, end = .9) +
+  coord_cartesian(clip = "off") + 
+  hrbrthemes::theme_ipsum_rc(base_family = "Hind",
+                             grid = FALSE) +
+  # theme_ridges(grid = FALSE, center_axis_labels = TRUE, font_family = "Hind") +
+  labs(x = "# of publications per research group",
+       y = expression(paste("Randomness parameter ", italic("c"))),
+       caption = "x-axis is truncated at 1500")
+```
+
 
