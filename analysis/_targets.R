@@ -10,7 +10,7 @@ tar_option_set(packages = c("scales", "tidyverse", "hrbrthemes"))
 list(
   tar_target(
     baseline_file,
-    "../outputs/data_sharing baseline-table.csv",
+    "../outputs/data_sharing rerun-baseline-table.csv",
     format = "file"
   ),
   tar_target(
