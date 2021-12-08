@@ -17,6 +17,24 @@ list(
     baseline,
     read_experiments(baseline_file)
   ),
+  tar_target(
+    baseline_detail_file,
+    "../outputs/data_sharing baseline-detail-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    baseline_detail,
+    read_experiments(baseline_detail_file)
+  ),
+  tar_target(
+    baseline_end_file,
+    "../outputs/data_sharing baseline-end-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    baseline_end,
+    read_experiments(baseline_end_file)
+  ),
   tar_render(baseline_report, "03-analyse-baseline.Rmd"),
   tar_target(
     data_sharing_file,
