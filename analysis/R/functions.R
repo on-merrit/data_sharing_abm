@@ -23,3 +23,12 @@ read_nested_experiment <- function(path,
     rename(run = .run.number., step = .step.)
 }
 
+
+read_leiden <- function(path) {
+  leiden_df <- readxl::read_xlsx(path, sheet = "Results")
+  
+  leiden_df %>% 
+    filter(Field == "All sciences", Frac_counting == 0) %>% 
+    select(University, Period, impact_P)
+}
+
