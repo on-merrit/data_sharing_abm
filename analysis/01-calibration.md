@@ -23,8 +23,27 @@ leiden %>%
   facet_wrap(vars(Period)) +
   geom_text(aes(x = 60000, y = 400, label = label), data = ginis) +
   scale_x_continuous(labels = scales::comma) +
-  labs(x = "Total number of publications per university", y = "Count")
+  labs(x = "Total number of publications per university", 
+       y = "# of universities")
 ```
 
 ![](01-calibration_files/figure-html/leiden-1.png)<!-- -->
+
+Create a version that fits better on the page
+
+```r
+gini_reduced <- filter(ginis, Period != "2006–2009")
+
+leiden %>% 
+  filter(Period != "2006–2009") %>% 
+  ggplot() +
+  geom_histogram(aes(impact_P), binwidth = 2000) +
+  facet_wrap(vars(Period), nrow = 3) +
+  geom_text(aes(x = 60000, y = 400, label = label), data = gini_reduced) +
+  scale_x_continuous(labels = scales::comma, breaks = c(4e+4, 8e+4)) +
+  labs(x = "Total number of publications per university", 
+       y = "# of universities")
+```
+
+![](01-calibration_files/figure-html/leiden-3x3-1.png)<!-- -->
 
