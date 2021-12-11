@@ -49,4 +49,18 @@ leiden %>%
   labs(x = "Total number of publications per university", 
        y = "# of universities")
 ```
+# Italian research groups
+```{r italian-researchers}
+gini <- italy %>% 
+  summarise(gini_pubs = ineq::Gini(n_publications) %>% round(3),
+            label = paste0("Gini = ", gini_pubs))
+
+italy %>% 
+  ggplot(aes(n_publications)) +
+  geom_histogram(bins = 20) +
+  annotate("text", label = gini$label, x = 350, y = 5) +
+  labs(x = "# of publications per research group",
+       y = "# of groups",
+       caption = paste0("n = ", nrow(italy)))
+```
 

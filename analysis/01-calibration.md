@@ -1,7 +1,7 @@
 ---
 title: "Calibration"
 author: "Thomas Klebel"
-date: "10 Dezember, 2021"
+date: "11 Dezember, 2021"
 output: 
   html_document:
     keep_md: true
@@ -46,4 +46,21 @@ leiden %>%
 ```
 
 ![](01-calibration_files/figure-html/leiden-3x3-1.png)<!-- -->
+# Italian research groups
+
+```r
+gini <- italy %>% 
+  summarise(gini_pubs = ineq::Gini(n_publications) %>% round(3),
+            label = paste0("Gini = ", gini_pubs))
+
+italy %>% 
+  ggplot(aes(n_publications)) +
+  geom_histogram(bins = 20) +
+  annotate("text", label = gini$label, x = 350, y = 5) +
+  labs(x = "# of publications per research group",
+       y = "# of groups",
+       caption = paste0("n = ", nrow(italy)))
+```
+
+![](01-calibration_files/figure-html/italian-researchers-1.png)<!-- -->
 
