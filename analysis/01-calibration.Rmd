@@ -50,7 +50,7 @@ leiden %>%
        y = "# of universities")
 ```
 # Italian research groups
-```{r italian-researchers}
+```{r italian-researchers, fig.width=5, fig.height=3.5}
 gini <- italy %>% 
   summarise(gini_pubs = ineq::Gini(n_publications) %>% round(3),
             label = paste0("Gini = ", gini_pubs))
