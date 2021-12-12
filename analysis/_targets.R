@@ -34,7 +34,7 @@ list(
   # baseline file -----------
   tar_target(
     baseline_file,
-    "../outputs/data_sharing rerun-baseline-table.csv",
+    "../outputs/data_sharing 01-baseline-table.csv",
     format = "file"
   ),
   tar_target(
