@@ -88,7 +88,7 @@ list(
   # incentives for data sharing ------
   tar_target(
     incentives_file,
-    "../outputs/data_sharing benefit-of-awarding-data-sharing-table.csv",
+    "../outputs/data_sharing 06-benefit-of-awarding-data-sharing-table.csv",
     format = "file"
   ),
   tar_target(
