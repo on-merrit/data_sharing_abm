@@ -52,7 +52,7 @@ list(
   ),
   tar_target(
     baseline_end_file,
-    "../outputs/data_sharing baseline-end-table.csv",
+    "../outputs/data_sharing 03-baseline-end-table.csv",
     format = "file"
   ),
   tar_target(
