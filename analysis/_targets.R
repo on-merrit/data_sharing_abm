@@ -43,7 +43,7 @@ list(
   ),
   tar_target(
     baseline_detail_file,
-    "../outputs/data_sharing baseline-detail-table.csv",
+    "../outputs/data_sharing 02-baseline-detail-table.csv",
     format = "file"
   ),
   tar_target(
