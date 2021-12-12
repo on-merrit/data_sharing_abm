@@ -1149,34 +1149,7 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="data-reuse" repetitions="5" sequentialRunOrder="false" runMetricsEveryStep="true">
-    <setup>setup</setup>
-    <go>go</go>
-    <metric>mean-grants groups</metric>
-    <metric>mean-publications groups</metric>
-    <metric>grants-gini</metric>
-    <metric>publications-gini</metric>
-    <metric>count datasets</metric>
-    <metric>mean-default-publications groups</metric>
-    <metric>mean-data-publications groups</metric>
-    <enumeratedValueSet variable="reuse-data?">
-      <value value="true"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="history-length">
-      <value value="3"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="n-available-grants" first="1" step="10" last="51"/>
-    <enumeratedValueSet variable="n-groups">
-      <value value="100"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="importance-of-chance">
-      <value value="0.4"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="share-data?">
-      <value value="true"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="rerun-baseline" repetitions="5" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="01-baseline" repetitions="5" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
@@ -1204,7 +1177,34 @@ NetLogo 6.2.0
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="sharing-funders-2" repetitions="30" runMetricsEveryStep="true">
+  <experiment name="zzz-data-reuse" repetitions="5" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>mean-grants groups</metric>
+    <metric>mean-publications groups</metric>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
+    <metric>count datasets</metric>
+    <metric>mean-default-publications groups</metric>
+    <metric>mean-data-publications groups</metric>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="n-available-grants" first="1" step="10" last="51"/>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="04-sharing-funders" repetitions="30" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
@@ -1217,24 +1217,17 @@ NetLogo 6.2.0
     <enumeratedValueSet variable="grants-per-funder">
       <value value="8"/>
     </enumeratedValueSet>
-    <enumeratedValueSet variable="fund-on-data-history?">
-      <value value="true"/>
-      <value value="false"/>
-    </enumeratedValueSet>
     <enumeratedValueSet variable="reuse-data?">
       <value value="false"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="n-funders">
       <value value="2"/>
     </enumeratedValueSet>
-    <enumeratedValueSet variable="reuser-share">
-      <value value="0.1"/>
-    </enumeratedValueSet>
     <enumeratedValueSet variable="history-length">
       <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="pubs-vs-data">
-      <value value="0.8"/>
+      <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="rdm-cost">
       <value value="0.05"/>
@@ -1243,14 +1236,14 @@ NetLogo 6.2.0
       <value value="100"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="importance-of-chance">
-      <value value="0.45"/>
+      <value value="0.48"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
       <value value="true"/>
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="pubs-vs-data" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="05-pubs-vs-data" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>grants-gini</metric>
@@ -1284,13 +1277,13 @@ NetLogo 6.2.0
       <value value="100"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="importance-of-chance">
-      <value value="0.45"/>
+      <value value="0.48"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
       <value value="true"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="benefit-of-awarding-data-sharing" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="false">
+  <experiment name="06-benefit-of-awarding-data-sharing" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <metric>stuff</metric>
@@ -1317,13 +1310,13 @@ NetLogo 6.2.0
       <value value="100"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="importance-of-chance">
-      <value value="0.45"/>
+      <value value="0.48"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
       <value value="true"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="baseline-detail" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="02-baseline-detail" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
@@ -1351,7 +1344,7 @@ NetLogo 6.2.0
       <value value="false"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="baseline-end" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="false">
+  <experiment name="03-baseline-end" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <metric>stuff</metric>
