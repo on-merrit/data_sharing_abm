@@ -583,7 +583,7 @@ SWITCH
 63
 share-data?
 share-data?
-1
+0
 1
 -1000
 
@@ -611,7 +611,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.4
+0.48
 .01
 1
 NIL
@@ -760,7 +760,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.0
 .01
 1
 NIL
@@ -1149,49 +1149,6 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="experiment" repetitions="10" runMetricsEveryStep="true">
-    <setup>setup</setup>
-    <go>go</go>
-    <metric>mean-grants groups with [data-sharing-policy?]</metric>
-    <metric>mean-grants groups with [not data-sharing-policy?]</metric>
-    <metric>mean-publications groups with [data-sharing-policy?]</metric>
-    <metric>mean-publications groups with [not data-sharing-policy?]</metric>
-    <enumeratedValueSet variable="history-length">
-      <value value="18"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="mechanism">
-      <value value="&quot;grant-history&quot;"/>
-      <value value="&quot;grant-random&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="n-groups">
-      <value value="100"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="share-data?">
-      <value value="true"/>
-      <value value="false"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="baseline" repetitions="5" runMetricsEveryStep="true">
-    <setup>setup</setup>
-    <go>go</go>
-    <metric>mean-grants groups</metric>
-    <metric>mean-publications groups</metric>
-    <metric>grants-gini</metric>
-    <metric>publications-gini</metric>
-    <enumeratedValueSet variable="history-length">
-      <value value="3"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="n-available-grants">
-      <value value="6"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="n-groups">
-      <value value="100"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="importance-of-chance" first="0" step="0.2" last="1"/>
-    <enumeratedValueSet variable="share-data?">
-      <value value="false"/>
-    </enumeratedValueSet>
-  </experiment>
   <experiment name="data-reuse" repetitions="5" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
