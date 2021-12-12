@@ -64,7 +64,7 @@ list(
   # data sharing experiment --------------
   tar_target(
     data_sharing_file,
-    "../outputs/data_sharing sharing-funders-2-table.csv",
+    "../outputs/data_sharing 04-sharing-funders-table.csv",
     format = "file"
   ),
   tar_target(
