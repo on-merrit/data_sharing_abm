@@ -76,7 +76,7 @@ list(
   # another data sharing experiment ----
   tar_target(
     funding_mechanism_file,
-    "../outputs/data_sharing pubs-vs-data-table.csv",
+    "../outputs/data_sharing 05-pubs-vs-data-table.csv",
     format = "file"
   ),
   tar_target(
