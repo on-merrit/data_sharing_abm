@@ -20,19 +20,23 @@ df <- targets::tar_read(data_sharing)
 
 ```{r data-sharing, fig.width=6, fig.height=4}
 pdata_sharing <- df %>% 
-  filter(!fund.on.data.history.) %>% 
   select(.run.number., .step., share.data.,
-         mean.grants.groups:sum..total.primary.publications..of.groups) %>% 
+         mean.grants.groups:sum..total.datasets..of.groups) %>% 
   pivot_longer(-c(.run.number., .step., share.data.)) %>% 
-  drop_na()
+  drop_na() %>% 
+  mutate(share.data. = if_else(share.data., "Data sharing", "No data sharing"))
 
 pdata_sharing %>% 
   filter(str_detect(name, "gini")) %>% 
+  mutate(name = str_remove(name, "\\..*") %>% str_to_title()) %>% 
   ggplot(aes(.step., value, colour = share.data.)) +
-  geom_smooth() +
-  facet_wrap(vars(name), nrow = 2, scales = "free_y")
+  geom_smooth(se = FALSE) + # interval is anyways not showing up, so remove from legend
+  facet_wrap(vars(name), nrow = 2, scales = "free_y") +
+  scale_colour_viridis_d(option = "C", begin = .1, end = .9, alpha = .7) +
+  labs(x = "step", y = "Gini index", colour = NULL) +
+  theme(legend.position = c(.8, .5))
 ```
-inequality is lower when sharing data
+Initially higher inequality with data sharing, but equals out over time.
 
 
 ```{r, dpi=120}
@@ -45,99 +49,15 @@ plotly::ggplotly(p)
 ```
 
 
-```{r sharing-funding-reward, fig.width=6, fig.height=4}
-# data sharing with funding reward
-data_funding <- df %>% 
-  filter(share.data.) %>% 
-  select(.run.number., .step., fund.on.data.history.,
-         mean.grants.groups:sum..total.primary.publications..of.groups) %>% 
-  pivot_longer(-c(.run.number., .step., fund.on.data.history.)) %>% 
-  drop_na()
-
-data_funding %>% 
-  filter(str_detect(name, "gini")) %>% 
-  ggplot(aes(.step., value, colour = fund.on.data.history.)) +
-  geom_smooth() +
-  facet_wrap(vars(name), nrow = 2, scales = "free_y")
-```
-
-```{r, dpi=120}
-p <- data_funding %>% 
-  filter(str_detect(name, "gini")) %>% 
-  ggplot(aes(.step., value, colour = fund.on.data.history., group = .run.number.)) +
-  geom_line() +
-  facet_wrap(vars(name), nrow = 2)
-plotly::ggplotly(p)
-```
-
-
-```{r three-modes, fig.width=6, fig.height=4}
-# compare three
-comparison <- df %>% 
-  select(.run.number., .step., fund.on.data.history., share.data.,
-         mean.grants.groups:sum..total.datasets..of.groups) %>% 
-  pivot_longer(-c(.run.number., .step., fund.on.data.history., share.data.)) %>% 
-  drop_na()
-
-comparison %>% 
-  mutate(experiment = case_when(
-    !share.data. & !fund.on.data.history. ~ "no sharing",
-    share.data. & !fund.on.data.history. ~ "only sharing",
-    share.data. & fund.on.data.history. ~ "share and reward",
-    TRUE ~ NA_character_
-  )) %>% 
-  select(-share.data., -fund.on.data.history.) %>% 
-  drop_na() -> comparison
-
-comparison %>% 
-  filter(str_detect(name, "gini")) %>% 
-  ggplot(aes(.step., value, colour = experiment)) +
-  geom_smooth() +
-  facet_wrap(vars(name), nrow = 2, scales = "free_y")
-```
-
-almost no difference: explanation: publications and datasets are closely linked.
-(runs with more publications also have more datasets).
-those that are successful are also those that share (because one funder demands
-it). also chance/error still large influence. 
-could play with number of funders, share of funders that mandates data
-
-Next thing to look at: play with rate of data vs pub history, and display the 
-fraction of data and normal grants.
-
-# Q on experiments
-does funding based on history lead to higher concentration? i.e., groups that 
-got grants with data sharing tend to get more grants of the same sort?
-
-
-# numbers of datasets
-```{r datasets}
-comparison %>% 
-  filter(str_detect(name, "count"),
-         experiment != "no sharing") %>% 
-  ggplot(aes(.step., value, colour = experiment, group = .run.number.)) +
-  geom_line()
-```
-
-## total datsets
-```{r total-datasets, fig.width=4, fig.height=5}
-comparison %>% 
-  filter(experiment != "no sharing", 
-         str_detect(name, "total\\.datasets"),
+```{r pubs-with-and-without-data-sharing, fig.width=4, fig.height=5}
+pdata_sharing %>% 
+  filter(str_detect(name, "total\\.primary"),
          .step. == 500) %>% 
-  ggplot(aes(experiment, value, fill = experiment)) +
-  geom_boxplot(show.legend = FALSE, notch = TRUE) +
-  labs(y = "Total # of datasets produced", x = NULL)
+  ggplot(aes(share.data., value, fill = share.data.)) +
+  geom_boxplot(notch = TRUE, show.legend = FALSE, width = .4) +
+  geom_jitter(alpha = .35, aes(fill = NULL), show.legend = FALSE, width = .1) +
+  scale_fill_viridis_d(option = "C", begin = .1, end = .9, alpha = .5) +
+  labs(x = NULL, y = "# of total publications produced")
 ```
 
-
-# numbers of publications
-```{r total-publications, fig.width=5, fig.height=5}
-comparison %>% 
-  filter(str_detect(name, "total\\.primar"),
-         .step. == 500) %>% 
-  ggplot(aes(experiment, value, fill = experiment)) +
-  geom_boxplot(show.legend = FALSE, notch = TRUE) +
-  labs(y = "Total # of publications produced", x = NULL)
-```
 
