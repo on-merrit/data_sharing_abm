@@ -27,16 +27,18 @@ p <- df %>%
   select(run_number = .run.number., chance_imp = importance.of.chance, 
          step = .step., contains("gini")) %>% 
   pivot_longer(contains("gini")) %>% 
-  mutate(chance_imp = factor(chance_imp, labels = chance_imp %>% unique() %>%
-                               as.numeric() %>% scales::percent())) %>%
+  filter(factor(chance_imp) %in% factor(seq(0, 1, by = .1))) %>% 
   ggplot(aes(step, value, colour = factor(chance_imp))) +
   geom_smooth() +
   facet_wrap(vars(name)) +
+  scale_colour_viridis_d(option = "C", alpha = .5,begin = .1, end = .9) +
   labs(y = "gini", 
-       colour = "importance of chance",
-       caption = "n = 100 agents") 
+       colour = expression(paste("Randomness parameter ", italic("c"))),
+       caption = "n = 100 agents; summarised from 30 runs") 
 p
 ```
+
+
 ```{r, dpi=120}
 plotly::ggplotly(p)
 ```
@@ -53,9 +55,10 @@ p <- df_detail %>%
   ggplot(aes(step, value, colour = factor(chance_imp))) +
   geom_smooth() +
   facet_wrap(vars(name)) +
+  scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
   labs(y = "gini", 
-       colour = "importance of chance",
-       caption = "n = 100 agents") 
+       colour = expression(paste("Randomness parameter ", italic("c"))),
+       caption = "n = 100 agents; summarised from 30 runs") 
 p
 ```
 
