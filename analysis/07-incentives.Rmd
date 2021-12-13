@@ -57,7 +57,9 @@ df_clean %>%
   mutate(stats = paste("pubs:", n_publications, "grants:", total_grants)) %>%
   ggplot(aes(data_grant_share, data_sharing_perc, label = stats)) +
   geom_point(alpha = .1) +
-  facet_wrap(vars(factor(pubs.vs.data)))  
+  facet_wrap(vars(factor(pubs.vs.data)))  +
+  labs(x = "% of grants that mandate data sharing", 
+       y = "% of publications with shared data")
 
 ```
 
@@ -66,7 +68,9 @@ df_clean %>%
   mutate(stats = paste("pubs:", n_publications, "grants:", total_grants)) %>%
   ggplot(aes(data_grant_share, data_sharing_perc, label = stats)) +
   geom_density_2d() +
-  facet_wrap(vars(factor(pubs.vs.data)))  
+  facet_wrap(vars(factor(pubs.vs.data))) +
+  labs(x = "% of grants that mandate data sharing", 
+       y = "% of publications with shared data")
 ```
 
 
@@ -79,7 +83,9 @@ df_clean %>%
   ggplot(aes(data_grant_share, n_publications)) +
   geom_point()  +
   facet_wrap(vars(pubs.vs.data)) +
-  labs(title = "Influence of incentive settings")
+  labs(title = "Influence of incentive settings",
+       x = "% of grants that mandate data sharing", 
+       y = "# of total publications")
 ```
 
 
