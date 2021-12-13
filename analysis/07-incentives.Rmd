@@ -15,8 +15,13 @@ theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
 extrafont::loadfonts(device = "win")
 
 df <- targets::tar_read(incentives)
+df_time <- targets::tar_read(incentives_time)
 
 df_clean <- df %>% 
+  select(run, pubs.vs.data, step, who:total_grants) %>% 
+  mutate(data_sharing_perc = n_pubs_with_data_shared / n_publications)
+
+df_time_clean <- df_time %>% 
   select(run, pubs.vs.data, step, who:total_grants) %>% 
   mutate(data_sharing_perc = n_pubs_with_data_shared / n_publications)
 ```
@@ -47,13 +52,31 @@ p
 plotly::ggplotly(p)
 ```
 
+```{r overview-3}
+df_clean %>% 
+  mutate(stats = paste("pubs:", n_publications, "grants:", total_grants)) %>%
+  ggplot(aes(data_grant_share, data_sharing_perc, label = stats)) +
+  geom_point(alpha = .1) +
+  facet_wrap(vars(factor(pubs.vs.data)))  
+
+```
+
+```{r overview-density}
+df_clean %>% 
+  mutate(stats = paste("pubs:", n_publications, "grants:", total_grants)) %>%
+  ggplot(aes(data_grant_share, data_sharing_perc, label = stats)) +
+  geom_density_2d() +
+  facet_wrap(vars(factor(pubs.vs.data)))  
+```
+
+
 
 
 Rewarding based on datasets simply adds more randomness.
 
 ```{r incentives-on-grants, fig.width=8, fig.height=6}
 df_clean %>% 
-  ggplot(aes(data_grant_share, total_grants)) +
+  ggplot(aes(data_grant_share, n_publications)) +
   geom_point()  +
   facet_wrap(vars(pubs.vs.data)) +
   labs(title = "Influence of incentive settings")
@@ -163,4 +186,8 @@ data we need to see a change.
 
 also, maybe having those that always share data, and seeing how they are 
 affected 
+
+
+# Over time
+--> See exploration script for now
 
