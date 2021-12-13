@@ -583,7 +583,7 @@ SWITCH
 63
 share-data?
 share-data?
-1
+0
 1
 -1000
 
@@ -760,7 +760,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.0
 .01
 1
 NIL
@@ -1324,6 +1324,43 @@ NetLogo 6.2.0
       <value value="3"/>
     </enumeratedValueSet>
     <steppedValueSet variable="pubs-vs-data" first="0" step="0.2" last="1"/>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0.05"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.48"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="07-benefit-of-awarding-data-sharing-over-time" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>stuff</metric>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-funders">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="reuser-share">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
     <enumeratedValueSet variable="rdm-cost">
       <value value="0.05"/>
     </enumeratedValueSet>
