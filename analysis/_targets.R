@@ -95,5 +95,14 @@ list(
     incentives,
     read_nested_experiment(incentives_file)
   ),
+  tar_target(
+    incentives_time_file,
+    "../outputs/data_sharing 07-benefit-of-awarding-data-sharing-over-time-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    incentives_time,
+    read_nested_experiment(incentives_time_file)
+  ),
   tar_render(incentives_report, "07-incentives.Rmd")
 )
