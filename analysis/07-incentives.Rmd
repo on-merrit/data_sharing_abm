@@ -103,7 +103,7 @@ AIC(m3, m1)
 ```
 
 
-```{r, fig.height=8, fig.width=10}
+```{r}
 df_nested <- df_clean %>% 
   group_by(pubs.vs.data) %>% 
   nest()
@@ -124,7 +124,7 @@ df_nested %>%
   unnest(glance) 
 ```
 
-```{r model-plot}
+```{r model-plot, fig.height=8, fig.width=10}
 # plot it
 dummy_data <- tibble(
   total_grants = rep(1:50, 5),
