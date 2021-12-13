@@ -123,6 +123,10 @@ to publish
       ] [
         ; otherwise, create publications from data
 
+        ; reusers probably cannot reuse a dataset and share one again. Therefore, what to do with grants mandating data sharing?
+        ; would need different types of shared data? different quality?
+        ; disregard for now, and simply use all available resources
+
         ; reduce resources by some factor (1 for now, so going for one data publication per tick on average)
         ifelse total-resources < 1 [
           set resources-for-data-paper total-resources * 1.2 ; it is easier to produce publications from data
