@@ -30,8 +30,6 @@ df_clean %>%
 ```r
 df_clean %>% 
   filter(pubs.vs.data %in% c(0, .3, .5, .7, 1)) %>% 
-  # mutate(across(pubs.vs.data, cut, breaks = c(0, .25, .5, .75, 1),
-  #               include.lowest = TRUE)) %>% 
   pivot_longer(contains("gini")) %>% 
   ggplot(aes(.step., value, colour = factor(pubs.vs.data),
              group = pubs.vs.data)) +
