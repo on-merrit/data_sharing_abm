@@ -49,15 +49,16 @@ plotly::ggplotly(p)
 ```
 
 
-```{r pubs-with-and-without-data-sharing, fig.width=4, fig.height=5}
+```{r pubs-with-and-without-data-sharing, fig.width=6, fig.height=3}
 pdata_sharing %>% 
   filter(str_detect(name, "total\\.primary"),
          .step. == 500) %>% 
   ggplot(aes(share.data., value, fill = share.data.)) +
-  geom_boxplot(notch = TRUE, show.legend = FALSE, width = .4) +
+  geom_boxplot(notch = TRUE, show.legend = FALSE, width = .4, outlier.alpha = 0) +
   geom_jitter(alpha = .35, aes(fill = NULL), show.legend = FALSE, width = .1) +
   scale_fill_viridis_d(option = "C", begin = .1, end = .9, alpha = .5) +
-  labs(x = NULL, y = "# of total publications produced")
+  labs(x = NULL, y = "# of total publications produced") +
+  coord_flip()
 ```
 
 
