@@ -22,20 +22,23 @@ df_clean <- df %>%
 ```
 
 
-```{r}
+```{r overview-1}
 df_clean %>% 
   ggplot(aes(data_grant_share, data_sharing_perc, colour = pubs.vs.data)) +
   geom_point(size = 1.5) +
-  scale_colour_viridis_c()
+  scale_colour_viridis_c(option = "C")
 # why does the right side not go up higher? is this the base funding that 
 # stays stronger for those with not many grants?
+```
 
+
+```{r overview-2}
 p <- df_clean %>% 
   mutate(stats = paste("pubs:", n_publications, "grants:", total_grants)) %>%
   ggplot(aes(data_grant_share, data_sharing_perc, colour = factor(pubs.vs.data),
              label = stats)) +
   geom_point(alpha = .5) +
-  scale_colour_viridis_d() 
+  scale_colour_viridis_d(option = "C") 
 p
 ```
 
@@ -119,9 +122,9 @@ df_nested
 
 df_nested %>% 
   unnest(glance) 
+```
 
-
-
+```{r model-plot}
 # plot it
 dummy_data <- tibble(
   total_grants = rep(1:50, 5),
@@ -141,6 +144,7 @@ df_nested %>%
        title = "Productivity depending on data sharing incentives") +
   theme(legend.position = "top")
 ```
+
 
 As you incentivise data sharing this way, those groups that actually solely 
 get funded by funders mandating OD fare worse than others.
