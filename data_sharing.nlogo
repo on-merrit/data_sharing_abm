@@ -88,7 +88,6 @@ end
 to go
   if ticks = 500 [stop] ; stop after 250 years (500)
   if not share-data? and reuse-data? [error "Data sharing has to be enabled to model data-reuse. Please set `share-data?` to `On`"]
-  if reuse-data? [error "The reuse part currently is defunct."]
   publish
   setup-grants
   allocate-grants
@@ -115,7 +114,6 @@ to publish
     ]
 
     ask reusers [
-      ;; the reuse part currently is defunct!!!!!!!!!!!!!
       set shape "truck"
       ifelse count datasets < 1 [
         ; if there are no datasets, publish as usual
@@ -125,29 +123,37 @@ to publish
 
         ; reusers probably cannot reuse a dataset and share one again. Therefore, what to do with grants mandating data sharing?
         ; would need different types of shared data? different quality?
-        ; disregard for now, and simply use all available resources
+        ; disregard for now, and simply use all available resources. reused data which was shared again cannot be reused a third time
+
+        ; how do they choose which resources to use for data reuse? sharing mandating grants, normal grants, baseline?
+        ; for now, they randomly draw one grant, and from this they do not share anything, even if mandated
+
+
+        let current-grants link-neighbors with [breed = grants]
 
         ; reduce resources by some factor (1 for now, so going for one data publication per tick on average)
-        ifelse total-resources < 1 [
+        ifelse count current-grants > 0 [
+          ; here we could implement different types of agents: using none to all resources available for data reuse
+          set resources-for-data-paper 1.2
+          ; remove one grant at random (https://stackoverflow.com/a/32931634/3149349)
+          ask one-of current-grants [ set current-grants other current-grants ]
+        ] [
           set resources-for-data-paper total-resources * 1.2 ; it is easier to produce publications from data
           set total-resources 0
-        ] [
-          set resources-for-data-paper 1.2 ; it is easier to produce publications from data
-          set total-resources total-resources - 1
         ]
-        ; use the remaining resources to produce normal publications
-        set primary-publications random-poisson total-resources
+
+        ; use the remaining resources for default publishing
+        default-publishing-set current-grants
         ; use the additional resources to consume a dataset, to produce a publication
         set data-publications random-poisson resources-for-data-paper
 
         if data-publications >= 1 [ ask n-of 1 datasets [ die ] ] ; let one random dataset die
 
         ; recalculate total publications based on the sum of both
-        set n-pubs-this-round primary-publications + data-publications
+        set n-pubs-this-round n-pubs-this-round + data-publications
 
         ; update indices
-        set n-publications n-publications + n-pubs-this-round
-        set total-primary-publications total-primary-publications + primary-publications
+        set n-publications n-publications + data-publications
         set total-data-publications total-data-publications + data-publications
         set publication-history fput n-pubs-this-round but-last publication-history
       ]
@@ -177,6 +183,29 @@ to default-publishing
   share-data
 
   set publication-history fput primary-publications but-last publication-history
+end
+
+; this is very similar to the above, except for two things:
+; 1. it needs an agentset (which usually would be the link-neighbors)
+; 2. it does not put publications into the publicaiton history, this is done upstream in this case
+to default-publishing-set [ agentset ]
+  let n-data-grants count agentset with [breed = grants and data-sharing-policy?]
+  let n-other-grants count agentset with [breed = grants and not data-sharing-policy?]
+
+  let resources-for-data-sharing n-data-grants - n-data-grants * rdm-cost ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
+  let other-resources resources + n-other-grants
+
+  set publications-with-data-shared random-poisson resources-for-data-sharing
+  let other-publications random-poisson other-resources
+
+  set primary-publications publications-with-data-shared + other-publications
+  set total-primary-publications total-primary-publications + primary-publications
+  set n-pubs-this-round primary-publications
+  set n-publications n-publications + primary-publications
+  set n-publications-with-data-shared n-publications-with-data-shared + publications-with-data-shared
+
+  ; share datasets if such publications where generated
+  share-data
 end
 
 
@@ -647,7 +676,7 @@ SWITCH
 98
 reuse-data?
 reuse-data?
-1
+0
 1
 -1000
 
@@ -697,7 +726,7 @@ reuser-share
 reuser-share
 0
 1
-0.1
+1.0
 .1
 1
 NIL
@@ -764,7 +793,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.0
+1.0
 .01
 1
 NIL
