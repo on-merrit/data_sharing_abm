@@ -31,14 +31,20 @@ df_clean %>%
   facet_wrap(vars(name), nrow = 2, scales = "free_y")
 ```
 
-```{r gini-groups}
+```{r gini-groups, fig.width=6, fig.height=5}
 df_clean %>% 
   filter(pubs.vs.data %in% c(0, .3, .5, .7, 1)) %>% 
   pivot_longer(contains("gini")) %>% 
+  mutate(name = str_remove(name, "\\..*") %>% str_to_title()) %>% 
+  filter(!is.na(value)) %>% 
   ggplot(aes(.step., value, colour = factor(pubs.vs.data),
              group = pubs.vs.data)) +
   geom_smooth() +
-  facet_wrap(vars(name), nrow = 2, scales = "free_y")
+  facet_wrap(vars(name), nrow = 2, scales = "free_y") +
+  scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
+  labs(colour = "Weight of publication history",
+       x = "step", y = "Gini index") +
+  theme(legend.position = "top")
 ```
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Funding mechanisms"
 author: "Thomas Klebel"
-date: "13 Dezember, 2021"
+date: "15 Dezember, 2021"
 output: 
   html_document:
     keep_md: true
@@ -31,10 +31,16 @@ df_clean %>%
 df_clean %>% 
   filter(pubs.vs.data %in% c(0, .3, .5, .7, 1)) %>% 
   pivot_longer(contains("gini")) %>% 
+  mutate(name = str_remove(name, "\\..*") %>% str_to_title()) %>% 
+  filter(!is.na(value)) %>% 
   ggplot(aes(.step., value, colour = factor(pubs.vs.data),
              group = pubs.vs.data)) +
   geom_smooth() +
-  facet_wrap(vars(name), nrow = 2, scales = "free_y")
+  facet_wrap(vars(name), nrow = 2, scales = "free_y") +
+  scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
+  labs(colour = "Weight of publication history",
+       x = "step", y = "Gini index") +
+  theme(legend.position = "top")
 ```
 
 ```
