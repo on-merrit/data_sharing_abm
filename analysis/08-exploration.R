@@ -1,4 +1,6 @@
 # explorations based on detailed experiment from 07-incentives.rmd
+# this script further investigates how different groups fare relative to data 
+# sharing incentives
 
 pdata <- df_time_clean %>% 
   # run 3 = pubsvsdata=1; run 1 = pubsvsdata=0
