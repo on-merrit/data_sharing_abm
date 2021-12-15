@@ -726,7 +726,7 @@ reuser-share
 reuser-share
 0
 1
-1.0
+0.0
 .1
 1
 NIL
@@ -793,7 +793,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.73
 .01
 1
 NIL
@@ -1429,6 +1429,44 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="importance-of-chance">
       <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="share-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="08-reuse" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
+    <metric>count datasets</metric>
+    <metric>sum [total-primary-publications] of groups</metric>
+    <metric>sum [total-data-publications] of groups</metric>
+    <metric>sum [total-datasets] of groups</metric>
+    <enumeratedValueSet variable="reuse-data?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-funders">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="reuser-share" first="0" step="0.2" last="1"/>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0.8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0.05"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.48"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
       <value value="true"/>
