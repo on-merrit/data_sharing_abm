@@ -104,5 +104,17 @@ list(
     incentives_time,
     read_nested_experiment(incentives_time_file)
   ),
-  tar_render(incentives_report, "07-incentives.Rmd")
+  tar_render(incentives_report, "07-incentives.Rmd"),
+  
+  # reuse analysis -----
+  tar_target(
+    reuse_file,
+    "../outputs/data_sharing 08-reuse-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    reuse,
+    read_experiments(reuse_file)
+  ),
+  tar_render(reuse_report, "09-reuse.Rmd")
 )
