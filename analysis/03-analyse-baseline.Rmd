@@ -27,12 +27,14 @@ p <- df %>%
   select(run_number = .run.number., chance_imp = importance.of.chance, 
          step = .step., contains("gini")) %>% 
   pivot_longer(contains("gini")) %>% 
-  filter(factor(chance_imp) %in% factor(seq(0, 1, by = .1))) %>% 
+  filter(factor(chance_imp) %in% factor(seq(0, 1, by = .1)),
+         !is.na(value)) %>% 
+  mutate(name = str_remove(name, "\\..*") %>% str_to_title()) %>% 
   ggplot(aes(step, value, colour = factor(chance_imp))) +
   geom_smooth() +
   facet_wrap(vars(name)) +
   scale_colour_viridis_d(option = "C", alpha = .5,begin = .1, end = .9) +
-  labs(y = "gini", 
+  labs(y = "Gini index", 
        colour = expression(paste("Randomness parameter ", italic("c"))),
        caption = "n = 100 agents; summarised from 30 runs") 
 p
@@ -50,13 +52,15 @@ p <- df_detail %>%
   select(run_number = .run.number., chance_imp = importance.of.chance, 
          step = .step., contains("gini")) %>% 
   pivot_longer(contains("gini")) %>% 
+  mutate(name = str_remove(name, "\\..*") %>% str_to_title()) %>% 
+  filter(!is.na(value)) %>% 
   # mutate(chance_imp = factor(chance_imp, labels = chance_imp %>% unique() %>%
   #                              as.numeric() %>% scales::percent())) %>%
   ggplot(aes(step, value, colour = factor(chance_imp))) +
   geom_smooth() +
   facet_wrap(vars(name)) +
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
-  labs(y = "gini", 
+  labs(y = "Gini index", 
        colour = expression(paste("Randomness parameter ", italic("c"))),
        caption = "n = 100 agents; summarised from 30 runs") 
 p
