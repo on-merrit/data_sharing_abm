@@ -9,6 +9,8 @@ breed [funders funder]
 
 groups-own [
   resources
+  long-term-orientation
+  data-sharing?
   total-grants
   total-data-grants
   total-default-grants
@@ -94,6 +96,16 @@ to go
   update-indices
 
   tick
+end
+
+to update-sharing-decision
+  ask groups [
+    ; update frequency
+    if long-term-orientation mod ticks = 0 [
+      ;
+    ]
+  ]
+
 end
 
 to publish
@@ -616,7 +628,7 @@ SWITCH
 63
 share-data?
 share-data?
-0
+1
 1
 -1000
 
@@ -676,7 +688,7 @@ SWITCH
 98
 reuse-data?
 reuse-data?
-0
+1
 1
 -1000
 
@@ -726,7 +738,7 @@ reuser-share
 reuser-share
 0
 1
-0.0
+0.2
 .1
 1
 NIL
@@ -793,7 +805,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.73
+0.8
 .01
 1
 NIL
