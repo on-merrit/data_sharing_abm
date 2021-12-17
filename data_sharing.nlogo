@@ -76,9 +76,10 @@ to setup
     )
   ]
 
-  create-funders n-funders
+  create-funders 1
   ask funders [
-    set data-sharing-policy? false
+    ; simply let all funders have data sharing policy, so the incentivising happens with current model
+    set data-sharing-policy? true
     setxy random-xcor random-ycor
     set shape "tree"
     set color 15 ; red
@@ -102,7 +103,7 @@ to go
   setup-grants
   allocate-grants
   update-indices
-  if ticks >= 200 [ update-sharing-decision ]
+  if ticks >= sharing-start [ update-sharing-decision ]
 
   tick
 end
@@ -114,7 +115,7 @@ to update-sharing-decision
       let grant-success median but-first grant-history
       ; compare to current grants and adapt
       ; here we could also add a logistic function
-      if grant-success > n-grants [ set data-sharing? not data-sharing? ]
+      if grant-success < n-grants [ set data-sharing? not data-sharing? ]
     ]
   ]
 
@@ -163,7 +164,7 @@ to publish
           ask one-of current-grants [ set current-grants other current-grants ]
         ] [
           set resources-for-data-paper total-resources * 1.2 ; it is easier to produce publications from data
-          set total-resources 0
+          set total-resources 0 ; CHECK THIS!!!!! unclear what is happening here
         ]
 
         ; use the remaining resources for default publishing
@@ -188,14 +189,17 @@ end
 
 
 to default-publishing
-  let n-data-grants count link-neighbors with [breed = grants and data-sharing-policy?]
-  let n-other-grants count link-neighbors with [breed = grants and not data-sharing-policy?]
+  let current-resources resources + n-grants
+  let other-publications 0 ; need to keep better track of what is used where
+  set publications-with-data-shared 0
 
-  let resources-for-data-sharing n-data-grants - n-data-grants * rdm-cost ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
-  let other-resources resources + n-other-grants
-
-  set publications-with-data-shared random-poisson resources-for-data-sharing
-  let other-publications random-poisson other-resources
+  ifelse data-sharing? and ticks >= sharing-start [
+    set current-resources current-resources - current-resources * rdm-cost  ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
+    set publications-with-data-shared random-poisson current-resources
+  ] [
+    set publications-with-data-shared 0
+    set other-publications random-poisson current-resources
+  ]
 
   set primary-publications publications-with-data-shared + other-publications
   set total-primary-publications total-primary-publications + primary-publications
@@ -308,7 +312,7 @@ to allocate-grants
       set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance) * pub-and-data-success
     ]
 
-    ifelse data-sharing-policy? [
+    ifelse data-sharing-policy? and ticks >= sharing-start [
       ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
       let rank-list sort-on [(- proposal-strength-data)] groups ; need to invert proposal-strength, so that higher values are on top of the list
       let top-groups sublist rank-list 0 grants-per-funder
@@ -654,7 +658,7 @@ grants-per-funder
 grants-per-funder
 1
 20
-8.0
+14.0
 1
 1
 NIL
@@ -669,7 +673,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.48
+0.41
 .01
 1
 NIL
@@ -818,7 +822,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.8
+1.0
 .01
 1
 NIL
@@ -832,7 +836,7 @@ SLIDER
 rdm-cost
 rdm-cost
 0
-.5
+1
 0.05
 .01
 1
@@ -868,7 +872,22 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-2
+0
+
+SLIDER
+333
+132
+505
+165
+sharing-start
+sharing-start
+0
+500
+100.0
+20
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
