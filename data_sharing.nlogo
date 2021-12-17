@@ -31,6 +31,7 @@ groups-own [
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
   data-sharing-success
   data-sharing-history
+  grant-history
   chance
   proposal-strength-default
   proposal-strength-data
@@ -66,6 +67,13 @@ to setup
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
     set data-sharing-history n-values pub-history-length [0]
+    set grant-history n-values 6 [0]
+    ifelse random-float 1 < .5 [set data-sharing? true ][ set data-sharing? false]
+    (ifelse
+      agent-orientation = "all-myopic" [ set long-term-orientation 1 ]
+      agent-orientation = "all-long-term" [ set long-term-orientation 5 ]
+      agent-orientation = "uniform" [ set long-term-orientation one-of [1 2 3 4 5] ]
+    )
   ]
 
   create-funders n-funders
@@ -94,15 +102,19 @@ to go
   setup-grants
   allocate-grants
   update-indices
+  if ticks >= 200 [ update-sharing-decision ]
 
   tick
 end
 
 to update-sharing-decision
   ask groups [
-    ; update frequency
+    ; update only according to own update frequency
     if long-term-orientation mod ticks = 0 [
-      ;
+      let grant-success median but-first grant-history
+      ; compare to current grants and adapt
+      ; here we could also add a logistic function
+      if grant-success > n-grants [ set data-sharing? not data-sharing? ]
     ]
   ]
 
@@ -322,6 +334,7 @@ to update-indices
 
   ask groups [
     set n-grants count-n-grants
+    set grant-history fput n-grants but-last grant-history
   ]
 end
 
@@ -409,10 +422,10 @@ to-report stuff
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-29
-176
-465
-613
+34
+315
+470
+752
 -1
 -1
 12.97
@@ -633,10 +646,10 @@ share-data?
 -1000
 
 SLIDER
-23
-64
-154
-97
+166
+71
+297
+104
 grants-per-funder
 grants-per-funder
 1
@@ -648,10 +661,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-164
-64
-304
-97
+27
+119
+167
+152
 importance-of-chance
 importance-of-chance
 0
@@ -797,10 +810,10 @@ PENS
 "default" 0.05 1 -16777216 true "" "histogram [data-grant-share] of groups"
 
 SLIDER
-162
-106
-307
-139
+166
+164
+311
+197
 pubs-vs-data
 pubs-vs-data
 0
@@ -812,10 +825,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-26
-104
-157
-137
+175
+203
+306
+236
 rdm-cost
 rdm-cost
 0
@@ -846,6 +859,16 @@ PENS
 "no data" 1.0 0 -7500403 true "" "plot non-data-sharer-pubs"
 "mid data" 1.0 0 -2674135 true "" "plot some-data-sharer-pubs"
 "most data" 1.0 0 -955883 true "" "plot most-data-sharer-pubs"
+
+CHOOSER
+25
+64
+163
+109
+agent-orientation
+agent-orientation
+"all-myopic" "all-long-term" "uniform"
+2
 
 @#$#@#$#@
 ## WHAT IS IT?
