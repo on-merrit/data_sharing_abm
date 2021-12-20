@@ -180,8 +180,8 @@ end
 
 to allocate-grants
   ask groups [
-    set publication-success precision median publication-history 3
-    set data-sharing-success precision median data-sharing-history 3
+    set publication-success sum publication-history
+    set data-sharing-success sum data-sharing-history
   ]
 
   let max-pub-success max [publication-success] of groups
@@ -569,7 +569,7 @@ grants-per-funder
 grants-per-funder
 1
 20
-14.0
+10.0
 1
 1
 NIL
