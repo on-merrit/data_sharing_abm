@@ -344,7 +344,7 @@ end
 
 
 to-report stuff
-  report [(list who n-publications n-publications-with-data-shared total-grants)] of groups
+  report [(list who n-publications n-publications-with-data-shared n-grants)] of groups
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
