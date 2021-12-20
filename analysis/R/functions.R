@@ -6,8 +6,8 @@ read_experiments <- function(path) {
 
 read_nested_experiment <- function(path, 
                                    columns = c(
-                                     "who", "data_grant_share", 
-                                     "n_publications", "n_pubs_with_data_shared",
+                                     "who", "n_publications",
+                                     "n_pubs_with_data_shared",
                                      "total_grants")) {
   df <- read_csv(path, skip = 6) %>% 
     tibble(.name_repair = "universal") 
