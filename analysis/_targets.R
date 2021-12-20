@@ -2,7 +2,6 @@ library(targets)
 library(tarchetypes)
 
 source("R/functions.R")
-source("R/helpers.R")
 
 options(tidyverse.quiet = TRUE)
 tar_option_set(packages = c("scales", "tidyverse", "hrbrthemes"))
