@@ -12,9 +12,6 @@ groups-own [
   long-term-orientation
   data-sharing?
   total-grants
-  total-data-grants
-  total-default-grants
-  data-grant-share
   total-resources
   resources-for-data-paper
   total-datasets
@@ -24,8 +21,7 @@ groups-own [
   publications-with-data-shared ; current publications with shared data
   total-primary-publications
   n-publications-with-data-shared ; total publications with shared data
-  data-publications
-  total-data-publications
+  data-sharing-propensity ; how many publications came with data
   n-pubs-this-round
   publication-success
   publication-history ; implementation of tracking the publication history was adapted from https://stackoverflow.com/a/59862247/3149349
@@ -44,10 +40,6 @@ grants-own [
 
 datasets-own [
   dataset-year
-]
-
-funders-own [
-  data-sharing-policy?
 ]
 
 to setup
@@ -78,19 +70,9 @@ to setup
 
   create-funders 1
   ask funders [
-    ; simply let all funders have data sharing policy, so the incentivising happens with current model
-    set data-sharing-policy? true
     setxy random-xcor random-ycor
     set shape "tree"
     set color 15 ; red
-  ]
-
-  if share-data? [
-    let half-funders n-funders / 2
-    ask n-of half-funders funders [
-      set data-sharing-policy? true
-      set color 105 ; blue
-    ]
   ]
   reset-ticks
 end
@@ -98,7 +80,6 @@ end
 
 to go
   if ticks = 500 [stop] ; stop after 250 years (500)
-  if not share-data? and reuse-data? [error "Data sharing has to be enabled to model data-reuse. Please set `share-data?` to `On`"]
   publish
   setup-grants
   allocate-grants
@@ -122,69 +103,9 @@ to update-sharing-decision
 end
 
 to publish
-  ifelse not reuse-data? [
-    ask groups [
-      default-publishing
-    ]
-  ] [
-    ; choose some groups to re-use data
-    let reusers n-of (reuser-share * n-groups) groups
-
-    ; from https://stackoverflow.com/a/30966520/3149349
-    let non-reusers groups with [not member? self reusers]
-
-    ask non-reusers [
-      set shape "person"
-      default-publishing
-    ]
-
-    ask reusers [
-      set shape "truck"
-      ifelse count datasets < 1 [
-        ; if there are no datasets, publish as usual
-        default-publishing
-      ] [
-        ; otherwise, create publications from data
-
-        ; reusers probably cannot reuse a dataset and share one again. Therefore, what to do with grants mandating data sharing?
-        ; would need different types of shared data? different quality?
-        ; disregard for now, and simply use all available resources. reused data which was shared again cannot be reused a third time
-
-        ; how do they choose which resources to use for data reuse? sharing mandating grants, normal grants, baseline?
-        ; for now, they randomly draw one grant, and from this they do not share anything, even if mandated
-
-
-        let current-grants link-neighbors with [breed = grants]
-
-        ; reduce resources by some factor (1 for now, so going for one data publication per tick on average)
-        ifelse count current-grants > 0 [
-          ; here we could implement different types of agents: using none to all resources available for data reuse
-          set resources-for-data-paper 1.2
-          ; remove one grant at random (https://stackoverflow.com/a/32931634/3149349)
-          ask one-of current-grants [ set current-grants other current-grants ]
-        ] [
-          set resources-for-data-paper total-resources * 1.2 ; it is easier to produce publications from data
-          set total-resources 0 ; CHECK THIS!!!!! unclear what is happening here
-        ]
-
-        ; use the remaining resources for default publishing
-        default-publishing-set current-grants
-        ; use the additional resources to consume a dataset, to produce a publication
-        set data-publications random-poisson resources-for-data-paper
-
-        if data-publications >= 1 [ ask n-of 1 datasets [ die ] ] ; let one random dataset die
-
-        ; recalculate total publications based on the sum of both
-        set n-pubs-this-round n-pubs-this-round + data-publications
-
-        ; update indices
-        set n-publications n-publications + data-publications
-        set total-data-publications total-data-publications + data-publications
-        set publication-history fput n-pubs-this-round but-last publication-history
-      ]
-    ]
+  ask groups [
+    default-publishing
   ]
-
 end
 
 
@@ -206,36 +127,17 @@ to default-publishing
   set n-pubs-this-round primary-publications
   set n-publications n-publications + primary-publications
   set n-publications-with-data-shared n-publications-with-data-shared + publications-with-data-shared
+  ifelse n-publications = 0 [
+    set data-sharing-propensity 0
+  ] [
+    set data-sharing-propensity n-publications-with-data-shared / n-publications
+  ]
 
   ; share datasets if such publications where generated
   share-data
 
   set publication-history fput primary-publications but-last publication-history
 end
-
-; this is very similar to the above, except for two things:
-; 1. it needs an agentset (which usually would be the link-neighbors)
-; 2. it does not put publications into the publicaiton history, this is done upstream in this case
-to default-publishing-set [ agentset ]
-  let n-data-grants count agentset with [breed = grants and data-sharing-policy?]
-  let n-other-grants count agentset with [breed = grants and not data-sharing-policy?]
-
-  let resources-for-data-sharing n-data-grants - n-data-grants * rdm-cost ; rdm takes 5% of resources, we assume those 5% count in the same tick, since data has to be published along the publication
-  let other-resources resources + n-other-grants
-
-  set publications-with-data-shared random-poisson resources-for-data-sharing
-  let other-publications random-poisson other-resources
-
-  set primary-publications publications-with-data-shared + other-publications
-  set total-primary-publications total-primary-publications + primary-publications
-  set n-pubs-this-round primary-publications
-  set n-publications n-publications + primary-publications
-  set n-publications-with-data-shared n-publications-with-data-shared + publications-with-data-shared
-
-  ; share datasets if such publications where generated
-  share-data
-end
-
 
 
 to share-data
@@ -265,19 +167,11 @@ to setup-grants
 end
 
 to award-grant
-  let funder-policy? [data-sharing-policy?] of myself ; myself here refers to the funders
-  create-link-with one-of grants with [count link-neighbors = 0 and data-sharing-policy? = funder-policy?]
+  create-link-with one-of grants with [count link-neighbors = 0]
 
   ask link-neighbors with [breed = grants] [move-to one-of [neighbors] of myself]
 
   set total-grants total-grants + 1
-  ifelse funder-policy? [
-    ; if the funder demands data sharing
-    set total-data-grants total-data-grants + 1
-  ] [
-    set total-default-grants total-default-grants + 1
-  ]
-  set data-grant-share total-data-grants / (total-data-grants + total-default-grants)
 end
 
 
@@ -312,7 +206,7 @@ to allocate-grants
       set proposal-strength-data chance * importance-of-chance + (1 - importance-of-chance) * pub-and-data-success
     ]
 
-    ifelse data-sharing-policy? and ticks >= sharing-start [
+    ifelse ticks >= sharing-start [
       ; implementation adapted from https://stackoverflow.com/a/38268346/3149349
       let rank-list sort-on [(- proposal-strength-data)] groups ; need to invert proposal-strength, so that higher values are on top of the list
       let top-groups sublist rank-list 0 grants-per-funder
@@ -373,6 +267,22 @@ to-report publications-gini
   report gini-index
 end
 
+; also report gini on datasets
+
+to-report datasets-gini
+  let list1 [who] of groups
+  let list2 [who] of groups
+  let s 0
+  foreach list1 [ ?1 ->
+    let temp [total-datasets] of group ?1
+    foreach list2 [ ??1 ->
+      set s s + abs(temp - [total-datasets] of group ??1)
+    ]
+  ]
+  let gini-index s / (2 * (mean [total-datasets] of groups) * (count groups) ^ 2)
+  report gini-index
+end
+
 
 to-report count-n-grants
   report count link-neighbors with [breed = grants]
@@ -394,24 +304,20 @@ to-report mean-primary-publications [ agentset ]
   report precision mean [total-primary-publications] of agentset 2
 end
 
-to-report mean-data-publications [ agentset ]
-  report precision mean [total-data-publications] of agentset 2
-end
-
 ; group of reporters that targets the numbers of publications of three groups:
 ; those with low, medium or high shares of data grants
 to-report non-data-sharer-pubs
-  let x groups with [data-grant-share < .44]
+  let x groups with [data-sharing-propensity < .25]
   report precision mean [n-publications] of x 2
 end
 
 to-report some-data-sharer-pubs
-  let x groups with [data-grant-share >= .45 and data-grant-share < .55]
+  let x groups with [data-sharing-propensity >= .25 and data-sharing-propensity < .75]
   report precision mean [n-publications] of x 2
 end
 
 to-report most-data-sharer-pubs
-  let x groups with [data-grant-share >= .55]
+  let x groups with [data-sharing-propensity >= .75]
   report precision mean [n-publications] of x 2
 end
 
@@ -420,16 +326,32 @@ to-report no-grants
   report precision mean [n-publications] of x 2
 end
 
+; reporters on success of myopic vs long-term oriented ones
+to-report myopics
+  let x groups with [long-term-orientation < 3]
+  report precision mean [n-publications] of x 2
+end
+
+to-report mid-myopics
+  let x groups with [long-term-orientation = 3]
+  report precision mean [n-publications] of x 2
+end
+
+to-report long-termers
+  let x groups with [long-term-orientation > 2]
+  report precision mean [n-publications] of x 2
+end
+
 
 to-report stuff
-  report [(list who data-grant-share n-publications n-publications-with-data-shared total-grants)] of groups
+  report [(list who n-publications n-publications-with-data-shared total-grants)] of groups
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-34
-315
-470
-752
+32
+221
+468
+658
 -1
 -1
 12.97
@@ -589,7 +511,7 @@ PLOT
 125
 831
 312
-yearly publications
+bi-yearly publications
 NIL
 NIL
 0.0
@@ -638,22 +560,11 @@ false
 PENS
 "default" 10.0 1 -16777216 true "" "histogram [total-grants] of groups"
 
-SWITCH
-446
-30
-569
-63
-share-data?
-share-data?
-1
-1
--1000
-
 SLIDER
-166
-71
-297
-104
+25
+63
+156
+96
 grants-per-funder
 grants-per-funder
 1
@@ -665,15 +576,15 @@ NIL
 HORIZONTAL
 
 SLIDER
-27
-119
-167
-152
+154
+26
+294
+59
 importance-of-chance
 importance-of-chance
 0
 1
-0.41
+0.4
 .01
 1
 NIL
@@ -697,36 +608,7 @@ true
 PENS
 "grants" 1.0 0 -14070903 true "" "plot grants-gini"
 "publications" 1.0 0 -5298144 true "" "plot publications-gini"
-
-SWITCH
-447
-65
-570
-98
-reuse-data?
-reuse-data?
-1
-1
--1000
-
-PLOT
-534
-547
-848
-751
-data vs primary publications
-NIL
-NIL
-0.0
-4.0
-0.0
-4.0
-true
-true
-"" ""
-PENS
-"primary" 1.0 0 -9276814 true "" "plot mean-primary-publications groups "
-"data" 1.0 0 -5298144 true "" "plot mean-data-publications groups "
+"datasets" 1.0 0 -15040220 true "" "plot datasets-gini"
 
 PLOT
 849
@@ -747,77 +629,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count datasets"
 
 SLIDER
-309
-62
-444
-95
-reuser-share
-reuser-share
-0
-1
-0.2
-.1
-1
-NIL
-HORIZONTAL
-
-PLOT
-851
-545
-1132
-746
-total publications
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-true
-true
-"" ""
-PENS
-"primary" 1.0 0 -9276814 true "" "plot sum [total-primary-publications] of groups"
-"data" 1.0 0 -5298144 true "" "plot sum [total-data-publications] of groups"
-
-SLIDER
-155
-26
-295
-59
-n-funders
-n-funders
-2
-10
-2.0
-2
-1
-NIL
-HORIZONTAL
-
-PLOT
-1131
-547
-1492
-747
-Share of data grants of groups
-NIL
-NIL
-0.0
-1.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"default" 0.05 1 -16777216 true "" "histogram [data-grant-share] of groups"
-
-SLIDER
-166
-164
-311
-197
+185
+140
+330
+173
 pubs-vs-data
 pubs-vs-data
 0
@@ -829,15 +644,15 @@ NIL
 HORIZONTAL
 
 SLIDER
-175
-203
-306
-236
+356
+141
+487
+174
 rdm-cost
 rdm-cost
 0
 1
-0.05
+0.0
 .01
 1
 NIL
@@ -845,9 +660,9 @@ HORIZONTAL
 
 PLOT
 534
-751
+549
 847
-930
+728
 success of groups
 NIL
 NIL
@@ -865,29 +680,49 @@ PENS
 "most data" 1.0 0 -955883 true "" "plot most-data-sharer-pubs"
 
 CHOOSER
-25
-64
-163
-109
+32
+134
+170
+179
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
 0
 
 SLIDER
-333
-132
-505
-165
+159
+66
+299
+99
 sharing-start
 sharing-start
 0
 500
-100.0
+500.0
 20
 1
 NIL
 HORIZONTAL
+
+PLOT
+846
+545
+1139
+732
+myopicness
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"myopics" 1.0 0 -8053223 true "" "plot myopics"
+"mid myopics" 1.0 0 -13210332 true "" "plot mid-myopics"
+"long-term" 1.0 0 -14730904 true "" "plot long-termers"
 
 @#$#@#$#@
 ## WHAT IS IT?
