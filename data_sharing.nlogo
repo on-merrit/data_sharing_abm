@@ -31,6 +31,7 @@ groups-own [
   chance
   proposal-strength-default
   proposal-strength-data
+  update-counter ; this is needed so every agent has their own update window (and not all agents changing at the same time)
 ]
 
 grants-own [
@@ -60,6 +61,7 @@ to setup
     set publication-history n-values pub-history-length [0]
     set data-sharing-history n-values pub-history-length [0]
     set grant-history n-values 6 [0]
+    set update-counter random 100
     set data-sharing? false
     (ifelse
       agent-orientation = "all-myopic" [ set long-term-orientation 1 ]
@@ -96,7 +98,7 @@ end
 to update-sharing-decision
   ask groups [
     ; update only according to own update frequency
-    if ticks mod long-term-orientation = 0 [
+    if update-counter mod long-term-orientation = 0 [
       let grant-success median but-first grant-history
       ; compare to current grants and adapt
       ; here we could also add a logistic function
@@ -237,6 +239,10 @@ to update-indices
   ask groups [
     set n-grants count-n-grants
     set grant-history fput n-grants but-last grant-history
+  ]
+
+  ask groups [
+    set update-counter update-counter + 1
   ]
 end
 
@@ -691,7 +697,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-0
+1
 
 SLIDER
 159
@@ -755,7 +761,7 @@ data-sharers
 data-sharers
 0
 100
-100.0
+0.0
 1
 1
 %
