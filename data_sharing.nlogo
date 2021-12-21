@@ -32,6 +32,9 @@ groups-own [
   proposal-strength-default
   proposal-strength-data
   update-counter ; this is needed so every agent has their own update window (and not all agents changing at the same time)
+  ; these two are needed to compare longer periods
+  success-this-period
+  success-last-period
 ]
 
 grants-own [
@@ -60,9 +63,10 @@ to setup
     set n-pubs-this-round 0
     set publication-history n-values pub-history-length [0]
     set data-sharing-history n-values pub-history-length [0]
-    set grant-history n-values 6 [0]
+    set grant-history n-values 21 [0]
     set update-counter random 100
     set data-sharing? false
+    ; TODO: the values for myopia are too low: chances to publish each round are slim at baseline, therefore need to consider longer timeframe
     (ifelse
       agent-orientation = "all-myopic" [ set long-term-orientation 1 ]
       agent-orientation = "all-long-term" [ set long-term-orientation 5 ]
@@ -99,14 +103,25 @@ to update-sharing-decision
   ask groups [
     ; update only according to own update frequency
     if update-counter mod long-term-orientation = 0 [
-      let grant-success median but-first grant-history
+      ; change comparison window according to long-term-orientation of group
+      let group-history sublist but-first publication-history 0 long-term-orientation
+      set success-this-period mean group-history
+      ;let grant-success mean but-first grant-history
       ; compare to current grants and adapt
       ; here we could also add a logistic function
-      if grant-success < n-grants [ set data-sharing? not data-sharing? ]
+      ;if n-grants < grant-success [ set data-sharing? not data-sharing? ]
+      if success-this-period < success-last-period [ set data-sharing? not data-sharing? ]
+
+      ; we set the success of the last period equal to the current one, so the next time we arrive in this loop it is the last period
+      set success-last-period success-this-period
     ]
   ]
 
 end
+
+
+      ; change comparison window according to long-term-orientation of group
+;       let group-history sublist but-first grant-history 0 long-term-orientation set success-this-period mean group-history show success-this-period show n-pubs-this-round <= pub-success
 
 to publish
   ask groups [
@@ -662,7 +677,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.0
+0.95
 .01
 1
 NIL
@@ -708,7 +723,7 @@ sharing-start
 sharing-start
 0
 500
-100.0
+0.0
 20
 1
 NIL
@@ -761,7 +776,7 @@ data-sharers
 data-sharers
 0
 100
-0.0
+50.0
 1
 1
 %
