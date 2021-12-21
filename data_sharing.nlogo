@@ -92,7 +92,7 @@ end
 to update-sharing-decision
   ask groups [
     ; update only according to own update frequency
-    if long-term-orientation mod ticks = 0 [
+    if ticks mod long-term-orientation = 0 [
       let grant-success median but-first grant-history
       ; compare to current grants and adapt
       ; here we could also add a logistic function
@@ -569,7 +569,7 @@ grants-per-funder
 grants-per-funder
 1
 20
-10.0
+14.0
 1
 1
 NIL
@@ -652,7 +652,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.0
+0.39
 .01
 1
 NIL
@@ -698,7 +698,7 @@ sharing-start
 sharing-start
 0
 500
-500.0
+100.0
 20
 1
 NIL
@@ -723,6 +723,24 @@ PENS
 "myopics" 1.0 0 -8053223 true "" "plot myopics"
 "mid myopics" 1.0 0 -13210332 true "" "plot mid-myopics"
 "long-term" 1.0 0 -14730904 true "" "plot long-termers"
+
+PLOT
+1139
+546
+1500
+733
+data sharing propensity
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot count groups with [data-sharing?] "
 
 @#$#@#$#@
 ## WHAT IS IT?
