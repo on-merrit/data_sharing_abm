@@ -60,13 +60,17 @@ to setup
     set publication-history n-values pub-history-length [0]
     set data-sharing-history n-values pub-history-length [0]
     set grant-history n-values 6 [0]
-    ifelse random-float 1 < .5 [set data-sharing? true ][ set data-sharing? false]
+    set data-sharing? false
     (ifelse
       agent-orientation = "all-myopic" [ set long-term-orientation 1 ]
       agent-orientation = "all-long-term" [ set long-term-orientation 5 ]
       agent-orientation = "uniform" [ set long-term-orientation one-of [1 2 3 4 5] ]
     )
   ]
+
+  let n-data-sharers data-sharers / 100 * n-groups
+
+  ask n-of n-data-sharers groups [ set data-sharing? true ]
 
   create-funders 1
   ask funders [
@@ -652,7 +656,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.39
+0.0
 .01
 1
 NIL
@@ -741,6 +745,21 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot count groups with [data-sharing?] "
+
+SLIDER
+304
+66
+444
+99
+data-sharers
+data-sharers
+0
+100
+100.0
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
