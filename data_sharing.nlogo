@@ -35,6 +35,7 @@ groups-own [
   ; these two are needed to compare longer periods
   success-this-period
   success-last-period
+  openness-for-change
 ]
 
 grants-own [
@@ -66,6 +67,7 @@ to setup
     set grant-history n-values 21 [0]
     set update-counter random 100
     set data-sharing? false
+    set openness-for-change .1
     ; TODO: the values for myopia are too low: chances to publish each round are slim at baseline, therefore need to consider longer timeframe
     (ifelse
       agent-orientation = "all-myopic" [ set long-term-orientation 1 ]
@@ -100,6 +102,10 @@ to go
 end
 
 to update-sharing-decision
+  run learning-mechanism
+end
+
+to learn-rationally
   ask groups [
     ; update only according to own update frequency
     if update-counter mod long-term-orientation = 0 [
@@ -117,8 +123,25 @@ to update-sharing-decision
 end
 
 
-      ; change comparison window according to long-term-orientation of group
-;       let group-history sublist but-first grant-history 0 long-term-orientation set success-this-period mean group-history show success-this-period show n-pubs-this-round <= pub-success
+to learn-socially
+  ask groups [
+    ; update only according to own update frequency
+    if update-counter mod long-term-orientation = 0 [
+      let others n-of 5 other groups
+
+      let rank-list sort-on [(- n-pubs-this-round)] groups
+      let top-group first rank-list
+      let peer-state [data-sharing?] of top-group
+
+      if not data-sharing? = peer-state [
+        if random-float 1 < openness-for-change [
+          set data-sharing? peer-state
+        ]
+      ]
+    ]
+  ]
+end
+
 
 to publish
   ask groups [
@@ -651,10 +674,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count datasets"
 
 SLIDER
-185
-140
-330
 173
+111
+318
+144
 pubs-vs-data
 pubs-vs-data
 0
@@ -666,10 +689,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-356
-141
-487
-174
+344
+112
+475
+145
 rdm-cost
 rdm-cost
 0
@@ -702,10 +725,10 @@ PENS
 "most data" 1.0 0 -955883 true "" "plot most-data-sharer-pubs"
 
 CHOOSER
-32
-134
-170
-179
+24
+108
+162
+153
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
@@ -773,11 +796,21 @@ data-sharers
 data-sharers
 0
 100
-100.0
+50.0
 1
 1
 %
 HORIZONTAL
+
+CHOOSER
+24
+161
+162
+206
+learning-mechanism
+learning-mechanism
+"learn-rationally" "learn-socially"
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
