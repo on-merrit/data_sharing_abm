@@ -104,19 +104,16 @@ to update-sharing-decision
     ; update only according to own update frequency
     if update-counter mod long-term-orientation = 0 [
       ; change comparison window according to long-term-orientation of group
-      let group-history sublist but-first publication-history 0 long-term-orientation
+      let group-history sublist but-first grant-history 0 long-term-orientation
       set success-this-period mean group-history
-      ;let grant-success mean but-first grant-history
       ; compare to current grants and adapt
       ; here we could also add a logistic function
-      ;if n-grants < grant-success [ set data-sharing? not data-sharing? ]
-      if success-this-period < success-last-period [ set data-sharing? not data-sharing? ]
+      if success-this-period * 1.5 < success-last-period [ set data-sharing? not data-sharing? ]
 
       ; we set the success of the last period equal to the current one, so the next time we arrive in this loop it is the last period
       set success-last-period success-this-period
     ]
   ]
-
 end
 
 
@@ -677,7 +674,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.95
+0.16
 .01
 1
 NIL
@@ -776,7 +773,7 @@ data-sharers
 data-sharers
 0
 100
-50.0
+100.0
 1
 1
 %
