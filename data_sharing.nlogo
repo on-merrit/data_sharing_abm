@@ -682,7 +682,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.9
+0.8
 .01
 1
 NIL
@@ -697,7 +697,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.15
+0.2
 .01
 1
 NIL
@@ -810,7 +810,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1400,6 +1400,7 @@ NetLogo 6.2.0
     <metric>publications-gini</metric>
     <metric>datasets-gini</metric>
     <metric>count datasets</metric>
+    <metric>sum [n-pubs-this-round] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <metric>sum [total-datasets] of groups</metric>
     <metric>count groups with [data-sharing?]</metric>
@@ -1448,6 +1449,7 @@ NetLogo 6.2.0
     <metric>publications-gini</metric>
     <metric>datasets-gini</metric>
     <metric>count datasets</metric>
+    <metric>sum [n-pubs-this-round] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <metric>sum [total-datasets] of groups</metric>
     <metric>count groups with [data-sharing?]</metric>
