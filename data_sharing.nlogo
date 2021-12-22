@@ -682,7 +682,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.8
+1.0
 .01
 1
 NIL
@@ -697,7 +697,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.1
+0.2
 .01
 1
 NIL
@@ -732,7 +732,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-1
+2
 
 SLIDER
 159
@@ -796,7 +796,7 @@ data-sharers
 data-sharers
 0
 100
-5.0
+50.0
 1
 1
 %
@@ -810,7 +810,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1391,6 +1391,102 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="share-data?">
       <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="04-rational" repetitions="40" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
+    <metric>datasets-gini</metric>
+    <metric>count datasets</metric>
+    <metric>sum [total-primary-publications] of groups</metric>
+    <metric>sum [total-datasets] of groups</metric>
+    <metric>count groups with [data-sharing?]</metric>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0.8"/>
+      <value value="0.9"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="agent-orientation">
+      <value value="&quot;all-long-term&quot;"/>
+      <value value="&quot;all-myopic&quot;"/>
+      <value value="&quot;uniform&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0"/>
+      <value value="0.05"/>
+      <value value="0.1"/>
+      <value value="0.2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="sharing-start">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="data-sharers">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="learning-mechanism">
+      <value value="&quot;learn-rationally&quot;"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="05-social" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>grants-gini</metric>
+    <metric>publications-gini</metric>
+    <metric>datasets-gini</metric>
+    <metric>count datasets</metric>
+    <metric>sum [total-primary-publications] of groups</metric>
+    <metric>sum [total-datasets] of groups</metric>
+    <metric>count groups with [data-sharing?]</metric>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0.8"/>
+      <value value="0.9"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="agent-orientation">
+      <value value="&quot;all-long-term&quot;"/>
+      <value value="&quot;all-myopic&quot;"/>
+      <value value="&quot;uniform&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0"/>
+      <value value="0.05"/>
+      <value value="0.1"/>
+      <value value="0.2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="sharing-start">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="data-sharers">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="learning-mechanism">
+      <value value="&quot;learn-socially&quot;"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
