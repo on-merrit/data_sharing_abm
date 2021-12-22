@@ -60,60 +60,15 @@ list(
   ),
   tar_render(baseline_report, "03-analyse-baseline.Rmd"),
   
-  # data sharing experiment --------------
+  # rational data sharing --------------
   tar_target(
-    data_sharing_file,
-    "../outputs/data_sharing 04-sharing-funders-table.csv",
+    rational_file,
+    "../outputs/data_sharing 04-rational-table.csv",
     format = "file"
   ),
   tar_target(
-    data_sharing,
-    read_experiments(data_sharing_file)
+    rational,
+    read_experiments(rational_file)
   ),
-  tar_render(sharing_report, "05-data-sharing.Rmd"),
-  
-  # another data sharing experiment ----
-  tar_target(
-    funding_mechanism_file,
-    "../outputs/data_sharing 05-pubs-vs-data-table.csv",
-    format = "file"
-  ),
-  tar_target(
-    funding_mechanism,
-    read_experiments(funding_mechanism_file)
-  ),
-  tar_render(funding_mechanism_report, "06-funding-mechanisms.Rmd"),
-  
-  # incentives for data sharing ------
-  tar_target(
-    incentives_file,
-    "../outputs/data_sharing 06-benefit-of-awarding-data-sharing-table.csv",
-    format = "file"
-  ),
-  tar_target(
-    incentives,
-    read_nested_experiment(incentives_file)
-  ),
-  tar_target(
-    incentives_time_file,
-    "../outputs/data_sharing 07-benefit-of-awarding-data-sharing-over-time-table.csv",
-    format = "file"
-  ),
-  tar_target(
-    incentives_time,
-    read_nested_experiment(incentives_time_file)
-  ),
-  tar_render(incentives_report, "07-incentives.Rmd"),
-  
-  # reuse analysis -----
-  tar_target(
-    reuse_file,
-    "../outputs/data_sharing 08-reuse-table.csv",
-    format = "file"
-  ),
-  tar_target(
-    reuse,
-    read_experiments(reuse_file)
-  ),
-  tar_render(reuse_report, "09-reuse.Rmd")
+  tar_render(rational_report, "05-rational-learning.Rmd")
 )
