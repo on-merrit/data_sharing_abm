@@ -174,10 +174,6 @@ df_clean %>%
        colour = "Agent orientation")
 ```
 
-```
-## notch went outside hinges. Try setting notch=FALSE.
-```
-
 ![](05-rational-learning_files/figure-html/datasets-smooth-combined-emnd-1.png)<!-- -->
 
 # Publications produced
@@ -199,12 +195,6 @@ df_clean %>%
   labs(y = "# of total publications",
        x = "Cost factor of data sharing",
        colour = "Agent orientation")
-```
-
-```
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
 ```
 
 ![](05-rational-learning_files/figure-html/publications-smooth-combined-1.png)<!-- -->
