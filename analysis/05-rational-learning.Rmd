@@ -15,4 +15,113 @@ theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
 extrafont::loadfonts(device = "win")
 
 df <- targets::tar_read(rational)
+
+df_clean <- df %>% 
+  filter(.step. >= sharing.start) %>% 
+  select(run = .run.number., step = .step., pubs.vs.data, agent.orientation, 
+         rdm.cost, grants.gini:count.groups.with..data.sharing..)
+
+custom_scale <- scale_colour_viridis_d(begin = .1, end = .9, alpha = .5, 
+                                       option = "C")
 ```
+
+
+# Number of sharing agents
+```{r data-sharers-overview-myopic, fig.height=6, fig.width=9}
+df_clean %>% 
+  filter(agent.orientation == "all-myopic") %>% 
+  ggplot(aes(step, count.groups.with..data.sharing.., group = run)) +
+  geom_line(alpha = .4) +
+  facet_grid(rows = vars(pubs.vs.data),
+             cols = vars(rdm.cost))
+```
+
+```{r data-sharers-overview-long-term, fig.height=6, fig.width=9}
+df_clean %>% 
+  filter(agent.orientation == "all-long-term") %>% 
+  ggplot(aes(step, count.groups.with..data.sharing.., group = run)) +
+  geom_line(alpha = .4) +
+  facet_grid(rows = vars(pubs.vs.data),
+             cols = vars(rdm.cost))
+```
+
+```{r data-sharers-smooth-myopic, fig.height=9, fig.width=7}
+df_clean %>% 
+  filter(agent.orientation == "all-myopic") %>% 
+  ggplot(aes(step, count.groups.with..data.sharing.., 
+             colour = factor(rdm.cost))) +
+  geom_smooth() +
+  custom_scale +
+  facet_wrap(vars(pubs.vs.data), nrow = 3) +
+  theme(legend.position = "top") +
+  labs(y = "% of groups currently sharing data",
+       colour = "cost penalty for sharing data")
+```
+
+```{r data-sharers-smooth-longterm, fig.height=9, fig.width=7}
+df_clean %>% 
+  filter(agent.orientation == "all-long-term") %>% 
+  ggplot(aes(step, count.groups.with..data.sharing.., 
+             colour = factor(rdm.cost))) +
+  geom_smooth() +
+  custom_scale +
+  facet_wrap(vars(pubs.vs.data), nrow = 3) +
+  theme(legend.position = "top") +
+  labs(y = "% of groups currently sharing data",
+       colour = "cost penalty for sharing data")
+```
+
+```{r data-sharers-smooth-combined, fig.height=6, fig.width=9}
+df_clean %>% 
+  ggplot(aes(step, count.groups.with..data.sharing.., 
+             colour = factor(agent.orientation))) +
+  geom_smooth() +
+  facet_grid(rows = vars(pubs.vs.data),
+             cols = vars(rdm.cost)) +
+  custom_scale +
+  theme(legend.position = "top") +
+  labs(y = "% of groups currently sharing data",
+       colour = "Agent orientation")
+```
+
+# Datasets shared
+```{r data-sets-smooth-myopic, fig.height=9, fig.width=7}
+df_clean %>% 
+  filter(agent.orientation == "all-myopic") %>% 
+  ggplot(aes(step, count.datasets, 
+             colour = factor(rdm.cost))) +
+  geom_smooth() +
+  custom_scale +
+  facet_wrap(vars(pubs.vs.data), nrow = 3) +
+  theme(legend.position = "top") +
+  labs(y = "# of available datasets",
+       colour = "cost penalty for sharing data")
+```
+```{r data-sets-smooth-longterm, fig.height=9, fig.width=7}
+df_clean %>% 
+  filter(agent.orientation == "all-long-term") %>% 
+  ggplot(aes(step, count.datasets, 
+             colour = factor(rdm.cost))) +
+  geom_smooth() +
+  custom_scale +
+  facet_wrap(vars(pubs.vs.data), nrow = 3) +
+  theme(legend.position = "top") +
+  labs(y = "# of available datasets",
+       colour = "cost penalty for sharing data")
+```
+```{r data-sets-smooth-combined, fig.height=6, fig.width=9}
+df_clean %>% 
+  ggplot(aes(step, count.datasets, 
+             colour = factor(agent.orientation))) +
+  geom_smooth() +
+  facet_grid(rows = vars(pubs.vs.data),
+             cols = vars(rdm.cost)) +
+  custom_scale +
+  theme(legend.position = "top") +
+  labs(y = "# of available datasets",
+       colour = "Agent orientation")
+```
+
+# Publications produced
+
+# Inequalities
