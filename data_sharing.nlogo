@@ -67,7 +67,7 @@ to setup
     set grant-history n-values 21 [0]
     set update-counter random 100
     set data-sharing? false
-    set openness-for-change .1
+    set openness-for-change .2
     ; TODO: the values for myopia are too low: chances to publish each round are slim at baseline, therefore need to consider longer timeframe
     (ifelse
       agent-orientation = "all-myopic" [ set long-term-orientation 1 ]
@@ -682,7 +682,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.8
 .01
 1
 NIL
@@ -697,7 +697,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.16
+0.1
 .01
 1
 NIL
@@ -743,7 +743,7 @@ sharing-start
 sharing-start
 0
 500
-0.0
+100.0
 20
 1
 NIL
@@ -796,7 +796,7 @@ data-sharers
 data-sharers
 0
 100
-50.0
+5.0
 1
 1
 %
@@ -810,7 +810,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
