@@ -122,6 +122,40 @@ df_clean %>%
        colour = "Agent orientation")
 ```
 
-# Publications produced
+```{r datasets-smooth-combined-emnd, fig.height=6, fig.width=10}
+df_clean %>% 
+  filter(step == 500) %>% 
+  mutate(`Publication weight (vs. data)` = factor(
+    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
+  ) %>% 
+  ggplot(aes(factor(rdm.cost), sum..total.datasets..of.groups)) +
+  geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
+  geom_jitter(aes(group = agent.orientation), alpha = .4, 
+              position = position_dodge(width = .8)) +
+  facet_wrap(vars(`Publication weight (vs. data)`), labeller = label_both) +
+  scale_fill_viridis_d(begin = .1, end = .9, alpha = .5, option = "C") +
+  scale_y_continuous(labels = scales::comma) +
+  theme(legend.position = "top") +
+  labs(y = "# of total datasets",
+       colour = "Agent orientation")
+```
 
+# Publications produced
+```{r publications-smooth-combined, fig.height=6, fig.width=10}
+df_clean %>% 
+  filter(step == 500) %>% 
+    mutate(`Publication weight (vs. data)` = factor(
+    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
+  ) %>% 
+  ggplot(aes(factor(rdm.cost), sum..total.primary.publications..of.groups)) +
+  geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
+  geom_jitter(aes(group = agent.orientation), alpha = .4, 
+              position = position_dodge(width = .8)) +
+  facet_wrap(vars(`Publication weight (vs. data)`), labeller = label_both) +
+  scale_fill_viridis_d(begin = .1, end = .9, alpha = .5, option = "C") +
+  scale_y_continuous(labels = scales::comma) +
+  theme(legend.position = "top") +
+  labs(y = "# of total publications",
+       colour = "Agent orientation")
+```
 # Inequalities
