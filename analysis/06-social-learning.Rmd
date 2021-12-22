@@ -1,0 +1,27 @@
+---
+title: "Rational learning"
+author: "Thomas Klebel"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, dpi = 300)
+
+theme_set(hrbrthemes::theme_ipsum_rc(base_family = "Hind"))
+extrafont::loadfonts(device = "win")
+
+df <- targets::tar_read(social)
+
+df_clean <- df %>% 
+  filter(.step. >= sharing.start) %>% 
+  select(run = .run.number., step = .step., pubs.vs.data, agent.orientation, 
+         rdm.cost, grants.gini:count.groups.with..data.sharing..)
+
+custom_scale <- scale_colour_viridis_d(begin = .1, end = .9, alpha = .5, 
+                                       option = "C")
+```
+
