@@ -70,5 +70,17 @@ list(
     rational,
     read_experiments(rational_file)
   ),
-  tar_render(rational_report, "05-rational-learning.Rmd")
+  tar_render(rational_report, "05-rational-learning.Rmd"),
+  
+  # social data sharing --------------
+  tar_target(
+    social_file,
+    "../outputs/data_sharing 05-social-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    social,
+    read_experiments(social_file)
+  ),
+  tar_render(social_report, "06-social-learning.Rmd")
 )
