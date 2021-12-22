@@ -130,13 +130,14 @@ df_clean %>%
   ) %>% 
   ggplot(aes(factor(rdm.cost), sum..total.datasets..of.groups)) +
   geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
-  geom_jitter(aes(group = agent.orientation), alpha = .4, 
+  geom_jitter(aes(group = agent.orientation), alpha = .2, 
               position = position_dodge(width = .8)) +
   facet_wrap(vars(`Publication weight (vs. data)`), labeller = label_both) +
   scale_fill_viridis_d(begin = .1, end = .9, alpha = .5, option = "C") +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "top") +
   labs(y = "# of total datasets",
+       x = "Cost factor of data sharing",
        colour = "Agent orientation")
 ```
 
@@ -149,13 +150,49 @@ df_clean %>%
   ) %>% 
   ggplot(aes(factor(rdm.cost), sum..total.primary.publications..of.groups)) +
   geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
-  geom_jitter(aes(group = agent.orientation), alpha = .4, 
+  geom_jitter(aes(group = agent.orientation), alpha = .2, 
               position = position_dodge(width = .8)) +
   facet_wrap(vars(`Publication weight (vs. data)`), labeller = label_both) +
   scale_fill_viridis_d(begin = .1, end = .9, alpha = .5, option = "C") +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "top") +
   labs(y = "# of total publications",
+       x = "Cost factor of data sharing",
        colour = "Agent orientation")
 ```
 # Inequalities
+```{r}
+# here it would be nice to compare to the standard path derived from the baseline
+pdata <- df_clean %>% 
+  select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
+         contains("gini")) %>% 
+  pivot_longer(contains("gini")) %>% 
+  mutate(name = str_remove(name, "\\..*") %>% str_to_title()) %>% 
+  filter(!is.na(value))
+```
+
+
+```{r ginis-myopics, fig.width=9, fig.height=9}
+pdata %>% 
+  filter(agent.orientation == "all-myopic") %>% 
+  ggplot(aes(step, value, colour = factor(rdm.cost))) +
+  geom_smooth() +
+  facet_grid(cols = vars(name),
+             rows = vars(factor(pubs.vs.data))) +
+  scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
+  labs(colour = "Cost factor of data sharing", y = "Gini index") +
+  theme(legend.position = "top")
+```
+
+```{r ginis-longterms, fig.width=9, fig.height=9}
+pdata %>% 
+  filter(agent.orientation == "all-long-term") %>% 
+  ggplot(aes(step, value, colour = factor(rdm.cost))) +
+  geom_smooth() +
+  facet_grid(cols = vars(name),
+             rows = vars(factor(pubs.vs.data))) +
+  scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
+  labs(colour = "Cost factor of data sharing", y = "Gini index") +
+  theme(legend.position = "top")
+```
+
