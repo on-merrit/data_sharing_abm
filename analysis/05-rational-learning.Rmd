@@ -160,6 +160,7 @@ df_clean %>%
        x = "Cost factor of data sharing",
        colour = "Agent orientation")
 ```
+
 # Inequalities
 ```{r}
 # here it would be nice to compare to the standard path derived from the baseline
