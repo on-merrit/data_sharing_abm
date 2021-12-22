@@ -110,7 +110,7 @@ to learn-rationally
     ; update only according to own update frequency
     if update-counter mod long-term-orientation = 0 [
       ; change comparison window according to long-term-orientation of group
-      let group-history sublist but-first grant-history 0 long-term-orientation
+      let group-history sublist but-first publication-history 0 long-term-orientation
       set success-this-period mean group-history
       ; compare to current grants and adapt
       ; here we could also add a logistic function
@@ -682,7 +682,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-1.0
+0.9
 .01
 1
 NIL
@@ -697,7 +697,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.2
+0.15
 .01
 1
 NIL
@@ -732,7 +732,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-2
+0
 
 SLIDER
 159
@@ -810,7 +810,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1441,7 +1441,7 @@ NetLogo 6.2.0
       <value value="&quot;learn-rationally&quot;"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="05-social" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="05-social" repetitions="40" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>grants-gini</metric>
