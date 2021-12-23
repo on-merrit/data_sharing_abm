@@ -36,7 +36,7 @@ p <- df %>%
   scale_colour_viridis_d(option = "C", alpha = .5,begin = .1, end = .9) +
   labs(y = "Gini index", 
        colour = expression(paste("Randomness parameter ", italic("c"))),
-       caption = "n = 100 agents; summarised from 30 runs") 
+       caption = "n = 100 agents; summarised from 20 runs") 
 p
 ```
 
@@ -62,7 +62,7 @@ p <- df_detail %>%
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
   labs(y = "Gini index", 
        colour = expression(paste("Randomness parameter ", italic("c"))),
-       caption = "n = 100 agents; summarised from 30 runs") 
+       caption = "n = 100 agents; summarised from 20 runs") 
 p
 ```
 
@@ -77,13 +77,13 @@ df_end_selected <- df_end %>%
 ```{r publication-density, fig.width=7, fig.height=5}
 p_density <- df_end_selected %>% 
   ggplot(aes(n_publications, fill = factor(importance.of.chance), group = importance.of.chance)) +
-  geom_density(alpha = .5, adjust = .5) +
+  geom_density(alpha = .5, adjust = .6) +
   scale_fill_viridis_d(option = "C") +
   geom_curve(
-    aes(x = 5000, y = .015, xend = 5975, yend = .002), curvature = -.5,
+    aes(x = 2500, y = .005, xend = 3000, yend = .001), curvature = -.35,
     arrow = arrow(length = unit(0.03, "npc"))
   ) +
-  annotate("text", x = 4000, y = .015, 
+  annotate("text", x = 2000, y = .005, 
            label = expression(paste("Bimodal distribution\nfor low values of", 
                                     italic("c")))) +
   labs(x = "# of publications per research group",
