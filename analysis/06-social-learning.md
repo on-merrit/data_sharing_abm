@@ -211,6 +211,27 @@ df_clean %>%
 
 ```r
 df_clean %>% 
+  mutate(pubs_rel = sum..total.primary.publications..of.groups / step) %>% 
+  ggplot(aes(step, pubs_rel, 
+             colour = factor(agent.orientation))) +
+  geom_smooth() +
+  facet_grid(rows = vars(pubs.vs.data),
+             cols = vars(rdm.cost)) +
+  custom_scale +
+  theme(legend.position = "top") +
+  labs(y = "Total number of publications (divided by step)",
+       colour = "Agent orientation")
+```
+
+```
+## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+![](06-social-learning_files/figure-html/publications-smooth-combined-1.png)<!-- -->
+
+
+```r
+df_clean %>% 
   filter(step == 500) %>% 
     mutate(`Publication weight (vs. data)` = factor(
     pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
@@ -239,7 +260,7 @@ df_clean %>%
 ## notch went outside hinges. Try setting notch=FALSE.
 ```
 
-![](06-social-learning_files/figure-html/publications-smooth-combined-1.png)<!-- -->
+![](06-social-learning_files/figure-html/publications-smooth-combined-end-1.png)<!-- -->
 
 # Inequalities
 
