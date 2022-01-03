@@ -1218,9 +1218,9 @@ NetLogo 6.2.0
   <experiment name="04-rational" repetitions="40" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <metric>grants-gini</metric>
-    <metric>publications-gini</metric>
-    <metric>datasets-gini</metric>
+    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [n-publications] of groups</metric>
+    <metric>gini [total-datasets] of groups</metric>
     <metric>count datasets</metric>
     <metric>sum [n-pubs-this-round] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
