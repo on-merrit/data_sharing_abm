@@ -281,51 +281,16 @@ to update-indices
   ]
 end
 
-; maybe these reporters could be improved by passing the "n-grants" or "n-publications" to the same procedure
-to-report grants-gini
-  ; adapted from the peer reviewer game, bianchi et al. DOI: 10.1007/s11192-018-2825-4 (https://www.comses.net/codebases/6b77a08b-7e60-4f47-9ebb-6a8a2e87f486/releases/1.0.0/)
-  let list1 [who] of groups
-  let list2 [who] of groups
-  let s 0
-  foreach list1 [ ?1 ->
-    let temp [n-grants] of group ?1
-    foreach list2 [ ??1 ->
-      set s s + abs(temp - [n-grants] of group ??1)
-    ]
-  ]
-  let gini-index s / (2 * (mean [n-grants] of groups) * (count groups) ^ 2)
-  report gini-index
-end
-
-
-to-report publications-gini
-  let list1 [who] of groups
-  let list2 [who] of groups
-  let s 0
-  foreach list1 [ ?1 ->
-    let temp [n-publications] of group ?1
-    foreach list2 [ ??1 ->
-      set s s + abs(temp - [n-publications] of group ??1)
-    ]
-  ]
-  let gini-index s / (2 * (mean [n-publications] of groups) * (count groups) ^ 2)
-  report gini-index
-end
-
-; also report gini on datasets
-
-to-report datasets-gini
-  let list1 [who] of groups
-  let list2 [who] of groups
-  let s 0
-  foreach list1 [ ?1 ->
-    let temp [total-datasets] of group ?1
-    foreach list2 [ ??1 ->
-      set s s + abs(temp - [total-datasets] of group ??1)
-    ]
-  ]
-  let gini-index s / (2 * (mean [total-datasets] of groups) * (count groups) ^ 2)
-  report gini-index
+; the initial computation for the gini index was adapted from the peer reviewer game, bianchi et al. DOI: 10.1007/s11192-018-2825-4 (https://www.comses.net/codebases/6b77a08b-7e60-4f47-9ebb-6a8a2e87f486/releases/1.0.0/)
+; the below and now used implementation was provided by TurtleZero on Stackoverflow: https://stackoverflow.com/a/70524851/3149349
+to-report gini [ samples ]
+  let n length samples
+  let indexes (range 1 (n + 1))
+  let bias-function [ [ i yi ] -> (n + 1 - i) * yi ]
+  let biased-samples (map bias-function indexes sort samples)
+  let ratio sum biased-samples / sum samples
+  let G (1 / n ) * (n + 1 - 2 * ratio)
+  report G
 end
 
 
@@ -651,9 +616,9 @@ true
 true
 "" ""
 PENS
-"grants" 1.0 0 -14070903 true "" "plot grants-gini"
-"publications" 1.0 0 -5298144 true "" "plot publications-gini"
-"datasets" 1.0 0 -15040220 true "" "plot datasets-gini"
+"grants" 1.0 0 -14070903 true "" "plot gini [n-grants] of groups"
+"publications" 1.0 0 -5298144 true "" "plot gini [n-publications] of groups"
+"datasets" 1.0 0 -15040220 true "" "plot gini [total-datasets] of groups"
 
 PLOT
 849
