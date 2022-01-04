@@ -192,13 +192,6 @@ df_clean %>%
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
 ```
 
 ![](06-social-learning_files/figure-html/datasets-smooth-combined-emnd-1.png)<!-- -->
@@ -246,10 +239,6 @@ df_clean %>%
 ```
 
 ```
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.

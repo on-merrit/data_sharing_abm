@@ -174,10 +174,6 @@ df_clean %>%
        colour = "Agent orientation")
 ```
 
-```
-## notch went outside hinges. Try setting notch=FALSE.
-```
-
 ![](05-rational-learning_files/figure-html/datasets-smooth-combined-emnd-1.png)<!-- -->
 
 # Publications produced
@@ -211,7 +207,7 @@ pdata <- df_clean %>%
   select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
          contains("gini")) %>% 
   pivot_longer(contains("gini")) %>% 
-  mutate(name = str_remove(name, "gini_*") %>% str_to_title()) %>% 
+  mutate(name = str_remove(name, "gini_") %>% str_to_title()) %>% 
   filter(!is.na(value))
 ```
 
