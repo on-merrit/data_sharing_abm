@@ -171,7 +171,7 @@ pdata <- df_clean %>%
   select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
          contains("gini")) %>% 
   pivot_longer(contains("gini")) %>% 
-  mutate(name = str_remove(name, "gini_*") %>% str_to_title()) %>% 
+  mutate(name = str_remove(name, "gini_") %>% str_to_title()) %>% 
   filter(!is.na(value))
 ```
 
