@@ -32,3 +32,21 @@ read_leiden <- function(path) {
     select(University, Period, impact_P)
 }
 
+
+rename_gini <- function(df) {
+  if (any(str_detect(names(df), "gini.*datasets"))) {
+    dplyr::rename(
+      df,
+      gini_grants = gini..n.grants..of.groups, 
+      gini_publications = gini..n.publications..of.groups,
+      gini_datasets = gini..total.datasets..of.groups
+    )
+  } else {
+    dplyr::rename(
+      df,
+      gini_grants = gini..n.grants..of.groups, 
+      gini_publications = gini..n.publications..of.groups
+    )
+  }
+
+}

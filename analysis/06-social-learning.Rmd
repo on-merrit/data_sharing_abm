@@ -18,9 +18,7 @@ df <- targets::tar_read(social)
 
 df_clean <- df %>% 
   filter(.step. >= sharing.start) %>% 
-  rename(gini_grants = gini..n.grants..of.groups, 
-         gini_publications = gini..n.publications..of.groups,
-         gini_datasets = gini..total.datasets..of.groups) %>% 
+  rename_gini() %>% 
   select(run = .run.number., step = .step., pubs.vs.data, agent.orientation, 
          rdm.cost, gini_grants:count.groups.with..data.sharing..)
 
