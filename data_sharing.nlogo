@@ -1124,7 +1124,7 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="01-baseline" repetitions="50" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="01-baseline" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
@@ -1155,7 +1155,7 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <steppedValueSet variable="importance-of-chance" first="0" step="0.1" last="1"/>
   </experiment>
-  <experiment name="02-baseline-detail" repetitions="50" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="02-baseline-detail" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
@@ -1186,7 +1186,7 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <steppedValueSet variable="importance-of-chance" first="0.3" step="0.02" last="0.5"/>
   </experiment>
-  <experiment name="03-baseline-end" repetitions="50" sequentialRunOrder="false" runMetricsEveryStep="false">
+  <experiment name="03-baseline-end" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <metric>stuff</metric>
@@ -1216,7 +1216,7 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <steppedValueSet variable="importance-of-chance" first="0.36" step="0.02" last="0.44"/>
   </experiment>
-  <experiment name="04-rational" repetitions="40" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="04-rational" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>gini [n-grants] of groups</metric>
@@ -1265,7 +1265,7 @@ NetLogo 6.2.0
       <value value="&quot;learn-rationally&quot;"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="05-social" repetitions="40" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="05-social" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>gini [n-grants] of groups</metric>
