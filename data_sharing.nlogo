@@ -1124,13 +1124,13 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="01-baseline" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="01-baseline" repetitions="50" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
     <metric>mean-publications groups</metric>
-    <metric>grants-gini</metric>
-    <metric>publications-gini</metric>
+    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [n-publications] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <enumeratedValueSet variable="grants-per-funder">
       <value value="14"/>
@@ -1155,13 +1155,13 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <steppedValueSet variable="importance-of-chance" first="0" step="0.1" last="1"/>
   </experiment>
-  <experiment name="02-baseline-detail" repetitions="20" sequentialRunOrder="false" runMetricsEveryStep="true">
+  <experiment name="02-baseline-detail" repetitions="50" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>mean-grants groups</metric>
     <metric>mean-publications groups</metric>
-    <metric>grants-gini</metric>
-    <metric>publications-gini</metric>
+    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [n-publications] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <enumeratedValueSet variable="grants-per-funder">
       <value value="14"/>
@@ -1186,11 +1186,12 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <steppedValueSet variable="importance-of-chance" first="0.3" step="0.02" last="0.5"/>
   </experiment>
-  <experiment name="03-baseline-end" repetitions="30" sequentialRunOrder="false" runMetricsEveryStep="false">
+  <experiment name="03-baseline-end" repetitions="50" sequentialRunOrder="false" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <metric>stuff</metric>
-    <metric>publications-gini</metric>
+    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [n-publications] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <enumeratedValueSet variable="grants-per-funder">
       <value value="14"/>
