@@ -36,7 +36,7 @@ p <- df %>%
   scale_colour_viridis_d(option = "C", alpha = .5,begin = .1, end = .9) +
   labs(y = "Gini index", 
        colour = expression(paste("Randomness parameter ", italic("c"))),
-       caption = "n = 100 agents; summarised from 20 runs") 
+       caption = "n = 100 agents; summarised from 100 runs") 
 p
 ```
 
@@ -62,7 +62,7 @@ p <- df_detail %>%
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
   labs(y = "Gini index", 
        colour = expression(paste("Randomness parameter ", italic("c"))),
-       caption = "n = 100 agents; summarised from 20 runs") 
+       caption = "n = 100 agents; summarised from 100 runs") 
 p
 ```
 
