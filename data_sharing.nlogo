@@ -36,6 +36,7 @@ groups-own [
   success-this-period
   success-last-period
   openness-for-change
+  prestige-quantile
 ]
 
 grants-own [
@@ -92,6 +93,21 @@ end
 
 to go
   if ticks = 500 [stop] ; stop after 250 years (500)
+
+  ; create prestige quantiles at sharing start
+  if ticks = sharing-start [
+    let q25 calc-pct 25 [n-publications] of groups
+    let q50 calc-pct 50 [n-publications] of groups
+    let q75 calc-pct 75 [n-publications] of groups
+
+    ask groups [
+      if n-publications <= q25 [set prestige-quantile "q[0-25]"]
+      if n-publications > q25 and n-publications <= q50 [set prestige-quantile "q(25-50]"]
+      if n-publications > q50 and n-publications <= q75 [set prestige-quantile "q(50-75]"]
+      if n-publications > q75 [set prestige-quantile "q(75-100]"]
+    ]
+  ]
+
   publish
   setup-grants
   allocate-grants
@@ -350,6 +366,22 @@ end
 to-report long-termers
   let x groups with [long-term-orientation > 2]
   report precision mean [n-publications] of x 2
+end
+
+; calculate quantiles
+; https://stackoverflow.com/a/54420235/3149349
+to-report calc-pct [ #pct #vals ]
+  let #listvals sort #vals
+  let #pct-position #pct / 100 * length #vals
+  ; find the ranks and values on either side of the desired percentile
+  let #low-rank floor #pct-position
+  let #low-val item #low-rank #listvals
+  let #high-rank ceiling #pct-position
+  let #high-val item #high-rank #listvals
+  ; interpolate
+  ifelse #high-rank = #low-rank
+  [ report #low-val ]
+  [ report #low-val + ((#pct-position - #low-rank) / (#high-rank - #low-rank)) * (#high-val - #low-val) ]
 end
 
 
