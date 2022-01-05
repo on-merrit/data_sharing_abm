@@ -1,7 +1,7 @@
 ---
 title: "Social learning"
 author: "Thomas Klebel"
-date: "04 Jänner, 2022"
+date: "05 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -200,15 +200,17 @@ df_clean %>%
 
 ```r
 df_clean %>% 
-  mutate(pubs_rel = sum..total.primary.publications..of.groups / step) %>% 
-  ggplot(aes(step, pubs_rel, 
+  mutate(`Publication weight (vs. data)` = factor(
+    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
+  ) %>% 
+  ggplot(aes(step, sum..n.pubs.this.round..of.groups,
              colour = factor(agent.orientation))) +
   geom_smooth() +
   facet_grid(rows = vars(pubs.vs.data),
              cols = vars(rdm.cost)) +
   custom_scale +
   theme(legend.position = "top") +
-  labs(y = "Total number of publications (divided by step)",
+  labs(y = "# of publications per round",
        colour = "Agent orientation")
 ```
 
@@ -217,6 +219,7 @@ df_clean %>%
 ```
 
 ![](06-social-learning_files/figure-html/publications-smooth-combined-1.png)<!-- -->
+
 
 
 ```r
