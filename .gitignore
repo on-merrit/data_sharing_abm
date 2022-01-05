@@ -4,3 +4,4 @@ sample-models
 *.tmp*
 
 external_data/*.xlsx
+outputs
