@@ -36,7 +36,7 @@ groups-own [
   success-this-period
   success-last-period
   openness-for-change
-  prestige-quantile
+  publication-quantile ;quantile of publication distribution, computed when sharing of data starts
 ]
 
 grants-own [
@@ -101,10 +101,10 @@ to go
     let q75 calc-pct 75 [n-publications] of groups
 
     ask groups [
-      if n-publications <= q25 [set prestige-quantile "q[0-25]"]
-      if n-publications > q25 and n-publications <= q50 [set prestige-quantile "q(25-50]"]
-      if n-publications > q50 and n-publications <= q75 [set prestige-quantile "q(50-75]"]
-      if n-publications > q75 [set prestige-quantile "q(75-100]"]
+      if n-publications <= q25 [set publication-quantile "q[0-25]"]
+      if n-publications > q25 and n-publications <= q50 [set publication-quantile "q(25-50]"]
+      if n-publications > q50 and n-publications <= q75 [set publication-quantile "q(50-75]"]
+      if n-publications > q75 [set publication-quantile "q(75-100]"]
     ]
   ]
 
@@ -679,7 +679,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.8
+0.7
 .01
 1
 NIL
@@ -694,7 +694,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.2
+0.14
 .01
 1
 NIL
@@ -729,7 +729,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-0
+1
 
 SLIDER
 159
@@ -762,9 +762,10 @@ true
 true
 "" ""
 PENS
-"myopics" 1.0 0 -8053223 true "" "plot myopics"
-"mid myopics" 1.0 0 -13210332 true "" "plot mid-myopics"
-"long-term" 1.0 0 -14730904 true "" "plot long-termers"
+"q[0-25]" 1.0 0 -8053223 true "" "plot mean [n-publications] of groups with [publication-quantile = \"q[0-25]\"]"
+"q(25-50]" 1.0 0 -13210332 true "" "plot mean [n-publications] of groups with [publication-quantile = \"q(25-50]\"]"
+"(50-75]" 1.0 0 -14730904 true "" "plot mean [n-publications] of groups with [publication-quantile = \"q(50-75]\"]"
+"q(75-100]" 1.0 0 -4079321 true "" "plot mean [n-publications] of groups with [publication-quantile = \"q(75-100]\"]"
 
 PLOT
 1139
@@ -807,7 +808,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
