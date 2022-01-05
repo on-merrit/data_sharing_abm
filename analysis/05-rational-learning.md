@@ -1,7 +1,7 @@
 ---
 title: "Rational learning"
 author: "Thomas Klebel"
-date: "04 Jänner, 2022"
+date: "05 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -179,6 +179,32 @@ df_clean %>%
 # Publications produced
 
 ```r
+# the whole plot is not very interesting: there is simply different levels of
+# publication under individual learning. state this in the text
+df %>% 
+  mutate(`Publication weight (vs. data)` = factor(
+    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
+  ) %>% 
+  ggplot(aes(.step., sum..n.pubs.this.round..of.groups,
+             colour = factor(agent.orientation))) +
+  geom_smooth() + # make two smooths, one at 0-100, one at 100-500
+  facet_grid(rows = vars(pubs.vs.data),
+             cols = vars(rdm.cost)) +
+  custom_scale +
+  theme(legend.position = "top") +
+  labs(y = "# of publications per round",
+       colour = "Agent orientation")
+```
+
+```
+## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+![](05-rational-learning_files/figure-html/publications-smooth-combined-1.png)<!-- -->
+
+
+
+```r
 df_clean %>% 
   filter(step == 500) %>% 
     mutate(`Publication weight (vs. data)` = factor(
@@ -197,7 +223,7 @@ df_clean %>%
        colour = "Agent orientation")
 ```
 
-![](05-rational-learning_files/figure-html/publications-smooth-combined-1.png)<!-- -->
+![](05-rational-learning_files/figure-html/publications-end-1.png)<!-- -->
 
 # Inequalities
 
