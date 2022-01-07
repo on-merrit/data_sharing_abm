@@ -385,9 +385,35 @@ to-report calc-pct [ #pct #vals ]
 end
 
 to-report data-sharers-within-group [agentset]
-  let n count agentset
-  let sharers count agentset with [data-sharing?]
-  report sharers / n
+  ifelse ticks < sharing-start [
+    report 0
+  ] [
+    let n count agentset
+    let sharers count agentset with [data-sharing?]
+    report sharers / n
+  ]
+end
+
+; report mean number of produced datasets per groups
+to-report mean-datasets [agentset]
+  ifelse ticks < sharing-start [
+    report 0
+  ] [
+    report mean [total-datasets] of agentset
+  ]
+end
+
+to-report mean-datasets-q1
+  report mean-datasets groups with [publication-quantile = "q[0-25]"]
+end
+to-report mean-datasets-q2
+  report mean-datasets groups with [publication-quantile = "q(25-50]"]
+end
+to-report mean-datasets-q3
+  report mean-datasets groups with [publication-quantile = "q(50-75]"]
+end
+to-report mean-datasets-q4
+  report mean-datasets groups with [publication-quantile = "q(75-100]"]
 end
 
 
@@ -685,7 +711,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.7
+0.8
 .01
 1
 NIL
@@ -700,7 +726,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.18
+0.0
 .01
 1
 NIL
@@ -814,7 +840,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-1
+0
 
 PLOT
 850
@@ -1308,10 +1334,10 @@ NetLogo 6.2.0
     <metric>sum [total-primary-publications] of groups</metric>
     <metric>sum [total-datasets] of groups</metric>
     <metric>count groups with [data-sharing?]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q[0-25]"]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q(25-50]"]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q(50-75]"]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q(75-100]"]</metric>
+    <metric>mean-datasets-q1</metric>
+    <metric>mean-datasets-q2</metric>
+    <metric>mean-datasets-q3</metric>
+    <metric>mean-datasets-q4</metric>
     <metric>data-sharers-within-group groups with [publication-quantile = "q[0-25]"]</metric>
     <metric>data-sharers-within-group groups with [publication-quantile = "q(25-50]"]</metric>
     <metric>data-sharers-within-group groups with [publication-quantile = "q(50-75]"]</metric>
@@ -1365,10 +1391,10 @@ NetLogo 6.2.0
     <metric>sum [total-primary-publications] of groups</metric>
     <metric>sum [total-datasets] of groups</metric>
     <metric>count groups with [data-sharing?]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q[0-25]"]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q(25-50]"]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q(50-75]"]</metric>
-    <metric>mean [total-datasets] of groups with [publication-quantile = "q(75-100]"]</metric>
+    <metric>mean-datasets-q1</metric>
+    <metric>mean-datasets-q2</metric>
+    <metric>mean-datasets-q3</metric>
+    <metric>mean-datasets-q4</metric>
     <metric>data-sharers-within-group groups with [publication-quantile = "q[0-25]"]</metric>
     <metric>data-sharers-within-group groups with [publication-quantile = "q(25-50]"]</metric>
     <metric>data-sharers-within-group groups with [publication-quantile = "q(50-75]"]</metric>
