@@ -384,6 +384,12 @@ to-report calc-pct [ #pct #vals ]
   [ report #low-val + ((#pct-position - #low-rank) / (#high-rank - #low-rank)) * (#high-val - #low-val) ]
 end
 
+to-report data-sharers-within-group [agentset]
+  let n count agentset
+  let sharers count agentset with [data-sharing?]
+  report sharers / n
+end
+
 
 to-report stuff
   report [(list who n-publications n-publications-with-data-shared n-grants)] of groups
@@ -694,7 +700,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.14
+0.18
 .01
 1
 NIL
@@ -751,7 +757,7 @@ PLOT
 545
 1139
 732
-myopicness
+publication distribution sucess
 NIL
 NIL
 0.0
@@ -809,6 +815,48 @@ learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
 1
+
+PLOT
+850
+731
+1145
+907
+sharing extent
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"q1" 1.0 0 -8053223 true "" "plot mean [total-datasets] of groups with [publication-quantile = \"q[0-25]\"]"
+"q2" 1.0 0 -13210332 true "" "plot mean [total-datasets] of groups with [publication-quantile = \"q(25-50]\"]"
+"q3" 1.0 0 -2674135 true "" "plot mean [total-datasets] of groups with [publication-quantile = \"q(50-75]\"]"
+"q4" 1.0 0 -955883 true "" "plot mean [total-datasets] of groups with [publication-quantile = \"q(75-100]\"]"
+
+PLOT
+532
+728
+850
+909
+data sharers
+NIL
+NIL
+0.0
+1.0
+0.0
+1.0
+true
+true
+"" ""
+PENS
+"q1" 1.0 0 -16777216 true "" "plot data-sharers-within-group groups with [publication-quantile = \"q[0-25]\"]"
+"q2" 1.0 0 -7500403 true "" "plot data-sharers-within-group groups with [publication-quantile = \"q(25-50]\"]"
+"q3" 1.0 0 -2674135 true "" "plot data-sharers-within-group groups with [publication-quantile = \"q(50-75]\"]"
+"q4" 1.0 0 -955883 true "" "plot data-sharers-within-group groups with [publication-quantile = \"q(75-100]\"]"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1260,6 +1308,14 @@ NetLogo 6.2.0
     <metric>sum [total-primary-publications] of groups</metric>
     <metric>sum [total-datasets] of groups</metric>
     <metric>count groups with [data-sharing?]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q[0-25]"]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q(25-50]"]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q(50-75]"]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q(75-100]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q[0-25]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(25-50]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(50-75]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(75-100]"]</metric>
     <enumeratedValueSet variable="grants-per-funder">
       <value value="14"/>
     </enumeratedValueSet>
@@ -1309,6 +1365,14 @@ NetLogo 6.2.0
     <metric>sum [total-primary-publications] of groups</metric>
     <metric>sum [total-datasets] of groups</metric>
     <metric>count groups with [data-sharing?]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q[0-25]"]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q(25-50]"]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q(50-75]"]</metric>
+    <metric>mean [total-datasets] of groups with [publication-quantile = "q(75-100]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q[0-25]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(25-50]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(50-75]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(75-100]"]</metric>
     <enumeratedValueSet variable="grants-per-funder">
       <value value="14"/>
     </enumeratedValueSet>
