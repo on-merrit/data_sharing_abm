@@ -1,7 +1,7 @@
 ---
 title: "Social learning"
 author: "Thomas Klebel"
-date: "05 Jänner, 2022"
+date: "07 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -192,6 +192,9 @@ df_clean %>%
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
+## notch went outside hinges. Try setting notch=FALSE.
+## notch went outside hinges. Try setting notch=FALSE.
+## notch went outside hinges. Try setting notch=FALSE.
 ```
 
 ![](06-social-learning_files/figure-html/datasets-smooth-combined-emnd-1.png)<!-- -->
@@ -242,7 +245,6 @@ df_clean %>%
 ```
 
 ```
-## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
@@ -300,3 +302,91 @@ pdata %>%
 ```
 
 ![](06-social-learning_files/figure-html/ginis-longterms-1.png)<!-- -->
+
+
+# Impact on individual groups
+## Numbers of datasets
+
+
+```r
+df_data_means <- df_clean %>% 
+  select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
+         starts_with("mean")) %>% 
+  pivot_longer(contains("mean"),
+               names_to = "quantile", names_pattern = "(q\\d)",
+               values_to = "mean_datasets", 
+               values_transform = list("mean_datasets" = as.numeric))
+```
+
+```r
+display_quantity <- function(df, quantity, orientation = "all-long-term") {
+  df %>% 
+    filter(agent.orientation == orientation) %>% 
+    ggplot(aes(step, {{quantity}}, colour = quantile)) +
+    geom_smooth() +
+      facet_grid(rows = vars(pubs.vs.data),
+               cols = vars(rdm.cost)) +
+    custom_scale
+}
+```
+
+
+
+```r
+df_data_means %>% 
+  display_quantity(mean_datasets)
+```
+
+```
+## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+![](06-social-learning_files/figure-html/shared-data-by-quantile-long-term-1.png)<!-- -->
+
+
+```r
+df_data_means %>% 
+  display_quantity(mean_datasets, "all-myopic")
+```
+
+```
+## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+![](06-social-learning_files/figure-html/shared-data-by-quantile-myopic-1.png)<!-- -->
+
+## Number of sharers
+
+```r
+df_data_sharers <- df_clean %>% 
+  select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
+         starts_with("data")) %>% 
+  pivot_longer(starts_with("data"),
+               names_to = "quantile", names_pattern = "(q\\..*?)\\.\\.\\.",
+               values_to = "share_of_sharers", 
+               values_transform = list("share_of_sharers" = as.numeric))
+```
+
+
+```r
+df_data_sharers %>% 
+  display_quantity(share_of_sharers)
+```
+
+```
+## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+![](06-social-learning_files/figure-html/sharers-by-quantile-long-term-1.png)<!-- -->
+
+
+```r
+df_data_sharers %>% 
+  display_quantity(share_of_sharers, "all-myopic")
+```
+
+```
+## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+![](06-social-learning_files/figure-html/sharers-by-quantile-myopic-1.png)<!-- -->
