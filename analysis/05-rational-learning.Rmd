@@ -20,7 +20,7 @@ df_clean <- df %>%
   filter(.step. >= sharing.start) %>% 
   rename_gini() %>% 
   select(run = .run.number., step = .step., pubs.vs.data, agent.orientation, 
-         rdm.cost, gini_grants:count.groups.with..data.sharing..)
+         rdm.cost, gini_grants:data.sharers.within.group.groups.with..publication.quantile....q.75.100...)
 
 custom_scale <- scale_colour_viridis_d(begin = .1, end = .9, alpha = .5, 
                                        option = "C")
@@ -215,5 +215,61 @@ pdata %>%
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
   labs(colour = "Cost factor of data sharing", y = "Gini index") +
   theme(legend.position = "top")
+```
+
+# Impact on individual groups
+## Numbers of datasets
+
+```{r}
+df_data_means <- df_clean %>% 
+  select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
+         starts_with("mean")) %>% 
+  pivot_longer(contains("mean"),
+               names_to = "quantile", names_pattern = "(q\\d)",
+               values_to = "mean_datasets", 
+               values_transform = list("mean_datasets" = as.numeric))
+```
+```{r}
+display_quantity <- function(df, quantity, orientation = "all-long-term") {
+  df %>% 
+    filter(agent.orientation == orientation) %>% 
+    ggplot(aes(step, {{quantity}}, colour = quantile)) +
+    geom_smooth() +
+      facet_grid(rows = vars(pubs.vs.data),
+               cols = vars(rdm.cost)) +
+    custom_scale
+}
+```
+
+
+```{r shared-data-by-quantile-long-term, fig.height=6, fig.width=9}
+df_data_means %>% 
+  display_quantity(mean_datasets)
+```
+
+```{r shared-data-by-quantile-myopic, fig.height=6, fig.width=9}
+df_data_means %>% 
+  display_quantity(mean_datasets, "all-myopic")
+```
+
+## Number of sharers
+```{r}
+df_data_sharers <- df_clean %>% 
+  select(run, step, pubs.vs.data, agent.orientation, rdm.cost,
+         starts_with("data")) %>% 
+  pivot_longer(starts_with("data"),
+               names_to = "quantile", names_pattern = "(q\\..*?)\\.\\.\\.",
+               values_to = "share_of_sharers", 
+               values_transform = list("share_of_sharers" = as.numeric))
+```
+
+```{r sharers-by-quantile-long-term, fig.height=6, fig.width=9}
+df_data_sharers %>% 
+  display_quantity(share_of_sharers)
+```
+
+```{r sharers-by-quantile-myopic, fig.height=6, fig.width=9}
+df_data_sharers %>% 
+  display_quantity(share_of_sharers, "all-myopic")
 ```
 
