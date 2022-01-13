@@ -726,7 +726,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.0
+0.2
 .01
 1
 NIL
@@ -761,7 +761,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-1
+0
 
 SLIDER
 159
@@ -840,7 +840,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-0
+1
 
 PLOT
 850
@@ -1349,8 +1349,8 @@ NetLogo 6.2.0
       <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="pubs-vs-data">
-      <value value="0.8"/>
-      <value value="0.9"/>
+      <value value="0.5"/>
+      <value value="0.85"/>
       <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="agent-orientation">
@@ -1362,7 +1362,6 @@ NetLogo 6.2.0
       <value value="0"/>
       <value value="0.05"/>
       <value value="0.1"/>
-      <value value="0.2"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="sharing-start">
       <value value="100"/>
@@ -1406,8 +1405,8 @@ NetLogo 6.2.0
       <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="pubs-vs-data">
-      <value value="0.8"/>
-      <value value="0.9"/>
+      <value value="0.5"/>
+      <value value="0.85"/>
       <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="agent-orientation">
@@ -1419,7 +1418,6 @@ NetLogo 6.2.0
       <value value="0"/>
       <value value="0.05"/>
       <value value="0.1"/>
-      <value value="0.2"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="sharing-start">
       <value value="100"/>
