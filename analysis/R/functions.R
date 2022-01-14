@@ -50,3 +50,11 @@ rename_gini <- function(df) {
   }
 
 }
+
+
+clean_pub_weight <- function(df) {
+  levels <- c(.5, .85, 1)
+  mutate(df, `Publication weight (vs. data)` = factor(
+    pubs.vs.data, levels = levels, labels = scales::percent(levels))
+  )
+}
