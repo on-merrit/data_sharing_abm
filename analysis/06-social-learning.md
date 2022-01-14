@@ -1,7 +1,7 @@
 ---
 title: "Social learning"
 author: "Thomas Klebel"
-date: "07 Jänner, 2022"
+date: "14 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -40,9 +40,7 @@ df_clean %>%
 ```r
 df_clean %>% 
   filter(agent.orientation == "all-myopic") %>% 
-  mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(step, count.groups.with..data.sharing.., 
              colour = factor(rdm.cost))) +
   geom_smooth() +
@@ -64,9 +62,7 @@ df_clean %>%
 ```r
 df_clean %>% 
   filter(agent.orientation == "all-long-term") %>% 
-  mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(step, count.groups.with..data.sharing.., 
              colour = factor(rdm.cost))) +
   geom_smooth() +
@@ -167,9 +163,7 @@ df_clean %>%
 ```r
 df_clean %>% 
   filter(step == 500) %>% 
-  mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(factor(rdm.cost), sum..total.datasets..of.groups)) +
   geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
   geom_jitter(aes(group = agent.orientation), alpha = .2, 
@@ -184,11 +178,6 @@ df_clean %>%
 ```
 
 ```
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
-## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
 ## notch went outside hinges. Try setting notch=FALSE.
@@ -228,9 +217,7 @@ df_clean %>%
 ```r
 df_clean %>% 
   filter(step == 500) %>% 
-    mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(factor(rdm.cost), sum..total.primary.publications..of.groups)) +
   geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
   geom_jitter(aes(group = agent.orientation), alpha = .2, 
@@ -326,7 +313,10 @@ display_quantity <- function(df, quantity, orientation = "all-long-term") {
     geom_smooth() +
       facet_grid(rows = vars(pubs.vs.data),
                cols = vars(rdm.cost)) +
-    custom_scale
+    custom_scale +
+    theme(legend.position = "top") +
+    labs(y = "% of groups currently sharing data",
+         colour = "Quantile of publication distribution\n at step 100")
 }
 ```
 

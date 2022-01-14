@@ -1,7 +1,7 @@
 ---
 title: "Rational learning"
 author: "Thomas Klebel"
-date: "07 Jänner, 2022"
+date: "14 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -155,12 +155,11 @@ df_clean %>%
 ![](05-rational-learning_files/figure-html/data-sets-smooth-combined-1.png)<!-- -->
 
 
+
 ```r
 df_clean %>% 
   filter(step == 500) %>% 
-  mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(factor(rdm.cost), sum..total.datasets..of.groups)) +
   geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
   geom_jitter(aes(group = agent.orientation), alpha = .2, 
@@ -182,9 +181,7 @@ df_clean %>%
 # the whole plot is not very interesting: there is simply different levels of
 # publication under individual learning. state this in the text
 df %>% 
-  mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(.step., sum..n.pubs.this.round..of.groups,
              colour = factor(agent.orientation))) +
   geom_smooth() + # make two smooths, one at 0-100, one at 100-500
@@ -207,9 +204,7 @@ df %>%
 ```r
 df_clean %>% 
   filter(step == 500) %>% 
-    mutate(`Publication weight (vs. data)` = factor(
-    pubs.vs.data, levels = c(.8, .9, 1), labels = scales::percent(c(.8, .9, 1)))
-  ) %>% 
+  clean_pub_weight() %>% 
   ggplot(aes(factor(rdm.cost), sum..total.primary.publications..of.groups)) +
   geom_boxplot(aes(fill = agent.orientation), notch = TRUE) +
   geom_jitter(aes(group = agent.orientation), alpha = .2, 
