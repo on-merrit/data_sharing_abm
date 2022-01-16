@@ -1,7 +1,7 @@
 ---
 title: "Rational learning"
 author: "Thomas Klebel"
-date: "14 Jänner, 2022"
+date: "16 Jänner, 2022"
 output: 
   html_document:
     keep_md: true

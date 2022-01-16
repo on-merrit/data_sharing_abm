@@ -1,7 +1,7 @@
 ---
 title: "Social learning"
 author: "Thomas Klebel"
-date: "14 Jänner, 2022"
+date: "16 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -31,7 +31,8 @@ df_clean %>%
   ggplot(aes(step, count.groups.with..data.sharing.., group = run)) +
   geom_line(alpha = .4) +
   facet_grid(rows = vars(pubs.vs.data),
-             cols = vars(rdm.cost))
+             cols = vars(rdm.cost)) +
+  labs(y = "% of groups currently sharing data")
 ```
 
 ![](06-social-learning_files/figure-html/data-sharers-overview-long-term-1.png)<!-- -->

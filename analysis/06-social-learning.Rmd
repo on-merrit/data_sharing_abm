@@ -44,7 +44,8 @@ df_clean %>%
   ggplot(aes(step, count.groups.with..data.sharing.., group = run)) +
   geom_line(alpha = .4) +
   facet_grid(rows = vars(pubs.vs.data),
-             cols = vars(rdm.cost))
+             cols = vars(rdm.cost)) +
+  labs(y = "% of groups currently sharing data")
 ```
 
 ```{r data-sharers-smooth-myopic, fig.height=9, fig.width=7}
@@ -245,12 +246,12 @@ display_quantity <- function(df, quantity, orientation = "all-long-term") {
 ```
 
 
-```{r shared-data-by-quantile-long-term, fig.height=6, fig.width=9}
+```{r shared-data-by-quantile-long-term, fig.height=6, fig.width=7}
 df_data_means %>% 
   display_quantity(mean_datasets)
 ```
 
-```{r shared-data-by-quantile-myopic, fig.height=6, fig.width=9}
+```{r shared-data-by-quantile-myopic, fig.height=6, fig.width=7}
 df_data_means %>% 
   display_quantity(mean_datasets, "all-myopic")
 ```
@@ -266,12 +267,12 @@ df_data_sharers <- df_clean %>%
                values_transform = list("share_of_sharers" = as.numeric))
 ```
 
-```{r sharers-by-quantile-long-term, fig.height=6, fig.width=9}
+```{r sharers-by-quantile-long-term, fig.height=6, fig.width=7}
 df_data_sharers %>% 
   display_quantity(share_of_sharers)
 ```
 
-```{r sharers-by-quantile-myopic, fig.height=6, fig.width=9}
+```{r sharers-by-quantile-myopic, fig.height=6, fig.width=7}
 df_data_sharers %>% 
   display_quantity(share_of_sharers, "all-myopic")
 ```
