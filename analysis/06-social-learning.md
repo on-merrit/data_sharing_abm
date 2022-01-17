@@ -1,7 +1,7 @@
 ---
 title: "Social learning"
 author: "Thomas Klebel"
-date: "16 Jänner, 2022"
+date: "17 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -405,3 +405,42 @@ df_data_sharers %>%
 ```
 
 ![](06-social-learning_files/figure-html/sharers-by-quantile-myopic-1.png)<!-- -->
+
+## Number of grants
+
+```r
+df_grants <- df_group_success %>% 
+  pivot_longer(contains("mean"),
+               names_to = "quantile", names_pattern = "(q\\d)",
+               values_to = "mean_grants", 
+               values_transform = list("mean_grants" = as.numeric)) %>% 
+  mutate(quantile = factor(quantile, levels = c("q1", "q2", "q3", "q4"),
+                           labels = c("q[0-25]", "q(25-50]", "q(50-75]",
+                                      "q(75-100]")))
+```
+
+
+```r
+pdata <- df_grants %>% 
+  group_by(step, pubs.vs.data, rdm.cost, quantile) %>% 
+  summarise(mean_grants = mean(mean_grants, na.rm = TRUE))
+```
+
+```
+## `summarise()` has grouped output by 'step', 'pubs.vs.data', 'rdm.cost'. You can override using the `.groups` argument.
+```
+
+```r
+pdata %>% 
+  ggplot(aes(step, mean_grants, colour = factor(pubs.vs.data))) +
+  geom_line(size = 1.5) +
+  facet_grid(rows = vars(quantile),
+             cols = vars(rdm.cost)) +
+  custom_scale +
+  theme(legend.position = "top")+
+  labs(x = "Time", colour = "Weight given to publications",
+       y = "Average number of grants")
+```
+
+![](06-social-learning_files/figure-html/grants-by-quantile-long-term-1.png)<!-- -->
+

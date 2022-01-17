@@ -314,7 +314,7 @@ df_grants <- df_group_success %>%
 ```
 
 
-```{r grants-by-quantile-myopic, fig.height=6.5, fig.width=6.5}
+```{r grants-by-quantile-long-term, fig.height=6.5, fig.width=6.5}
 pdata <- df_grants %>% 
   group_by(step, pubs.vs.data, rdm.cost, quantile) %>% 
   summarise(mean_grants = mean(mean_grants, na.rm = TRUE))
