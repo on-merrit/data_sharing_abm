@@ -34,7 +34,7 @@ p <- df %>%
   geom_smooth() +
   facet_wrap(vars(name)) +
   scale_colour_viridis_d(option = "C", alpha = .5,begin = .1, end = .9) +
-  labs(y = "Gini index", 
+  labs(y = "Gini index", x = "Time",
        colour = expression(paste("Randomness parameter ", italic("c"))),
        caption = "n = 100 agents; summarised from 100 runs") 
 p
@@ -60,7 +60,7 @@ p <- df_detail %>%
   geom_smooth() +
   facet_wrap(vars(name)) +
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
-  labs(y = "Gini index", 
+  labs(y = "Gini index", x = "Time",
        colour = expression(paste("Randomness parameter ", italic("c"))),
        caption = "n = 100 agents; summarised from 100 runs") 
 p
