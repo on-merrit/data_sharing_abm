@@ -416,17 +416,26 @@ to-report mean-datasets-q4
   report mean-datasets groups with [publication-quantile = "q(75-100]"]
 end
 
+
+to-report mean-grants-quartiles [agentset]
+  ifelse ticks < sharing-start [
+    report 0
+  ] [
+    report mean [n-grants] of agentset
+  ]
+end
+
 to-report mean-grants-q1
-  report mean-grants groups with [publication-quantile = "q[0-25]"]
+  report mean-grants-quartiles groups with [publication-quantile = "q[0-25]"]
 end
 to-report mean-grants-q2
-  report mean-grants groups with [publication-quantile = "q(25-50]"]
+  report mean-grants-quartiles groups with [publication-quantile = "q(25-50]"]
 end
 to-report mean-grants-q3
-  report mean-grants groups with [publication-quantile = "q(50-75]"]
+  report mean-grants-quartiles groups with [publication-quantile = "q(50-75]"]
 end
 to-report mean-grants-q4
-  report mean-grants groups with [publication-quantile = "q(75-100]"]
+  report mean-grants-quartiles groups with [publication-quantile = "q(75-100]"]
 end
 
 
@@ -724,7 +733,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.8
+0.5
 .01
 1
 NIL
@@ -739,7 +748,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.2
+0.1
 .01
 1
 NIL
@@ -774,7 +783,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-0
+1
 
 SLIDER
 159
