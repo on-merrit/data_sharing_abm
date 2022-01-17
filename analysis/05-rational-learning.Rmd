@@ -24,6 +24,15 @@ df_clean <- df %>%
 
 custom_scale <- scale_colour_viridis_d(begin = .1, end = .9, alpha = .5, 
                                        option = "C")
+
+df_group_success <- targets::tar_read(success)
+
+df_group_success <- df_group_success %>% 
+  filter(.step. >= sharing.start,
+         learning.mechanism == "learn-rationally") %>% 
+  select(run = .run.number., step = .step., pubs.vs.data, rdm.cost, 
+         agent.orientation, contains("grants")) %>% 
+  mutate(across(contains("grants"), as.numeric))
 ```
 
 
@@ -280,10 +289,42 @@ df_data_sharers <- df_clean %>%
   )))
 ```
 
+```{r sharers-by-quantile-long-term, fig.height=5.5, fig.width=7}
+df_data_sharers %>% 
+  display_quantity(share_of_sharers) +
+  labs(y = "% of groups currently sharing data")
+```
 
-```{r grants-by-quantile-long-term, fig.height=6.5, fig.width=6.5}
+```{r sharers-by-quantile-myopic, fig.height=5.5, fig.width=7}
 df_data_sharers %>% 
   display_quantity(share_of_sharers, "all-myopic") +
   labs(y = "% of groups currently sharing data")
+```
+
+## Number of grants
+```{r}
+df_grants <- df_group_success %>% 
+  pivot_longer(contains("mean"),
+               names_to = "quantile", names_pattern = "(q\\d)",
+               values_to = "mean_grants", 
+               values_transform = list("mean_grants" = as.numeric)) %>% 
+  mutate(quantile = factor(quantile, levels = c("q1", "q2", "q3", "q4"),
+                           labels = c("q[0-25]", "q(25-50]", "q(50-75]",
+                                      "q(75-100]")))
+```
+
+
+```{r grants-by-quantile-myopic, fig.height=6.5, fig.width=6.5}
+pdata <- df_grants %>% 
+  group_by(step, pubs.vs.data, rdm.cost, quantile) %>% 
+  summarise(mean_grants = mean(mean_grants, na.rm = TRUE))
+
+pdata %>% 
+  ggplot(aes(step, mean_grants, colour = factor(pubs.vs.data))) +
+  geom_line(size = 1.5) +
+  facet_grid(rows = vars(quantile),
+             cols = vars(rdm.cost)) +
+  custom_scale +
+  theme(legend.position = "top")
 ```
 
