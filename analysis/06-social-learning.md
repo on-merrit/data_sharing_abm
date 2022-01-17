@@ -19,7 +19,8 @@ df_clean %>%
   ggplot(aes(step, count.groups.with..data.sharing.., group = run)) +
   geom_line(alpha = .4) +
   facet_grid(rows = vars(pubs.vs.data),
-             cols = vars(rdm.cost))
+             cols = vars(rdm.cost)) +
+  labs(x = "Time")
 ```
 
 ![](06-social-learning_files/figure-html/data-sharers-overview-myopic-1.png)<!-- -->
@@ -32,7 +33,8 @@ df_clean %>%
   geom_line(alpha = .4) +
   facet_grid(rows = vars(pubs.vs.data),
              cols = vars(rdm.cost)) +
-  labs(y = "% of groups currently sharing data")
+  labs(y = "% of groups currently sharing data",
+       x = "Time")
 ```
 
 ![](06-social-learning_files/figure-html/data-sharers-overview-long-term-1.png)<!-- -->
@@ -50,7 +52,8 @@ df_clean %>%
              nrow = 3) +
   theme(legend.position = "top") +
   labs(y = "% of groups currently sharing data",
-       colour = "cost penalty for sharing data")
+       colour = "cost penalty for sharing data",
+       x = "Time")
 ```
 
 ```
@@ -72,7 +75,8 @@ df_clean %>%
              nrow = 3) +
   theme(legend.position = "top") +
   labs(y = "% of groups currently sharing data",
-       colour = "cost penalty for sharing data")
+       colour = "cost penalty for sharing data",
+       x = "Time")
 ```
 
 ```
@@ -92,7 +96,8 @@ df_clean %>%
   custom_scale +
   theme(legend.position = "top") +
   labs(y = "% of groups currently sharing data",
-       colour = "Agent orientation")
+       colour = "Agent orientation",
+       x = "Time")
 ```
 
 ```
@@ -113,7 +118,8 @@ df_clean %>%
   facet_wrap(vars(pubs.vs.data), nrow = 3) +
   theme(legend.position = "top") +
   labs(y = "# of available datasets",
-       colour = "cost penalty for sharing data")
+       colour = "cost penalty for sharing data",
+       x = "Time")
 ```
 
 ```
@@ -132,7 +138,8 @@ df_clean %>%
   facet_wrap(vars(pubs.vs.data), nrow = 3) +
   theme(legend.position = "top") +
   labs(y = "# of available datasets",
-       colour = "cost penalty for sharing data")
+       colour = "cost penalty for sharing data",
+       x = "Time")
 ```
 
 ```
@@ -151,7 +158,8 @@ df_clean %>%
   custom_scale +
   theme(legend.position = "top") +
   labs(y = "# of available datasets",
-       colour = "Agent orientation")
+       colour = "Agent orientation",
+       x = "Time")
 ```
 
 ```
@@ -204,7 +212,8 @@ df_clean %>%
   custom_scale +
   theme(legend.position = "top") +
   labs(y = "# of publications per round",
-       colour = "Agent orientation")
+       colour = "Agent orientation",
+       x = "Time")
 ```
 
 ```
@@ -262,7 +271,8 @@ pdata %>%
   facet_grid(cols = vars(name),
              rows = vars(factor(pubs.vs.data))) +
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
-  labs(colour = "Cost factor of data sharing", y = "Gini index") +
+  labs(colour = "Cost factor of data sharing", y = "Gini index",
+       x = "Time") +
   theme(legend.position = "top")
 ```
 
@@ -281,7 +291,8 @@ pdata %>%
   facet_grid(cols = vars(name),
              rows = vars(factor(pubs.vs.data))) +
   scale_colour_viridis_d(option = "C", alpha = .5, begin = .1, end = .9) +
-  labs(colour = "Cost factor of data sharing", y = "Gini index") +
+  labs(colour = "Cost factor of data sharing", y = "Gini index",
+       x = "Time") +
   theme(legend.position = "top")
 ```
 
@@ -303,8 +314,12 @@ df_data_means <- df_clean %>%
   pivot_longer(contains("mean"),
                names_to = "quantile", names_pattern = "(q\\d)",
                values_to = "mean_datasets", 
-               values_transform = list("mean_datasets" = as.numeric))
+               values_transform = list("mean_datasets" = as.numeric)) %>% 
+  mutate(quantile = factor(quantile, levels = c("q1", "q2", "q3", "q4"),
+                           labels = c("q[0-25]", "q(25-50]", "q(50-75]",
+                                      "q(75-100]")))
 ```
+
 
 ```r
 display_quantity <- function(df, quantity, orientation = "all-long-term") {
@@ -312,12 +327,12 @@ display_quantity <- function(df, quantity, orientation = "all-long-term") {
     filter(agent.orientation == orientation) %>% 
     ggplot(aes(step, {{quantity}}, colour = quantile)) +
     geom_smooth() +
-      facet_grid(rows = vars(pubs.vs.data),
+    facet_grid(rows = vars(pubs.vs.data),
                cols = vars(rdm.cost)) +
     custom_scale +
     theme(legend.position = "top") +
-    labs(y = "% of groups currently sharing data",
-         colour = "Quantile of publication distribution\n at step 100")
+    labs(colour = "Quartile of publication distribution\n at step 100",
+         x = "Time")
 }
 ```
 
@@ -325,7 +340,8 @@ display_quantity <- function(df, quantity, orientation = "all-long-term") {
 
 ```r
 df_data_means %>% 
-  display_quantity(mean_datasets)
+  display_quantity(mean_datasets) +
+  labs(y = "# of datasets")
 ```
 
 ```
@@ -337,7 +353,8 @@ df_data_means %>%
 
 ```r
 df_data_means %>% 
-  display_quantity(mean_datasets, "all-myopic")
+  display_quantity(mean_datasets, "all-myopic") +
+  labs(y = "# of datasets")
 ```
 
 ```
@@ -355,13 +372,19 @@ df_data_sharers <- df_clean %>%
   pivot_longer(starts_with("data"),
                names_to = "quantile", names_pattern = "(q\\..*?)\\.\\.\\.",
                values_to = "share_of_sharers", 
-               values_transform = list("share_of_sharers" = as.numeric))
+               values_transform = list("share_of_sharers" = as.numeric)) %>% 
+  mutate(quantile = factor(
+    quantile, 
+    levels = c("q.0.25", "q.25.50", "q.50.75", "q.75.100"),
+    labels = c("q[0-25]", "q(25-50]", "q(50-75]", "q(75-100]"
+  )))
 ```
 
 
 ```r
 df_data_sharers %>% 
-  display_quantity(share_of_sharers)
+  display_quantity(share_of_sharers) +
+  labs(y = "% of groups currently sharing data")
 ```
 
 ```
@@ -373,7 +396,8 @@ df_data_sharers %>%
 
 ```r
 df_data_sharers %>% 
-  display_quantity(share_of_sharers, "all-myopic")
+  display_quantity(share_of_sharers, "all-myopic") +
+  labs(y = "% of groups currently sharing data")
 ```
 
 ```
