@@ -416,6 +416,19 @@ to-report mean-datasets-q4
   report mean-datasets groups with [publication-quantile = "q(75-100]"]
 end
 
+to-report mean-grants-q1
+  report mean-grants groups with [publication-quantile = "q[0-25]"]
+end
+to-report mean-grants-q2
+  report mean-grants groups with [publication-quantile = "q(25-50]"]
+end
+to-report mean-grants-q3
+  report mean-grants groups with [publication-quantile = "q(50-75]"]
+end
+to-report mean-grants-q4
+  report mean-grants groups with [publication-quantile = "q(75-100]"]
+end
+
 
 to-report stuff
   report [(list who n-publications n-publications-with-data-shared n-grants)] of groups
@@ -1432,6 +1445,49 @@ NetLogo 6.2.0
       <value value="0.4"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="learning-mechanism">
+      <value value="&quot;learn-socially&quot;"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="06-success-of-groups" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>mean-grants-q1</metric>
+    <metric>mean-grants-q2</metric>
+    <metric>mean-grants-q3</metric>
+    <metric>mean-grants-q4</metric>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0.5"/>
+      <value value="0.85"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="agent-orientation">
+      <value value="&quot;all-long-term&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0"/>
+      <value value="0.05"/>
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="sharing-start">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="data-sharers">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="learning-mechanism">
+      <value value="&quot;learn-socially&quot;"/>
       <value value="&quot;learn-socially&quot;"/>
     </enumeratedValueSet>
   </experiment>
