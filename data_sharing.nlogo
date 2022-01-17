@@ -733,7 +733,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.5
+0.85
 .01
 1
 NIL
@@ -748,7 +748,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.1
+0.05
 .01
 1
 NIL
@@ -1497,7 +1497,7 @@ NetLogo 6.2.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="learning-mechanism">
       <value value="&quot;learn-socially&quot;"/>
-      <value value="&quot;learn-socially&quot;"/>
+      <value value="&quot;learn-rationally&quot;"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
