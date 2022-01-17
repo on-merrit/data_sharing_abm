@@ -280,14 +280,10 @@ df_data_sharers <- df_clean %>%
   )))
 ```
 
-```{r sharers-by-quantile-long-term, fig.height=5.5, fig.width=7}
-df_data_sharers %>% 
-  display_quantity(share_of_sharers) +
-  labs(y = "% of groups currently sharing data")
-```
 
-```{r sharers-by-quantile-myopic, fig.height=5.5, fig.width=7}
+```{r grants-by-quantile-long-term, fig.height=6.5, fig.width=6.5}
 df_data_sharers %>% 
   display_quantity(share_of_sharers, "all-myopic") +
   labs(y = "% of groups currently sharing data")
 ```
+

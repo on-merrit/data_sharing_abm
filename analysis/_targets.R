@@ -82,5 +82,17 @@ list(
     social,
     read_experiments(social_file)
   ),
-  tar_render(social_report, "06-social-learning.Rmd")
+  tar_render(social_report, "06-social-learning.Rmd"),
+  
+  # analysis of grants per quartile
+  tar_target(
+    success_file,
+    "../outputs/data_sharing 06-success-of-groups-table.csv",
+    format = "file"
+  ),
+  tar_target(
+    success,
+    read_experiments(success_file)
+  )
+  
 )
