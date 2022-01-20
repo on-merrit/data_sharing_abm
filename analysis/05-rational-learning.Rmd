@@ -321,7 +321,7 @@ pdata <- df_grants %>%
 
 pdata %>% 
   ggplot(aes(step, mean_grants, colour = factor(pubs.vs.data))) +
-  geom_line(size = 1.5) +
+  geom_line(size = 1, alpha = .7) +
   facet_grid(rows = vars(quantile),
              cols = vars(rdm.cost)) +
   custom_scale +

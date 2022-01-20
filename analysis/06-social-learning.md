@@ -1,7 +1,7 @@
 ---
 title: "Social learning"
 author: "Thomas Klebel"
-date: "17 Jänner, 2022"
+date: "20 Jänner, 2022"
 output: 
   html_document:
     keep_md: true
@@ -433,11 +433,11 @@ pdata <- df_grants %>%
 ```r
 pdata %>% 
   ggplot(aes(step, mean_grants, colour = factor(pubs.vs.data))) +
-  geom_line(size = 1.5) +
+  geom_line(size = 1, alpha = .7) +
   facet_grid(rows = vars(quantile),
              cols = vars(rdm.cost)) +
   custom_scale +
-  theme(legend.position = "top")+
+  theme(legend.position = "top") +
   labs(x = "Time", colour = "Weight given to publications",
        y = "Average number of grants")
 ```
