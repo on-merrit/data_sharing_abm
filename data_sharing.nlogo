@@ -748,7 +748,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.05
+0.1
 .01
 1
 NIL
@@ -783,7 +783,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-1
+2
 
 SLIDER
 159
@@ -862,7 +862,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-1
+0
 
 PLOT
 850
@@ -1348,9 +1348,9 @@ NetLogo 6.2.0
   <experiment name="04-rational" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <metric>gini [n-grants] of groups</metric>
-    <metric>gini [n-publications] of groups</metric>
-    <metric>gini [total-datasets] of groups</metric>
+    <metric>gini [n-grants] of groups ; current grants</metric>
+    <metric>gini [n-pubs-this-round] of groups ; publications of the current round</metric>
+    <metric>gini [publications-with-data-shared] of groups ; this is the number of datasets in this round</metric>
     <metric>count datasets</metric>
     <metric>sum [n-pubs-this-round] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
@@ -1404,9 +1404,9 @@ NetLogo 6.2.0
   <experiment name="05-social" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <metric>gini [n-grants] of groups</metric>
-    <metric>gini [n-publications] of groups</metric>
-    <metric>gini [total-datasets] of groups</metric>
+    <metric>gini [n-grants] of groups ; current grants</metric>
+    <metric>gini [n-pubs-this-round] of groups ; publications of the current round</metric>
+    <metric>gini [publications-with-data-shared] of groups ; this is the number of datasets in this round</metric>
     <metric>count datasets</metric>
     <metric>sum [n-pubs-this-round] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
@@ -1498,6 +1498,66 @@ NetLogo 6.2.0
     <enumeratedValueSet variable="learning-mechanism">
       <value value="&quot;learn-socially&quot;"/>
       <value value="&quot;learn-rationally&quot;"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="05a-social-sensitivity" repetitions="100" sequentialRunOrder="false" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [n-publications] of groups</metric>
+    <metric>gini [total-datasets] of groups</metric>
+    <metric>count datasets</metric>
+    <metric>sum [n-pubs-this-round] of groups</metric>
+    <metric>sum [total-primary-publications] of groups</metric>
+    <metric>sum [total-datasets] of groups</metric>
+    <metric>count groups with [data-sharing?]</metric>
+    <metric>mean-datasets-q1</metric>
+    <metric>mean-datasets-q2</metric>
+    <metric>mean-datasets-q3</metric>
+    <metric>mean-datasets-q4</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q[0-25]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(25-50]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(50-75]"]</metric>
+    <metric>data-sharers-within-group groups with [publication-quantile = "q(75-100]"]</metric>
+    <metric>mean-grants-q1</metric>
+    <metric>mean-grants-q2</metric>
+    <metric>mean-grants-q3</metric>
+    <metric>mean-grants-q4</metric>
+    <enumeratedValueSet variable="grants-per-funder">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="history-length">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="pubs-vs-data">
+      <value value="0.5"/>
+      <value value="0.85"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="agent-orientation">
+      <value value="&quot;all-long-term&quot;"/>
+      <value value="&quot;all-myopic&quot;"/>
+      <value value="&quot;uniform&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rdm-cost">
+      <value value="0"/>
+      <value value="0.05"/>
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="sharing-start">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="data-sharers">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="n-groups">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="importance-of-chance">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="learning-mechanism">
+      <value value="&quot;learn-socially&quot;"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
