@@ -34,18 +34,18 @@ read_leiden <- function(path) {
 
 
 rename_gini <- function(df) {
-  if (any(str_detect(names(df), "gini.*datasets"))) {
+  if (any(str_detect(names(df), "gini.*data"))) {
     dplyr::rename(
       df,
-      gini_grants = gini..n.grants..of.groups, 
-      gini_publications = gini..n.publications..of.groups,
-      gini_datasets = gini..total.datasets..of.groups
+      gini_grants = starts_with("gini..n.grants"), 
+      gini_publications = starts_with("gini..n.pubs"),
+      gini_datasets = starts_with("gini..publications")
     )
   } else {
     dplyr::rename(
       df,
-      gini_grants = gini..n.grants..of.groups, 
-      gini_publications = gini..n.publications..of.groups
+      gini_grants = starts_with("gini..n.grants"), 
+      gini_publications = starts_with("gini..n.pubs")
     )
   }
 
