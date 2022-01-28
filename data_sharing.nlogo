@@ -680,7 +680,7 @@ importance-of-chance
 importance-of-chance
 0
 1
-0.4
+0.7
 .01
 1
 NIL
@@ -733,7 +733,7 @@ pubs-vs-data
 pubs-vs-data
 0
 1
-0.85
+1.0
 .01
 1
 NIL
@@ -748,7 +748,7 @@ rdm-cost
 rdm-cost
 0
 1
-0.1
+0.0
 .01
 1
 NIL
@@ -783,7 +783,7 @@ CHOOSER
 agent-orientation
 agent-orientation
 "all-myopic" "all-long-term" "uniform"
-2
+0
 
 SLIDER
 159
@@ -794,7 +794,7 @@ sharing-start
 sharing-start
 0
 500
-100.0
+500.0
 20
 1
 NIL
@@ -862,7 +862,7 @@ CHOOSER
 learning-mechanism
 learning-mechanism
 "learn-rationally" "learn-socially"
-0
+1
 
 PLOT
 850
@@ -1258,7 +1258,7 @@ NetLogo 6.2.0
     <go>go</go>
     <metric>mean-grants groups</metric>
     <metric>mean-publications groups</metric>
-    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [total-grants] of groups</metric>
     <metric>gini [n-publications] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <enumeratedValueSet variable="grants-per-funder">
@@ -1289,7 +1289,7 @@ NetLogo 6.2.0
     <go>go</go>
     <metric>mean-grants groups</metric>
     <metric>mean-publications groups</metric>
-    <metric>gini [n-grants] of groups</metric>
+    <metric>gini [total-grants] of groups</metric>
     <metric>gini [n-publications] of groups</metric>
     <metric>sum [total-primary-publications] of groups</metric>
     <enumeratedValueSet variable="grants-per-funder">
