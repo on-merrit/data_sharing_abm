@@ -34,21 +34,20 @@ read_leiden <- function(path) {
 
 
 rename_gini <- function(df) {
-  if (any(str_detect(names(df), "gini.*data"))) {
-    dplyr::rename(
-      df,
-      gini_grants = starts_with("gini..n.grants"), 
-      gini_publications = starts_with("gini..n.pubs"),
-      gini_datasets = starts_with("gini..publications")
-    )
-  } else {
-    dplyr::rename(
-      df,
-      gini_grants = starts_with("gini..n.grants"), 
-      gini_publications = starts_with("gini..n.pubs")
-    )
-  }
+  dplyr::rename(
+    df,
+    gini_grants = starts_with("gini..n.grants"), 
+    gini_publications = starts_with("gini..n.pubs"),
+    gini_datasets = starts_with("gini..publications")
+  )
+}
 
+rename_gini_baseline <- function(df) {
+  dplyr::rename(
+    df,
+    gini_grants = starts_with("Gini..Total.grants"), 
+    gini_publications = starts_with("Gini..N.publ")
+  )
 }
 
 
